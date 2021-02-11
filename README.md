@@ -1,6 +1,6 @@
 
 ## Introduction
-NutScript 1.2 is the re-working of the re-working (1.1) of the original NutScript framework to provide a better back-end. This should include more efficient code and overall benefits to the way the framework functioned and/or performed.
+NutScript 1.2 is the continuation of the original NutScript framework to provide a better back-end. This should include more efficient code and overall benefits to the way the framework functioned and/or performed.
 
 ## 1.1 vs 1.2
 1.2 is the more recent and maintained version of Nutscript, and it is recommended to use it over 1.1
