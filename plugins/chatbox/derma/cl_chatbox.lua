@@ -53,7 +53,7 @@ local PANEL = {}
 						local k = k:lower()
 
 						if (k2:lower():match(command)) then
-							local x = nut.util.drawText(k2.."  ", 4, i * 20, color)
+							local x = nut.util.drawText((v.realCommand and "/"..v.realCommand or k2).."  ", 4, i * 20, color)
 
 							if (k == command and v.syntax) then
 								local i2 = 0
