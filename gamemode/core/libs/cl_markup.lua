@@ -1,15 +1,4 @@
-local string = string
-local table = table
-local surface = surface
-local tostring = tostring
-local pairs = pairs
-local setmetatable = setmetatable
-local math = math
-local Material = Material
-local tonumber = tonumber
-local file = file
-
-module("nut.markup")
+module("nut.markup", package.seeall)
 
 --[[---------------------------------------------------------
     Name: Constants used for text alignment.
