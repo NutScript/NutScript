@@ -49,10 +49,10 @@ local PANEL = {}
 					local color = nut.config.get("color")
 
 					for k, v in SortedPairs(nut.command.list) do
-						local k2 = "/"..k:lower()
+						local k2 = "/"..k
 						local k = k:lower()
 
-						if (k2:match(command)) then
+						if (k2:lower():match(command)) then
 							local x = nut.util.drawText(k2.."  ", 4, i * 20, color)
 
 							if (k == command and v.syntax) then
