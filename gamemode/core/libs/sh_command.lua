@@ -28,7 +28,7 @@ function nut.command.add(command, data)
 		-- Or if we specify a usergroup allowed to use this.
 		elseif (data.group) then
 			-- The group property can be a table of usergroups.
-			if (istable(data.group)) then
+			if (type(data.group) == "table") then
 				data.onCheckAccess = function(client)
 					-- Check if the client's group is allowed.
 					for k, v in ipairs(data.group) do
@@ -68,21 +68,27 @@ function nut.command.add(command, data)
 	local alias = data.alias
 
 	if (alias) then
-		if (istable(alias)) then
+		if (type(alias) == "table") then
 			for k, v in ipairs(alias) do
-				nut.command.list[v] = data
+				nut.command.list[v:lower()] = data
 			end
-		elseif (isstring(alias)) then
-			nut.command.list[alias] = data
+		elseif (type(alias) == "string") then
+			nut.command.list[alias:lower()] = data
 		end
 	end
-
-	nut.command.list[command] = data
+	
+	if (command == command:lower()) then
+		nut.command.list[command] = data
+	else
+		data.realCommand = command
+		
+		nut.command.list[command:lower()] = data
+	end
 end
 
 -- Returns whether or not a player is allowed to run a certain command.
 function nut.command.hasAccess(client, command)
-	command = nut.command.list[command]
+	command = nut.command.list[command:lower()]
 
 	if (command) then
 		if (command.onCheckAccess) then
@@ -138,7 +144,7 @@ end
 if (SERVER) then
 	-- Finds a player or gives an error notification.
 	function nut.command.findPlayer(client, name)
-		local target = isstring(name) and nut.util.findPlayer(name) or NULL
+		local target = type(name) == "string" and nut.util.findPlayer(name) or NULL
 
 		if (IsValid(target)) then
 			return target
@@ -164,7 +170,7 @@ if (SERVER) then
 
 	-- Forces a player to run a command.
 	function nut.command.run(client, command, arguments)
-		local command = nut.command.list[command]
+		local command = nut.command.list[command:lower()]
 
 		if (command) then
 			-- Run the command's callback and get the return.
@@ -172,7 +178,7 @@ if (SERVER) then
 			local result = results[1]
 
 			-- If a string is returned, it is a notification.
-			if (isstring(result)) then
+			if (type(result) == "string") then
 				-- Normal player here.
 				if (IsValid(client)) then
 					if (result:sub(1, 1) == "@") then
@@ -194,7 +200,6 @@ if (SERVER) then
 	function nut.command.parse(client, text, realCommand, arguments)
 		if (realCommand or text:utf8sub(1, 1) == COMMAND_PREFIX) then
 			-- See if the string contains a command.
-
 			local match = realCommand or text:lower():match(COMMAND_PREFIX.."([_%w]+)")
 
 			-- is it unicode text?
@@ -205,6 +210,8 @@ if (SERVER) then
 
 				match = post[1]:utf8sub(2, len)
 			end
+			
+			local match = match:lower()
 
 			local command = nut.command.list[match]
 			-- We have a valid, registered command.
@@ -246,7 +253,7 @@ if (SERVER) then
 			local arguments2 = {}
 
 			for k, v in ipairs(arguments) do
-				if (isstring(v) or isnumber(v)) then
+				if (type(v) == "string" or type(v) == "number") then
 					arguments2[#arguments2 + 1] = tostring(v)
 				end
 			end
