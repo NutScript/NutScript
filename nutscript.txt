@@ -2,5 +2,5 @@
 {
 	"base"		"sandbox"
 	"title"		"NutScript 1.2"
-	"author"	"Chessnut and Black Tea"
+	"author"	"Chessnut, Black Tea and the NutScript Community"
 }
