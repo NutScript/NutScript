@@ -44,7 +44,7 @@
 
 ikon = ikon or {}
 ikon.dev = false
-ikon.maxSize = 8 -- 8x8 (512^2) is max icon size. eitherwise, fuck off.
+ikon.maxSize = 8 -- 8x8 (512^2) is max icon size.
 
 /*
 	Initialize hooks and RT Screens.
@@ -66,7 +66,6 @@ function ikon:init()
 	*/
 	OLD_HALOADD = OLD_HALOADD or halo.Add
 	function halo.Add(...)
-		-- shut the fuck up
 		if (ikon.rendering != true) then
 			OLD_HALOADD(...)
 		end
@@ -74,7 +73,7 @@ function ikon:init()
 
 	OLD_HALORENDER = OLD_HALORENDER or halo.Render
 	function halo.Render(...)
-		-- shut the fuck up
+
 		if (ikon.rendering != true) then
 			OLD_HALORENDER(...)
 		end
@@ -321,22 +320,17 @@ function ikon:renderIcon(name, w, h, mdl, camInfo, updateCache)
 	file.Write("nsIcon/" .. schemaName .. "/" .. name .. ".png", capturedIcon)
 	ikon.info = nil
 	render.PopRenderTarget()
-
-	-- lol blame your shit mate
+	
 	if (updateCache) then
-		-- it's all your falut
-		-- you rendered wrong shit
-		-- if you know better solution, give me to it.
-		local noshit = tostring(os.time())
-		file.Write(noshit .. ".png", capturedIcon)
+		local iconString = tostring(os.time())
+		file.Write(iconString .. ".png", capturedIcon)
 
 		timer.Simple(0, function()
-		local wtf = Material("../data/".. noshit ..".png")
+		local wtf = Material("../data/".. iconString ..".png")
 
 		ikon.cache[name]  = wtf
-		file.Delete(noshit .. ".png")
+		file.Delete(iconString .. ".png")
 		end)
-		-- make small ass texture and put that thing in here?
 	end
 	ikon.requestList[name] = nil
 	return true

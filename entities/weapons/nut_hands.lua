@@ -62,7 +62,7 @@ CARRY_FORCE_LEVEL = {
 -- gameplay purposes
 CARRY_WEIGHT_LIMIT = 100
 
--- I know some people will fuck around with new prop-throwing system. I'm preventing that shit without making it too non-sense
+-- Prevent prop-throwing system abuse.
 THROW_VELOCITY_CAP = 150
 PLAYER_PICKUP_RANGE = 200
 

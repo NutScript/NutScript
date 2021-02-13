@@ -243,7 +243,7 @@ function PANEL:Init()
 		btn:DockMargin(5, 5, 5, 0)
 		btn.DoClick = function()
 			self:SetupEditor(true, i)
-			self:UpdateShits()
+			self:UpdateIcon()
 		end
 	end
 
@@ -258,7 +258,7 @@ function PANEL:Init()
 	self.mdl.OnEnter = function()
 		ICON_INFO.modelName = self.mdl:GetValue()
 		self:SetupEditor(true)
-		self:UpdateShits()
+		self:UpdateIcon()
 	end
 
 	self:AddText("Icon Size")
@@ -396,10 +396,10 @@ function PANEL:Init()
 	end
 
 	self:SetupEditor()
-	self:UpdateShits(true)
+	self:UpdateIcon(true)
 end
 
-function PANEL:UpdateShits()
+function PANEL:UpdateIcon()
 	fagLord = true
 		self.camFOV:SetValue(ICON_INFO.FOV)
 		local p = self.prev
