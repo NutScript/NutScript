@@ -3,9 +3,11 @@ nut.notices = nut.notices or {}
 
 -- Move all notices to their proper positions.
 local function OrganizeNotices()
+	local scrW = ScrW()
+
 	for k, v in ipairs(nut.notices) do
 		v:MoveTo(
-			ScrW() - (v:GetWide() + 4),
+			scrW - (v:GetWide() + 4),
 			(k - 1) * (v:GetTall() + 4) + 4,
 			0.15,
 			(k / #nut.notices) * 0.25
@@ -17,10 +19,11 @@ end
 function nut.util.notify(message)
 	local notice = vgui.Create("nutNotice")
 	local i = table.insert(nut.notices, notice)
+	local scrW = ScrW()
 	
 	-- Set up information for the notice.
 	notice:SetText(message)
-	notice:SetPos(ScrW(), (i - 1) * (notice:GetTall() + 4) + 4)
+	notice:SetPos(scrW, (i - 1) * (notice:GetTall() + 4) + 4)
 	notice:SizeToContentsX()
 	notice:SetWide(notice:GetWide() + 16)
 	notice.start = CurTime() + 0.25
@@ -44,7 +47,7 @@ function nut.util.notify(message)
 			for k, v in ipairs(nut.notices) do
 				if (v == notice) then
 					-- Move the notice off the screen.
-					notice:MoveTo(ScrW(), notice.y, 0.15, 0.1, nil, function()
+					notice:MoveTo(scrW, notice.y, 0.15, 0.1, nil, function()
 						notice:Remove()
 					end)
 
