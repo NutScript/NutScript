@@ -76,7 +76,7 @@ modules.tmysql4 = {
 
 					local queryStatus, queryError, affected, lastID, time, data = result.status, result.error, result.affected, result.lastid, result.time, result.data 
 
-					if (queryStatus and queryStatus == true) and callback then
+					if (queryStatus and queryStatus == true and callback) then
 						callback(data, lastID)
 					end
 				else
