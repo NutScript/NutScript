@@ -1,8 +1,6 @@
 nut.db = nut.db or {}
 nut.db.queryQueue = nut.db.queue or {}
 
-nut.util.include("nutscript/gamemode/config/sv_database.lua")
-
 local function ThrowQueryFault(query, fault)
 	MsgC(Color(255, 0, 0), "* "..query.."\n")
 	MsgC(Color(255, 0, 0), fault.."\n")
@@ -680,6 +678,31 @@ function nut.db.delete(dbTable, condition)
 		d:resolve({results = results, lastID = lastID})
 	end)
 	return d
+end
+
+local defaultConfig = {
+	module = "sqlite",
+	hostname = "127.0.0.1",
+	username = "",
+	password = "",
+	database = "",
+	port = 3306
+}
+
+function GM:SetupDatabase()
+	local config = file.Read("nutscript/nutscript.json", "LUA")
+
+	if (not config) then
+		MsgC(Color(255, 0, 0), "Database not configured.\n")
+
+		for k, v in pairs(defaultConfig) do
+			nut.db[k] = v
+		end
+	else
+		for k, v in pairs(util.JSONToTable(config)) do
+			nut.db[k] = v
+		end
+	end
 end
 
 function GM:OnMySQLOOConnected()
