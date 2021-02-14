@@ -70,7 +70,6 @@ function nut.config.load()
 	if (SERVER) then
 		local globals = nut.data.get("config", nil, true, true)
 		local data = nut.data.get("config", nil, false, true)
-
 		if (globals) then
 			for k, v in pairs(globals) do
 				nut.config.stored[k] = nut.config.stored[k] or {}
