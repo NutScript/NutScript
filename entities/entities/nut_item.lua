@@ -51,8 +51,7 @@ if (SERVER) then
 				and "models/props_junk/cardboard_box004a.mdl"
 				or itemTable.worldModel
 		end
-		self:SetModel("models/props_junk/watermelon01.mdl")
-		self:SetModel(model)
+		self:SetModel(model or "models/props_junk/watermelon01.mdl")
 		self:SetSkin(itemTable.skin or 0)
 
 		if itemTable.groups then -- this has to be done after the model is set, hence why it looks a little messy
@@ -64,7 +63,6 @@ if (SERVER) then
 
 		self:PhysicsInit(SOLID_VPHYSICS)
 		self:SetSolid(SOLID_VPHYSICS)
-		self:SetModel(model)
 		self:setNetVar("id", itemTable.uniqueID)
 		self.nutItemID = itemID
 		if (table.Count(itemTable.data) > 0) then
