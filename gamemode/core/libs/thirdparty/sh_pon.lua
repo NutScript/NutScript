@@ -95,7 +95,7 @@ do
     if predictedNumeric == nil then
       output[#output + 1] = '[' -- no array component
     else
-      output[#output + 1] = '~' -- array component came first so shit needs to happen
+      output[#output + 1] = '~' -- array component came first
     end
 
     for k, v in next, tbl, predictedNumeric do

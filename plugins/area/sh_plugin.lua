@@ -254,7 +254,6 @@ else
 	end
 
 	-- draw matrix string.
-	-- slow as fuck I guess?
 	local function drawMatrixString(str, font, x, y, scale, angle, color)
 		surface.SetFont(font)
 		local tx, ty = surface.GetTextSize(str)

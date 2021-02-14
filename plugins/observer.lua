@@ -79,6 +79,11 @@ if (CLIENT) then
 		end
 	end
 else
+	-- Log observer usage
+	function PLUGIN:OnPlayerObserve(client, state)
+		nut.log.add(client, (state and "observerEnter") or "observerExit")
+	end
+
 	function PLUGIN:PlayerNoClip(client, state)
 		-- Observer mode is reserved for administrators.
 		if (client:IsAdmin()) then
@@ -95,6 +100,7 @@ else
 				client:GodEnable()
 				-- Don't allow npcs to target the player.
 				client:SetNoTarget(true)
+				-- Run observer hook
 				hook.Run("OnPlayerObserve", client, state)
 			else
 				if (client.nutObsData) then
@@ -124,6 +130,7 @@ else
 				client:GodDisable()
 				-- Let npcs target the player again.
 				client:SetNoTarget(false)
+				-- Run observer hook
 				hook.Run("OnPlayerObserve", client, state)
 			end
 		end

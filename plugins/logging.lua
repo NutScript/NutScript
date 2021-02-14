@@ -104,6 +104,14 @@ if (SERVER) then
 		local arg = {...}
 		return (L("%s purchased the door", client:Name()))
 	end)
+	
+	nut.log.addType("observerEnter", function(client, ...)
+		return string.format("%s has entered observer.", client:Name())
+	end)
+
+	nut.log.addType("observerExit", function(client, ...)
+		return string.format("%s has left observer.", client:Name())
+	end)
 
 	function PLUGIN:CharacterLoaded(id)
 		local character = nut.char.loaded[id]

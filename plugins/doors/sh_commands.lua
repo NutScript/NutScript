@@ -27,7 +27,7 @@ nut.command.add("doorsell", {
 				-- Take their money and notify them.
 				client:getChar():giveMoney(price)
 				client:notifyLocalized("dSold", nut.currency.get(price))
-				hook.Run("OnPlayerPurchaseDoor", client, entity, false, PLUGIN.callOnDoorChildren) -- i fucking hate this life
+				hook.Run("OnPlayerPurchaseDoor", client, entity, false, PLUGIN.callOnDoorChildren)
 				nut.log.add(client, "selldoor")
 			else
 				-- Otherwise tell them they can not.
@@ -79,7 +79,7 @@ nut.command.add("doorbuy", {
 				client:getChar():takeMoney(price)
 				client:notifyLocalized("dPurchased", nut.currency.get(price))
 
-				hook.Run("OnPlayerPurchaseDoor", client, entity, true, PLUGIN.callOnDoorChildren) -- i fucking hate this life
+				hook.Run("OnPlayerPurchaseDoor", client, entity, true, PLUGIN.callOnDoorChildren)
 				nut.log.add(client, "buydoor")
 			else
 				-- Otherwise tell them they can not.
