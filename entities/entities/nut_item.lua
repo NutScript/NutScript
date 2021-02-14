@@ -9,9 +9,9 @@ ENT.RenderGroup = RENDERGROUP_BOTH
 
 if (SERVER) then
 	function ENT:Initialize()
-		self:SetModel("models/props_junk/watermelon01.mdl")
-		self:SetSolid(SOLID_VPHYSICS)
-		self:PhysicsInit(SOLID_VPHYSICS)
+		--self:SetModel("models/props_junk/watermelon01.mdl")
+		--self:SetSolid(SOLID_VPHYSICS)
+		--self:PhysicsInit(SOLID_VPHYSICS)
 		self:SetCollisionGroup(COLLISION_GROUP_WEAPON)
 		self.health = 50
 
@@ -51,14 +51,20 @@ if (SERVER) then
 				and "models/props_junk/cardboard_box004a.mdl"
 				or itemTable.worldModel
 		end
-
+		self:SetModel(model or "models/props_junk/watermelon01.mdl")
 		self:SetSkin(itemTable.skin or 0)
-		self:SetModel(model)
+
+		if itemTable.groups then -- this has to be done after the model is set, hence why it looks a little messy
+			for k, v in pairs(itemTable.groups) do
+				if isstring(k) then k = self:FindBodygroupByName(k) end
+				self:SetBodygroup(k, v)
+			end
+		end
+
 		self:PhysicsInit(SOLID_VPHYSICS)
 		self:SetSolid(SOLID_VPHYSICS)
 		self:setNetVar("id", itemTable.uniqueID)
 		self.nutItemID = itemID
-
 		if (table.Count(itemTable.data) > 0) then
 			self:setNetVar("data", itemTable.data)
 		end
