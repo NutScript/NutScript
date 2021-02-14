@@ -84,11 +84,11 @@ function ITEM:spawn(position, angles)
 
 		-- Spawn the actual item entity.
 		local entity = ents.Create("nut_item")
-		entity:Spawn()
 		entity:SetPos(position)
 		entity:SetAngles(angles or Angle(0, 0, 0))
 		-- Make the item represent this item.
 		entity:setItem(self.id)
+		entity:Spawn()
 		instance.entity = entity
 
 		if (IsValid(client)) then
@@ -284,4 +284,4 @@ function ITEM:interact(action, client, entity, data)
 	self.player = oldPlayer
 	self.entity = oldEntity
 	return true
-end
+end	
