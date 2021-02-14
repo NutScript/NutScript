@@ -3,14 +3,23 @@ local PLUGIN = PLUGIN
 PLUGIN.name = "Persistence"
 PLUGIN.desc = "Saves persisted entities through restarts."
 PLUGIN.author = "Zoephix"
-PLUGIN.entities = PLUGIN.entities or {}
-PLUGIN.blacklist = PLUGIN.blacklist or {}
 
--- Copy blacklist from the restrictions plugin
-local restrictions = nut.plugin.list["restrictions"]
-if (restrictions and restrictions.blacklist) then
-	PLUGIN.blacklist = restrictions.blacklist
-end
+-- Storage for persisted map entities
+PLUGIN.entities = PLUGIN.entities or {}
+
+-- Entities which are blocked from interaction
+PLUGIN.blacklist = PLUGIN.blacklist or {
+  	[ "func_button" ] = true,
+	[ "class C_BaseEntity" ] = true,
+	[ "func_brush" ] = true,
+	[ "func_tracktrain" ] = true,
+	[ "func_door" ] = true,
+	[ "func_door_rotating" ] = true,
+	[ "prop_door_rotating" ] = true,
+	[ "prop_static" ] = true,
+	[ "prop_dynamic" ] = true,
+	[ "prop_physics_override" ] = true,
+}
 
 properties.Add( "persist", {
 	MenuLabel = "#makepersistent",
@@ -40,12 +49,12 @@ properties.Add( "persist", {
 		local ent = net.ReadEntity()
 		if ( !IsValid( ent ) ) then return end
 		if ( !self:Filter( ent, ply ) ) then return end
-		
-		ent:setNetVar( "persistent", true )
 
-		-- Register the entity
+		ent:setNetVar( "persistent", true )
+    
+    -- Register the entity
 		PLUGIN.entities[#PLUGIN.entities + 1] = ent
-		
+    
 		-- Add new log
 		nut.log.add(ply, "persistedEntity", ent )
 	end
@@ -80,6 +89,8 @@ properties.Add( "persist_end", {
 		if ( !IsValid( ent ) ) then return end
 		if ( !properties.CanBeTargeted( ent, ply ) ) then return end
 		if ( !self:Filter( ent, ply ) ) then return end
+    
+		ent:setNetVar( "persistent", false )
 
 		-- Remove entity from registration
 		for k, v in ipairs(PLUGIN.entities) do
@@ -89,9 +100,6 @@ properties.Add( "persist_end", {
 				break
 			end
 		end
-
-		-- Remove persistent state
-		ent:setNetVar( "persistent", false )
 
 		-- Add new log
 		nut.log.add(ply, "unpersistedEntity", ent )
