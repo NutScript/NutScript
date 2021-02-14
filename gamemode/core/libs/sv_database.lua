@@ -76,10 +76,8 @@ modules.tmysql4 = {
 
 					local queryStatus, queryError, affected, lastID, time, data = result.status, result.error, result.affected, result.lastid, result.time, result.data 
 
-					if (queryStatus and queryStatus == true) then
-						if (callback) then
-							callback(data, lastID)
-						end
+					if (queryStatus and queryStatus == true and callback) then
+						callback(data, lastID)
 					end
 				else
 					file.Write("nut_queryerror.txt", query)
@@ -189,7 +187,7 @@ modules.mysqloo = {
 
 		for k, db in pairs(nut.db.pool) do
 			local queueSize = db:queueSize()
-			if (!lowest || queueSize < lowestCount) then
+			if (!lowest or queueSize < lowestCount) then
 				lowest = db
 				lowestCount = queueSize
 				lowestIndex = k
@@ -207,7 +205,7 @@ modules.mysqloo = {
 			return setNetVar("dbError", system.IsWindows() and "Server is missing VC++ redistributables!" or "Server is missing binaries for mysqloo!")
 		end
 
-		if (mysqloo.VERSION != "9" || !mysqloo.MINOR_VERSION || tonumber(mysqloo.MINOR_VERSION) < 1) then
+		if (mysqloo.VERSION != "9" or !mysqloo.MINOR_VERSION or tonumber(mysqloo.MINOR_VERSION) < 1) then
 			MsgC(Color(255, 0, 0), "You are using an outdated mysqloo version\n")
 			MsgC(Color(255, 0, 0), "Download the latest mysqloo9 from here\n")
 			MsgC(Color(86, 156, 214), "https://github.com/syl0r/MySQLOO/releases")
@@ -251,7 +249,7 @@ modules.mysqloo = {
 					if (callback) then
 						callback()
 					end
-					
+
 					hook.Run("OnMySQLOOConnected")
 				end
 			end

@@ -221,11 +221,7 @@ function GM:CalcMainActivity(client, velocity)
 	local animClass = nut.anim.getModelClass(client:GetModel())
 
 	if (animClass ~= "player") then
-		local eyeAngles = client.EyeAngles(client)
-		local yaw = vectorAngle(velocity)[2]
-		local normalized = normalizeAngle(yaw - eyeAngles[2])
-
-		client.SetPoseParameter(client, "move_yaw", normalized)
+		client:SetPoseParameter("move_yaw", normalizeAngle(vectorAngle(velocity)[2] - client:EyeAngles()[2]))
 	end
 
 	if (
