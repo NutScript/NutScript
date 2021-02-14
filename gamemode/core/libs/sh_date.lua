@@ -70,8 +70,6 @@ if SERVER then
 		nut.config.set("day", tonumber(os.date("%d", configTime)))
 
 		timer.Create("nutUpdateDate", 300, 0, function()
-			if not nut.date.start then nut.date.start = os.time() end
-
 			local configTime = os.time({
 				year = tonumber(os.date("%Y")),
 				month = tonumber(nut.config.get("month")),
