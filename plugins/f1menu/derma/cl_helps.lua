@@ -185,7 +185,8 @@ hook.Add("BuildHelpMenu", "nutBasicHelp", function(tabs)
 		{desc = "Creator", steamid = "76561198030127257"}, -- Chessnut
 		{desc = "Co-Creator", steamid = "76561197999893894"}, -- Black Tea
 		{desc = "Developer", steamid = "76561198060659964"}, -- Zoephix
-		{desc = "Developer", steamid = "76561198070441753"} -- TovarischPootis
+		{desc = "Developer", steamid = "76561198070441753"}, -- TovarischPootis
+		{desc = "Contributors", button = "View all contributors", url = "https://github.com/NutScript/NutScript/graphs/contributors"}
 	}
 
 	tabs["Credits"] = function(node)
@@ -209,23 +210,45 @@ hook.Add("BuildHelpMenu", "nutBasicHelp", function(tabs)
 		nscredits.Paint = function()
 		end
 
+		local function createDevName(text)
+			devName = nscredits:Add("DLabel")
+			devName:SetText(text)
+			devName:SetFont("nshtml")
+			devName:SetTextColor(Color(255, 255, 255))
+			devName:SizeToContents()
+		end
+
 		for k, v in ipairs(authorCredits) do
 			local offsetH = k == 1 and 0 or (k*offsetH)-offsetH
 
-			steamworks.RequestPlayerInfo( v.steamid, function(steamName)
-				devName = nscredits:Add("DLabel")
-				devName:SetText(steamName)
-				-- devName:SetPos(offsetW, offsetH)
-				devName:SetFont("nshtml")
-				devName:SetTextColor(Color(255, 255, 255))
-				devName:SizeToContents()
-			end )
+			if (v.steamid) then
+				steamworks.RequestPlayerInfo(v.steamid, function(steamName)
+					createDevName(steamName)
+				end)
+			--
+			-- add custom field
+			else
+				createDevName(v.desc)
+			end
 
-			local desc = nscredits:Add("DLabel")
-			desc:SetText(v.desc)
-			desc:SetFont("nutSmallFont")
-			desc:SetTextColor(Color(255, 255, 255))
-			desc:SizeToContents()
+			if (v.steamid or v.text) then
+				desc = nscredits:Add("DLabel")
+				desc:SetText(v.desc)
+				desc:SetFont("nutSmallFont")
+				desc:SetTextColor(Color(255, 255, 255))
+				desc:SizeToContents()
+			elseif (v.button) then
+				desc = nscredits:Add("DButton")
+				desc:SetText(v.button)
+				desc:SizeToContents()
+				desc.DoClick = function()
+					surface.PlaySound("buttons/button14.wav")
+
+					gui.OpenURL(v.url)
+				end
+
+				offsetH = offsetH + 25
+			end
 
 			-- fucking end my suffering
 			-- this shit took me over three hours...
@@ -236,30 +259,23 @@ hook.Add("BuildHelpMenu", "nutBasicHelp", function(tabs)
 			devName:SetPos(devName:GetPos()-(offsetW3/2), offsetH)
 
 			desc:SetPos(desc:GetPos()+(offsetC-desc:GetPos()), 0)
-			desc:SetPos(desc:GetPos()-(offsetW2/2), offsetH+(scrH*0.022))
+			desc:SetPos(desc:GetPos()-(offsetW2/2), offsetH+(v.button and scrH*0.03 or scrH*0.022))
 
-			devAvatar = vgui.Create("AvatarImage", nscredits)
-			devAvatar:SetPos(devName:GetPos()-(scrW*0.025), offsetH)
-			devAvatar:SetSteamID(v.steamid, 64)
-			devAvatar:SetSize(40, 40)
-			devAvatar.OnCursorEntered = function()
-				surface.PlaySound("garrysmod/ui_return.wav")
-			end
-			devAvatar.OnMousePressed = function()
-				surface.PlaySound("buttons/button14.wav")
+			if (v.steamid) then
+				devAvatar = vgui.Create("AvatarImage", nscredits)
+				devAvatar:SetPos(devName:GetPos()-(scrW*0.025), offsetH)
+				devAvatar:SetSteamID(v.steamid, 64)
+				devAvatar:SetSize(40, 40)
+				devAvatar.OnCursorEntered = function()
+					surface.PlaySound("garrysmod/ui_return.wav")
+				end
+				devAvatar.OnMousePressed = function()
+					surface.PlaySound("buttons/button14.wav")
 
-				gui.OpenURL("http://steamcommunity.com/profiles/"..v.steamid)
+					gui.OpenURL("http://steamcommunity.com/profiles/"..v.steamid)
+				end
 			end
 		end
-
-		/* body = (body..[[
-		<center>
-			<p style="padding-top:25px;">
-				<span style="font-size: 22;"><b>%s</b><br/></span>
-				<span style="font-size: smaller;">%s</span>
-			</p>
-		</center>
-		]]):format("Contributors", "Ongoing support from various developers via Github") */
 
 		return body
 	end
