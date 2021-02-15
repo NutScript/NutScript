@@ -74,7 +74,7 @@ local PANEL = {}
 
 			if (!suppress or !suppress.class) then
 				local class = nut.class.list[LocalPlayer():getChar():getClass()]
-				
+
 				if (class) then
 					self.class = self.info:Add("DLabel")
 					self.class:Dock(TOP)
