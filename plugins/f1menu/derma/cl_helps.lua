@@ -1,7 +1,7 @@
 
 	surface.CreateFont("nutSmallCredits", {
 		font = "Roboto",
-		size = 17,
+		size = 18,
 		weight = 400
 	})
 
