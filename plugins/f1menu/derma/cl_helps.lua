@@ -1,6 +1,6 @@
-if (CLIENT) then
+
 	surface.CreateFont("nshtml", {
-		font = "Jeju Gothic",
+		font = "Tahoma",
 		size = 25,
 		weight = 600
 	})
@@ -55,15 +55,15 @@ if (CLIENT) then
 				if (node.onGetHTML) then
 					local source = node:onGetHTML()
 
-					if (IsValid(cAvatar)) then
-						helpFrame:Remove()
+					if (IsValid(devAvatar)) then
+						helpPanel:Remove()
 
-						helpFrame = panel:Add("DPanel")
-						helpFrame:Dock(FILL)
-						helpFrame.Paint = function(this, w, h)
+						helpPanel = panel:Add("DListView")
+						helpPanel:Dock(FILL)
+						helpPanel.Paint = function(this, w, h)
 						end
 
-						html = helpFrame:Add("DHTML")
+						html = helpPanel:Add("DHTML")
 						html:Dock(FILL)
 						html:SetHTML(header..HELP_DEFAULT)
 					end
@@ -76,12 +76,12 @@ if (CLIENT) then
 				end
 			end
 
-			helpFrame = panel:Add("DPanel")
-			helpFrame:Dock(FILL)
-			helpFrame.Paint = function(this, w, h)
+			helpPanel = panel:Add("DListView")
+			helpPanel:Dock(FILL)
+			helpPanel.Paint = function(this, w, h)
 			end
 
-			html = helpFrame:Add("DHTML")
+			html = helpPanel:Add("DHTML")
 			html:Dock(FILL)
 			html:SetHTML(header..HELP_DEFAULT)
 
@@ -99,7 +99,6 @@ if (CLIENT) then
 			end
 		end
 	end)
-end
 
 hook.Add("BuildHelpMenu", "nutBasicHelp", function(tabs)
 	tabs["commands"] = function(node)
@@ -190,59 +189,77 @@ hook.Add("BuildHelpMenu", "nutBasicHelp", function(tabs)
 	}
 
 	tabs["Credits"] = function(node)
-		local body = ""
+		local body = [[
+			<div>
+				<center>
+				    <img src="http://img2.wikia.nocookie.net/__cb20140827051941/nutscript/images/c/c9/Logo.png"></img>
+					<br><font size=25>NutScript</font>
+				</center>
+			</div>
+		]]
 		local scrW = ScrW()
 		local scrH = ScrH()
 		local offsetW = scrW*0.025
 		local offsetH = scrH*0.06
-		
-		local title = helpFrame:Add("DLabel")
-		title:SetText("NutScript")
-		title:SetFont("nutBigFont")
-		title:SetTextColor(Color(86,111,183))
-		title:SizeToContents()
-		title:Dock(TOP)
+		local offsetC = scrW*0.25
 
-		local nscredits = helpFrame:Add("DPanel")
+		local nscredits = helpPanel:Add("DPanel")
 		nscredits:Dock(FILL)
-		nscredits:DockMargin(0, 7.5, 0, 0)
-		nscredits.Paint = function(this, w, h)
+		nscredits:DockMargin(0, scrH*0.32, 0, 0)
+		nscredits.Paint = function()
 		end
 
 		for k, v in ipairs(authorCredits) do
 			local offsetH = k == 1 and 0 or (k*offsetH)-offsetH
 
 			steamworks.RequestPlayerInfo( v.steamid, function(steamName)
-				local name = nscredits:Add("DLabel")
-				name:SetText(steamName)
-				name:SetPos(offsetW, offsetH)
-				name:SetFont("nshtml")
-				name:SetTextColor(Color(255, 255, 255))
-				name:SizeToContents()
+				devName = nscredits:Add("DLabel")
+				devName:SetText(steamName)
+				-- devName:SetPos(offsetW, offsetH)
+				devName:SetFont("nshtml")
+				devName:SetTextColor(Color(255, 255, 255))
+				devName:SizeToContents()
 			end )
 
 			local desc = nscredits:Add("DLabel")
 			desc:SetText(v.desc)
-			desc:SetPos(offsetW, offsetH+(scrH*0.022))
 			desc:SetFont("nutSmallFont")
 			desc:SetTextColor(Color(255, 255, 255))
 			desc:SizeToContents()
 
-			cAvatar = vgui.Create("AvatarImage", nscredits)
-			cAvatar:SetPos(0, offsetH)
-			cAvatar:SetSteamID(v.steamid, 64)
-			cAvatar:SetSize(40, 40)
-			cAvatar.OnCursorEntered = function()
+			-- fucking end my suffering
+			-- this shit took me over three hours...
+			local offsetW2 = string.Explode(" ", desc:GetTextSize())[1]
+			local offsetW3 = string.Explode(" ", devName:GetTextSize())[1]
+
+			devName:SetPos(devName:GetPos()+(offsetC-devName:GetPos()), 0)
+			devName:SetPos(devName:GetPos()-(offsetW3/2), offsetH)
+
+			desc:SetPos(desc:GetPos()+(offsetC-desc:GetPos()), 0)
+			desc:SetPos(desc:GetPos()-(offsetW2/2), offsetH+(scrH*0.022))
+
+			devAvatar = vgui.Create("AvatarImage", nscredits)
+			devAvatar:SetPos(devName:GetPos()-(scrW*0.025), offsetH)
+			devAvatar:SetSteamID(v.steamid, 64)
+			devAvatar:SetSize(40, 40)
+			devAvatar.OnCursorEntered = function()
 				surface.PlaySound("garrysmod/ui_return.wav")
 			end
-			cAvatar.OnMousePressed = function(self)
+			devAvatar.OnMousePressed = function()
 				surface.PlaySound("buttons/button14.wav")
-				
+
 				gui.OpenURL("http://steamcommunity.com/profiles/"..v.steamid)
 			end
-
-			body = body.."</span></p>"
 		end
+
+		/* body = (body..[[
+		<center>
+			<p style="padding-top:25px;">
+				<span style="font-size: 22;"><b>%s</b><br/></span>
+				<span style="font-size: smaller;">%s</span>
+			</p>
+		</center>
+		]]):format("Contributors", "Ongoing support from various developers via Github") */
 
 		return body
 	end
