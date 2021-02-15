@@ -689,8 +689,21 @@ local defaultConfig = {
 	port = 3306
 }
 
+local validConfig = {
+	["nutscript/database.json"] = true,
+	["nutscript/nutscript.json"] = true,
+	[engine.ActiveGamemode().."/database.json"] = true,
+	[engine.ActiveGamemode().."/nutscript.json"] = true
+}
+
 function GM:SetupDatabase()
-	local config = file.Read("nutscript/nutscript.json", "LUA")
+	for configPath, _ in pairs(validConfig) do
+		if (file.Read(k, "LUA")) then
+			config = configPath
+
+			break
+		end
+	end
 
 	if (not config) then
 		MsgC(Color(255, 0, 0), "Database not configured.\n")
