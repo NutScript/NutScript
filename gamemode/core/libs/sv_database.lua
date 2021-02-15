@@ -690,14 +690,14 @@ local defaultConfig = {
 }
 
 local validConfig = {
-	["nutscript/database.json"] = true,
-	["nutscript/nutscript.json"] = true,
-	[engine.ActiveGamemode().."/database.json"] = true,
-	[engine.ActiveGamemode().."/nutscript.json"] = true
+	engine.ActiveGamemode().."/database.json",
+	engine.ActiveGamemode().."/nutscript.json",
+	"nutscript/database.json",
+	"nutscript/nutscript.json"
 }
 
 function GM:SetupDatabase()
-	for configPath, _ in SortedPairs(validConfig) do
+	for _, configPath in ipairs(validConfig) do
 		local config = file.Read(tostring(configPath), "LUA")
 
 		if (config) then
