@@ -697,22 +697,24 @@ local validConfig = {
 }
 
 function GM:SetupDatabase()
-	for configPath, _ in pairs(validConfig) do
-		if (file.Read(k, "LUA")) then
-			config = configPath
+	for configPath, _ in SortedPairs(validConfig) do
+		local config = file.Read(tostring(configPath), "LUA")
+
+		if (config) then
+			nut.db.config = config
 
 			break
 		end
 	end
 
-	if (not config) then
+	if (not nut.db.config) then
 		MsgC(Color(255, 0, 0), "Database not configured.\n")
 
 		for k, v in pairs(defaultConfig) do
 			nut.db[k] = v
 		end
 	else
-		for k, v in pairs(util.JSONToTable(config)) do
+		for k, v in pairs(util.JSONToTable(nut.db.config)) do
 			nut.db[k] = v
 		end
 	end
