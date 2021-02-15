@@ -1,6 +1,12 @@
 
-	surface.CreateFont("nshtml", {
-		font = "Tahoma",
+	surface.CreateFont("nutSmallCredits", {
+		font = "Roboto",
+		size = 17,
+		weight = 400
+	})
+
+	surface.CreateFont("nutBigCredits", {
+		font = "Roboto",
 		size = 25,
 		weight = 600
 	})
@@ -201,10 +207,10 @@ hook.Add("BuildHelpMenu", "nutBasicHelp", function(tabs)
 		local scrW = ScrW()
 		local scrH = ScrH()
 		local offsetW = scrW*0.025
-		local offsetH = scrH*0.06
+		local offsetH = scrH*0.08
 		local offsetC = scrW*0.25
 
-		local nscredits = helpPanel:Add("DPanel")
+		local nscredits = helpPanel:Add("DScrollPanel")
 		nscredits:Dock(FILL)
 		nscredits:DockMargin(0, scrH*0.32, 0, 0)
 		nscredits.Paint = function()
@@ -213,7 +219,7 @@ hook.Add("BuildHelpMenu", "nutBasicHelp", function(tabs)
 		local function createDevName(text)
 			devName = nscredits:Add("DLabel")
 			devName:SetText(text)
-			devName:SetFont("nshtml")
+			devName:SetFont("nutBigCredits")
 			devName:SetTextColor(Color(255, 255, 255))
 			devName:SizeToContents()
 		end
@@ -234,7 +240,7 @@ hook.Add("BuildHelpMenu", "nutBasicHelp", function(tabs)
 			if (v.steamid or v.text) then
 				desc = nscredits:Add("DLabel")
 				desc:SetText(v.desc)
-				desc:SetFont("nutSmallFont")
+				desc:SetFont("nutSmallCredits")
 				desc:SetTextColor(Color(255, 255, 255))
 				desc:SizeToContents()
 			elseif (v.button) then
@@ -252,7 +258,7 @@ hook.Add("BuildHelpMenu", "nutBasicHelp", function(tabs)
 
 			-- fucking end my suffering
 			-- this shit took me over three hours...
-			local offsetW2 = string.Explode(" ", desc:GetTextSize())[1]
+			local offsetW2 = string.Explode(" ", v.button and desc:GetSize() or desc:GetTextSize())[1]
 			local offsetW3 = string.Explode(" ", devName:GetTextSize())[1]
 
 			devName:SetPos(devName:GetPos()+(offsetC-devName:GetPos()), 0)
