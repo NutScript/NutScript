@@ -1,8 +1,6 @@
 nut.db = nut.db or {}
 nut.db.queryQueue = nut.db.queue or {}
 
-nut.util.include("nutscript/gamemode/config/sv_database.lua")
-
 local function ThrowQueryFault(query, fault)
 	MsgC(Color(255, 0, 0), "* "..query.."\n")
 	MsgC(Color(255, 0, 0), fault.."\n")
@@ -76,10 +74,8 @@ modules.tmysql4 = {
 
 					local queryStatus, queryError, affected, lastID, time, data = result.status, result.error, result.affected, result.lastid, result.time, result.data 
 
-					if (queryStatus and queryStatus == true) then
-						if (callback) then
-							callback(data, lastID)
-						end
+					if (queryStatus and queryStatus == true and callback) then
+						callback(data, lastID)
 					end
 				else
 					file.Write("nut_queryerror.txt", query)
@@ -189,7 +185,7 @@ modules.mysqloo = {
 
 		for k, db in pairs(nut.db.pool) do
 			local queueSize = db:queueSize()
-			if (!lowest || queueSize < lowestCount) then
+			if (!lowest or queueSize < lowestCount) then
 				lowest = db
 				lowestCount = queueSize
 				lowestIndex = k
@@ -207,7 +203,7 @@ modules.mysqloo = {
 			return setNetVar("dbError", system.IsWindows() and "Server is missing VC++ redistributables!" or "Server is missing binaries for mysqloo!")
 		end
 
-		if (mysqloo.VERSION != "9" || !mysqloo.MINOR_VERSION || tonumber(mysqloo.MINOR_VERSION) < 1) then
+		if (mysqloo.VERSION != "9" or !mysqloo.MINOR_VERSION or tonumber(mysqloo.MINOR_VERSION) < 1) then
 			MsgC(Color(255, 0, 0), "You are using an outdated mysqloo version\n")
 			MsgC(Color(255, 0, 0), "Download the latest mysqloo9 from here\n")
 			MsgC(Color(86, 156, 214), "https://github.com/syl0r/MySQLOO/releases")
@@ -251,7 +247,7 @@ modules.mysqloo = {
 					if (callback) then
 						callback()
 					end
-					
+
 					hook.Run("OnMySQLOOConnected")
 				end
 			end
@@ -682,6 +678,31 @@ function nut.db.delete(dbTable, condition)
 		d:resolve({results = results, lastID = lastID})
 	end)
 	return d
+end
+
+local defaultConfig = {
+	module = "sqlite",
+	hostname = "127.0.0.1",
+	username = "",
+	password = "",
+	database = "",
+	port = 3306
+}
+
+function GM:SetupDatabase()
+	local config = file.Read("nutscript/nutscript.json", "LUA")
+
+	if (not config) then
+		MsgC(Color(255, 0, 0), "Database not configured.\n")
+
+		for k, v in pairs(defaultConfig) do
+			nut.db[k] = v
+		end
+	else
+		for k, v in pairs(util.JSONToTable(config)) do
+			nut.db[k] = v
+		end
+	end
 end
 
 function GM:OnMySQLOOConnected()

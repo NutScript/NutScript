@@ -1,55 +1,115 @@
-nut.date = nut.date or {}
-nut.date.cache = nut.date.cache or {}
-nut.date.start = nut.date.start or os.time()
+-- Module for date and time calculations
 
-if (!nut.config) then
-	include("nutscript/gamemode/core/sh_config.lua")
+nut.date = nut.date or {}
+
+if (not nut.config) then
+    include("nutscript/gamemode/core/sh_config.lua")
 end
 
-nut.config.add("year", 2015, "The starting year of the schema.", nil, {
-	data = {min = 0, max = 4000},
+nut.config.add("year", tonumber(os.date("%Y")), "The current year of the schema." , nil, {
+    data = {min = 0, max = 4000},
+    category = "date"
+}
+)
+
+nut.config.add("month", tonumber(os.date("%m")), "The current month of the schema." , nil, {
+    data = {min = 1, max = 12},
+    category = "date"
+}
+)
+
+nut.config.add("day", tonumber(os.date("%d")), "The current day of the schema." , nil, {
+    data = {min = 1, max = 31},
+    category = "date"
+}
+)
+
+nut.config.add("yearAppendix", "", "Add a custom appendix to your date, if you use a non-conventional calender", nil, {
+	data = {form = "Generic"},
 	category = "date"
-})
+}
+)
 
-nut.config.add("month", 1, "The starting month of the schema.", nil, {
-	data = {min = 1, max = 12},
-	category = "date"
-})
+-- function returns a number that represents the custom time. the year is always the current year for 
+-- compatibility, though it can be editted with nut.date.getFormatted
 
-nut.config.add("day", 1, "The starting day of the schema.", nil, {
-	data = {min = 1, max = 31},
-	category = "date"
-})
+function nut.date.get()
+	return os.time({
+        year=os.date("%Y"),
+        month=nut.config.get("month"),
+        day=nut.config.get("day"),
+        hour=os.date("%H"),
+        min=os.date("%M"),
+        sec=os.date("%S")
+    })
+end
 
-if (SERVER) then
-	function nut.date.get()
-		local unixTime = os.time()
+--function takes the time number if provided, or current time and applies a string format to it
 
-		return (unixTime - (nut.date.start or unixTime)) + os.time({
-			year = nut.config.get("year"),
-			month = nut.config.get("month"),
-			day = nut.config.get("day")
-		})
+function nut.date.getFormatted(format, dateNum)
+	return os.date(format, dateNum or nut.date.get())
+end
+
+if SERVER then
+
+	-- This is internal, though you can use it you probably shouldn't. 
+	-- Checks the time difference between the old time values and current time, and updates month and day to advance in the time difference
+	-- creates a timer that updates the month and day values, in case the server runs continuously without restarts.
+	function nut.date.initialize()
+
+		-- Migrations
+		if (istable(nut.data.get("date", os.time(), true))) then
+			nut.data.set("date", os.time(), true, true)
+		end
+
+		local configTime = os.time({
+			year = tonumber(os.date("%Y")),
+			month = tonumber(nut.config.get("month")),
+			day = tonumber(nut.config.get("day")),
+			hour = tonumber(os.date("%H")),
+			min = os.date("%M"),
+        	sec = os.date("%S")
+		}) + os.difftime(os.time(), nut.data.get("date", os.time(), true))
+
+		nut.config.set("month", tonumber(os.date("%m", configTime)))
+		nut.config.set("day", tonumber(os.date("%d", configTime)))
+
+		-- internal function that calculates when the day ends, and updates the month/day when the next day comes.
+		-- the reason for this complication instead of just upvaluing day/month by 1 is that some months have 28, 30 or 31 days.
+		-- and its simpler for the server to decide what the next month should be rather than manually computing that
+		local function updateDateConfigs()
+			local curDateTable = os.date("*t") -- get the current date table
+			local remainingSeconds = (curDateTable.hour * -3600 - curDateTable.min * 60 - curDateTable.sec) % 86400 -- get the remaining seconds until the new day
+
+			timer.Simple(remainingSeconds, function() -- run this code only once the day changes
+				local newTime = os.time({
+					year = tonumber(os.date("%Y")),
+					month = tonumber(nut.config.get("month")),
+					day = tonumber(nut.config.get("day")),
+					hour = tonumber(os.date("%H")),
+					min = os.date("%M"),
+					sec = os.date("%S")
+				}) + 86400 -- 24 hours.
+
+				nut.config.set("month", tonumber(os.date("%m", newTime)))
+				nut.config.set("day", tonumber(os.date("%d", newTime)))
+				updateDateConfigs() -- create a new timer for the next day
+			end)
+		end
+
+		updateDateConfigs()
 	end
 
-	function nut.date.send(client)
-		netstream.Start(client, "dateSync", CurTime(), os.time() - nut.date.start)
-	end
-else
-	function nut.date.get()
-		local realTime = RealTime()
-
-		-- Add the starting time + offset + current time played.
-		return nut.date.start + os.time({
-			year = nut.config.get("year"),
-			month = nut.config.get("month"),
-			day = nut.config.get("day")
-		}) + (realTime - (nut.joinTime or realTime))
+	-- saves the current actual time. This allows the time to find the difference in elapsed time between server shutdown and startup
+	function nut.date.save()
+		nut.data.set("date", os.time(), true, true)
 	end
 
-	netstream.Hook("dateSync", function(curTime, offset)
-		offset = offset + (CurTime() - curTime)
+	hook.Add("InitializedConfig", "nutInitializeTime", function()
+		nut.date.initialize()
+	end)
 
-		nut.date.start = offset
+	hook.Add("SaveData", "nutDateSave", function()
+		nut.date.save()
 	end)
 end
