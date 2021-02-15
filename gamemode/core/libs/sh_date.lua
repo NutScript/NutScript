@@ -57,6 +57,11 @@ if SERVER then
 	-- creates a timer that updates the month and day values, in case the server runs continuously without restarts.
 	function nut.date.initialize()
 
+		-- Migrations
+		if (istable(nut.data.get("date", os.time(), true))) then
+			nut.data.set("date", os.time(), true, true)
+		end
+
 		local configTime = os.time({
 			year = tonumber(os.date("%Y")),
 			month = tonumber(nut.config.get("month")),
