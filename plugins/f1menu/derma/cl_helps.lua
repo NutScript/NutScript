@@ -232,6 +232,9 @@ hook.Add("BuildHelpMenu", "nutBasicHelp", function(tabs)
 			cAvatar:SetPos(0, offsetH)
 			cAvatar:SetSteamID(v.steamid, 64)
 			cAvatar:SetSize(40, 40)
+			cAvatar.OnCursorEntered = function()
+				surface.PlaySound("garrysmod/ui_return.wav")
+			end
 			cAvatar.OnMousePressed = function(self)
 				surface.PlaySound("buttons/button14.wav")
 				
