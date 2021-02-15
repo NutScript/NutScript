@@ -1,7 +1,6 @@
 -- Module for date and time calculations
 
 nut.date = nut.date or {}
-nut.date.start = nut.date.start or os.time()
 
 if (not nut.config) then
     include("nutscript/gamemode/core/sh_config.lua")
@@ -57,6 +56,7 @@ if SERVER then
 	-- Checks the time difference between the old time values and current time, and updates month and day to advance in the time difference
 	-- creates a timer that updates the month and day values, in case the server runs continuously without restarts.
 	function nut.date.initialize()
+
 		local configTime = os.time({
 			year = tonumber(os.date("%Y")),
 			month = tonumber(nut.config.get("month")),
@@ -69,20 +69,30 @@ if SERVER then
 		nut.config.set("month", tonumber(os.date("%m", configTime)))
 		nut.config.set("day", tonumber(os.date("%d", configTime)))
 
-		timer.Create("nutUpdateDate", 300, 0, function()
-			local configTime = os.time({
-				year = tonumber(os.date("%Y")),
-				month = tonumber(nut.config.get("month")),
-				day = tonumber(nut.config.get("day")),
-				hour = tonumber(os.date("%H")),
-				min = os.date("%M"),
-				sec = os.date("%S")
-			}) + os.difftime(os.time(), nut.date.start)
+		-- internal function that calculates when the day ends, and updates the month/day when the next day comes.
+		-- the reason for this complication instead of just upvaluing day/month by 1 is that some months have 28, 30 or 31 days.
+		-- and its simpler for the server to decide what the next month should be rather than manually computing that
+		local function updateDateConfigs()
+			local curDateTable = os.date("*t") -- get the current date table
+			local remainingSeconds = (curDateTable.hour * -3600 - curDateTable.min * 60 - curDateTable.sec) % 86400 -- get the remaining seconds until the new day
 
-			nut.config.set("month", tonumber(os.date("%m", configTime)))
-			nut.config.set("day", tonumber(os.date("%d", configTime)))
-			nut.date.start = os.time()
-		end)
+			timer.Simple(remainingSeconds, function() -- run this code only once the day changes
+				local newTime = os.time({
+					year = tonumber(os.date("%Y")),
+					month = tonumber(nut.config.get("month")),
+					day = tonumber(nut.config.get("day")),
+					hour = tonumber(os.date("%H")),
+					min = os.date("%M"),
+					sec = os.date("%S")
+				}) + 86400 -- 24 hours.
+
+				nut.config.set("month", tonumber(os.date("%m", newTime)))
+				nut.config.set("day", tonumber(os.date("%d", newTime)))
+				updateDateConfigs() -- create a new timer for the next day
+			end)
+		end
+
+		updateDateConfigs()
 	end
 
 	-- saves the current actual time. This allows the time to find the difference in elapsed time between server shutdown and startup

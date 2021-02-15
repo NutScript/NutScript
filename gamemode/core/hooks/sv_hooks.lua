@@ -660,7 +660,7 @@ Issues with ULX/Ulib on your server will be ignored and we're
 going to consider that you're taking the risk of ULX/Ulib's 
 critical performance issue.
 
-Nutscript 1.1 only displays this message when you have ULX or
+Nutscript 1.2 only displays this message when you have ULX or
 ULib on your server.
 
                                -Nutscript Development Team
