@@ -703,6 +703,10 @@ function GM:SetupDatabase()
 		if (config) then
 			nut.db.config = config
 
+			for k, v in pairs(util.JSONToTable(nut.db.config)) do
+				nut.db[k] = v
+			end
+
 			break
 		end
 	end
@@ -711,10 +715,6 @@ function GM:SetupDatabase()
 		MsgC(Color(255, 0, 0), "Database not configured.\n")
 
 		for k, v in pairs(defaultConfig) do
-			nut.db[k] = v
-		end
-	else
-		for k, v in pairs(util.JSONToTable(nut.db.config)) do
 			nut.db[k] = v
 		end
 	end
