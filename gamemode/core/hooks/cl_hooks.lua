@@ -541,7 +541,7 @@ end
 function GM:NutScriptLoaded()
 	for _, PLUGIN in pairs(nut.plugin.list) do
 		local author64ID = tonumber(PLUGIN.author)
-
+    
 		if (author64ID or string.match(PLUGIN.author, "STEAM_", 1)) then
 			-- Store the Steam ID
 			PLUGIN.authorID = author64ID and util.SteamIDFrom64(PLUGIN.author) or PLUGIN.author
