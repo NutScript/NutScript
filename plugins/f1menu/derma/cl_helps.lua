@@ -216,25 +216,25 @@ hook.Add("BuildHelpMenu", "nutBasicHelp", function(tabs)
 		nscredits.Paint = function()
 		end
 
-		local function createDevName(text)
-			devName = nscredits:Add("DLabel")
-			devName:SetText(text)
-			devName:SetFont("nutBigCredits")
-			devName:SetTextColor(Color(255, 255, 255))
-			devName:SizeToContents()
-		end
-
 		for k, v in ipairs(authorCredits) do
 			local offsetH = k == 1 and 0 or (k*offsetH)-offsetH
 
 			if (v.steamid) then
 				steamworks.RequestPlayerInfo(v.steamid, function(steamName)
-					createDevName(steamName)
+					devName = nscredits:Add("DLabel")
+					devName:SetText(steamName)
+					devName:SetFont("nutBigCredits")
+					devName:SetTextColor(Color(255, 255, 255))
+					devName:SizeToContents()
 				end)
 			--
 			-- add custom field
 			else
-				createDevName(v.desc)
+				devName = nscredits:Add("DLabel")
+				devName:SetText(v.desc)
+				devName:SetFont("nutBigCredits")
+				devName:SetTextColor(Color(255, 255, 255))
+				devName:SizeToContents()
 			end
 
 			if (v.steamid or v.text) then
