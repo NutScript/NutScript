@@ -54,11 +54,11 @@ function nut.plugin.load(uniqueID, path, isSingleFile, variable)
 	)
 	PLUGIN.loading = false
 
-	if string.gmatch(PLUGIN.author, "STEAM_") then
+	if string.gmatch(PLUGIN.author, "STEAM_0:") then
   		PLUGIN.author = util.SteamIDTo64(PLUGIN.author)
 	end
 	if tonumber(PLUGIN.author) then
-   		steamworks.RequestPlayerInfo(tonumber(PLUGIN.author), function(steamName)
+   		steamworks.RequestPlayerInfo(PLUGIN.author, function(steamName)
     		PLUGIN.author = steamName
   		end)
 	end
