@@ -352,7 +352,6 @@ CREATE TABLE IF NOT EXISTS `nut_players` (
 	`_intro` BINARY(1) NULL DEFAULT 0,
 	PRIMARY KEY (`_steamID`)
 );
-
 CREATE TABLE IF NOT EXISTS `nut_characters` (
 	`_id` INT(12) NOT NULL AUTO_INCREMENT,
 	`_steamID` VARCHAR(20) NOT NULL COLLATE 'utf8mb4_general_ci',
@@ -368,14 +367,12 @@ CREATE TABLE IF NOT EXISTS `nut_characters` (
 	`_faction` VARCHAR(24) DEFAULT NULL COLLATE 'utf8mb4_general_ci',
 	PRIMARY KEY (`_id`)
 );
-
 CREATE TABLE IF NOT EXISTS `nut_inventories` (
 	`_invID` INT(12) NOT NULL AUTO_INCREMENT,
 	`_charID` INT(12) NULL DEFAULT NULL,
 	`_invType` VARCHAR(24) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
 	PRIMARY KEY (`_invID`)
 );
-
 CREATE TABLE IF NOT EXISTS `nut_items` (
 	`_itemID` INT(12) NOT NULL AUTO_INCREMENT,
 	`_invID` INT(12) NULL DEFAULT NULL,
@@ -386,7 +383,6 @@ CREATE TABLE IF NOT EXISTS `nut_items` (
 	`_y` INT(4),
 	PRIMARY KEY (`_itemID`)
 );
-
 CREATE TABLE IF NOT EXISTS `nut_invdata` (
 	`_invID` INT(12) NOT NULL,
 	`_key` VARCHAR(32) NOT NULL COLLATE 'utf8mb4_general_ci',
@@ -405,7 +401,6 @@ CREATE TABLE IF NOT EXISTS nut_players (
 	_data varchar,
 	_intro binary
 );
-
 CREATE TABLE IF NOT EXISTS nut_characters (
 	_id integer PRIMARY KEY AUTOINCREMENT,
 	_steamID varchar,
@@ -420,13 +415,11 @@ CREATE TABLE IF NOT EXISTS nut_characters (
 	_money varchar,
 	_faction varchar
 );
-
 CREATE TABLE IF NOT EXISTS nut_inventories (
 	_invID integer PRIMARY KEY AUTOINCREMENT,
 	_charID integer,
 	_invType varchar
 );
-
 CREATE TABLE IF NOT EXISTS nut_items (
 	_itemID integer PRIMARY KEY AUTOINCREMENT,
 	_invID integer,
@@ -436,7 +429,6 @@ CREATE TABLE IF NOT EXISTS nut_items (
 	_x integer,
 	_y integer
 );
-
 CREATE TABLE IF NOT EXISTS nut_invdata (
 	_invID integer,
 	_key text,
