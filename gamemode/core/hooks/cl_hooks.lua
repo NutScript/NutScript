@@ -537,3 +537,20 @@ function GM:ScreenResolutionChanged(oldW, oldH)
 		nut.config.get("genericFont")
 	)
 end
+
+function GM:NutScriptLoaded()
+	for _, PLUGIN in pairs(nut.plugin.list) do
+		local author64ID = tonumber(PLUGIN.author)
+		local authorSteamID = string.find(PLUGIN.author, "STEAM")
+
+		if (author64ID or authorSteamID) then
+			-- Store the Steam ID
+			PLUGIN.authorID = author64ID and util.SteamIDFrom64(PLUGIN.author) or PLUGIN.author
+
+			steamworks.RequestPlayerInfo(authorSteamID and util.SteamIDTo64(PLUGIN.author) or PLUGIN.author, function(steamName)
+				-- Update the author name
+				PLUGIN.author = steamName
+			end)
+		end
+	end
+end

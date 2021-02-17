@@ -2,7 +2,7 @@ local PLUGIN = PLUGIN
 
 PLUGIN.name = "Persistence"
 PLUGIN.desc = "Saves persisted entities through restarts."
-PLUGIN.author = "Zoephix"
+PLUGIN.author = "STEAM_0:0:50197118"
 
 -- Storage for persisted map entities
 PLUGIN.entities = PLUGIN.entities or {}
