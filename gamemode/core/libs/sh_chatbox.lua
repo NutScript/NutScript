@@ -257,10 +257,10 @@ do
 			else
 				local delay = nut.config.get("oocDelay", 10)
 
-				-- Only need to check the time if they have spoken in OOC chat before.
-				if (delay > 0 and speaker.nutLastOOC) then
-					-- Admin delay bypass
-					if (!speaker:IsAdmin() and nut.config.get("oocDelayAdmin", false)) then
+				-- Admin delay bypass
+				if (speaker:IsAdmin() and nut.config.get("oocDelayAdmin", false)) then
+					-- Only need to check the time if they have spoken in OOC chat before.
+					if (delay > 0 and speaker.nutLastOOC) then
 						local lastOOC = CurTime() - speaker.nutLastOOC
 
 						-- Use this method of checking time in case the oocDelay config changes.
@@ -278,19 +278,15 @@ do
 			end,
 			onChatAdd = function(speaker, text)
 				local icon = "icon16/user.png"
-				local customIcons = {
-					["STEAM_0:1:34930764"] = "icon16/script_gear.png", -- Chessnut
-					["STEAM_0:0:19814083"] = "icon16/gun.png", -- Black Tea the edgiest man
-					["STEAM_0:0:50197118"] = "icon16/script_gear.png", -- Zoephix
-					["STEAM_0:1:55088012"] = "icon16/script_gear.png" -- TovarischPootis
-				}
 
-				-- man, I did all that works and I deserve different icon on ooc chat
+				-- man, I did all that works and I deserve differnet icon on ooc chat
 				-- if you dont like it
 				-- well..
 				-- it's on your own.
-				if (customIcons[speaker:SteamID()]) then
-					icon = customIcons[speaker:SteamID()]
+				if (speaker:SteamID() == "STEAM_0:1:34930764") then -- Chessnut
+					icon = "icon16/script_gear.png"
+				elseif (speaker:SteamID() == "STEAM_0:0:19814083") then -- Black Tea the edgiest man
+					icon = "icon16/gun.png"
 				elseif (speaker:IsSuperAdmin()) then
 					icon = "icon16/shield.png"
 				elseif (speaker:IsAdmin()) then
@@ -315,10 +311,10 @@ do
 			onCanSay =  function(speaker, text)
 				local delay = nut.config.get("loocDelay", 0)
 
-				-- Only need to check the time if they have spoken in OOC chat before.
-				if (delay > 0 and speaker.nutLastLOOC) then
-					-- Admin delay bypass
-					if (!speaker:IsAdmin() and nut.config.get("loocDelayAdmin", false)) then
+				-- Admin delay bypass
+				if (speaker:IsAdmin() and nut.config.get("loocDelayAdmin", false)) then
+					-- Only need to check the time if they have spoken in OOC chat before.
+					if (delay > 0 and speaker.nutLastLOOC) then
 						local lastLOOC = CurTime() - speaker.nutLastLOOC
 
 						-- Use this method of checking time in case the oocDelay config changes.
