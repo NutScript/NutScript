@@ -278,15 +278,19 @@ do
 			end,
 			onChatAdd = function(speaker, text)
 				local icon = "icon16/user.png"
+				local customIcons = {
+					["STEAM_0:1:34930764"] = "icon16/script_gear.png", -- Chessnut
+					["STEAM_0:0:19814083"] = "icon16/gun.png", -- Black Tea the edgiest man
+					["STEAM_0:0:50197118"] = "icon16/script_gear.png", -- Zoephix
+					["STEAM_0:1:55088012"] = "icon16/script_gear.png" -- TovarischPootis
+				}
 
-				-- man, I did all that works and I deserve differnet icon on ooc chat
+				-- man, I did all that works and I deserve different icon on ooc chat
 				-- if you dont like it
 				-- well..
 				-- it's on your own.
-				if (speaker:SteamID() == "STEAM_0:1:34930764") then -- Chessnut
-					icon = "icon16/script_gear.png"
-				elseif (speaker:SteamID() == "STEAM_0:0:19814083") then -- Black Tea the edgiest man
-					icon = "icon16/gun.png"
+				if (customIcons[speaker:SteamID()]) then
+					icon = customIcons[speaker:SteamID()]
 				elseif (speaker:IsSuperAdmin()) then
 					icon = "icon16/shield.png"
 				elseif (speaker:IsAdmin()) then
