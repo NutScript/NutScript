@@ -257,10 +257,10 @@ do
 			else
 				local delay = nut.config.get("oocDelay", 10)
 
-				-- Only need to check the time if they have spoken in OOC chat before.
-				if (delay > 0 and speaker.nutLastOOC) then
-					-- Admin delay bypass
-					if (speaker:IsAdmin() and nut.config.get("oocDelayAdmin", false)) then
+				-- Admin delay bypass
+				if (speaker:IsAdmin() and nut.config.get("oocDelayAdmin", false)) then
+					-- Only need to check the time if they have spoken in OOC chat before.
+					if (delay > 0 and speaker.nutLastOOC) then
 						local lastOOC = CurTime() - speaker.nutLastOOC
 
 						-- Use this method of checking time in case the oocDelay config changes.
@@ -315,10 +315,10 @@ do
 			onCanSay =  function(speaker, text)
 				local delay = nut.config.get("loocDelay", 0)
 
-				-- Only need to check the time if they have spoken in OOC chat before.
-				if (delay > 0 and speaker.nutLastLOOC) then
-					-- Admin delay bypass
-					if (speaker:IsAdmin() and nut.config.get("loocDelayAdmin", false)) then
+				-- Admin delay bypass
+				if (speaker:IsAdmin() and nut.config.get("loocDelayAdmin", false)) then
+					-- Only need to check the time if they have spoken in OOC chat before.
+					if (delay > 0 and speaker.nutLastLOOC) then
 						local lastLOOC = CurTime() - speaker.nutLastLOOC
 
 						-- Use this method of checking time in case the oocDelay config changes.
