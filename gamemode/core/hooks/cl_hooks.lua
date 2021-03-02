@@ -462,7 +462,7 @@ function GM:ItemShowEntityMenu(entity)
 				surface.PlaySound(v.sound)
 			end
 
-			if (send != false) then
+			if (send ~= false) then
 				callback(k)
 			end
 		end

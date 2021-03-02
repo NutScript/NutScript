@@ -214,7 +214,7 @@ if (SERVER) then
 			end
 		end
 
-		if (isStackCommand and item.isStackable != true) then
+		if (isStackCommand and item.isStackable ~= true) then
 			isStackCommand = false
 		end
 

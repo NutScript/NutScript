@@ -7,13 +7,13 @@ do
 
 	if (SERVER) then
 		function character:recognize(id)
-			if (type(id) != "number" and id.getID) then
+			if (type(id) ~= "number" and id.getID) then
 				id = id:getID()
 			end
 
 			local recognized = self:getData("rgn", "")
 
-			if (recognized != "" and recognized:find(","..id..",")) then
+			if (recognized ~= "" and recognized:find(","..id..",")) then
 				return false;
 			end;
 
@@ -24,11 +24,11 @@ do
 	end
 
 	function character:doesRecognize(id)
-		if (type(id) != "number" and id.getID) then
+		if (type(id) ~= "number" and id.getID) then
 			id = id:getID()
 		end
 
-		return hook.Run("IsCharRecognized", self, id) != false
+		return hook.Run("IsCharRecognized", self, id) ~= false
 	end
 
 	function PLUGIN:IsCharRecognized(char, id)
@@ -66,7 +66,7 @@ if (CLIENT) then
 	end
 
 	function PLUGIN:GetDisplayedDescription(client)
-		if (client:getChar() and client != LocalPlayer() and LocalPlayer():getChar() and !LocalPlayer():getChar():doesRecognize(client:getChar()) and !hook.Run("IsPlayerRecognized", client)) then
+		if (client:getChar() and client ~= LocalPlayer() and LocalPlayer():getChar() and !LocalPlayer():getChar():doesRecognize(client:getChar()) and !hook.Run("IsPlayerRecognized", client)) then
 			return L"noRecog"
 		end
 	end
@@ -78,7 +78,7 @@ if (CLIENT) then
 	end
 
 	function PLUGIN:GetDisplayedName(client, chatType)
-		if (client != LocalPlayer()) then
+		if (client ~= LocalPlayer()) then
 			local character = client:getChar()
 			local ourCharacter = LocalPlayer():getChar()
 
@@ -176,7 +176,7 @@ else
 			class = nut.chat.classes[class]
 
 			for k, v in ipairs(player.GetAll()) do
-				if (client != v and v:getChar() and class.onCanHear(client, v)) then
+				if (client ~= v and v:getChar() and class.onCanHear(client, v)) then
 					targets[#targets + 1] = v
 				end
 			end

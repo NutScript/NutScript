@@ -90,7 +90,7 @@ ITEM.functions.Equip = {
 		client.carryWeapons = client.carryWeapons or {}
 
 		for k, v in pairs(items) do
-			if (v.id != item.id) then
+			if (v.id ~= item.id) then
 				if (
 					v.isWeapon and
 					client.carryWeapons[item.weaponCategory] and
@@ -137,7 +137,7 @@ ITEM.functions.Equip = {
 		return false
 	end,
 	onCanRun = function(item)
-		return (!IsValid(item.entity) and item:getData("equip") != true)
+		return (!IsValid(item.entity) and item:getData("equip") ~= true)
 	end
 }
 

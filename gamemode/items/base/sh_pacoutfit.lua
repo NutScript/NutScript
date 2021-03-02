@@ -96,7 +96,7 @@ ITEM.functions.Equip = {
 		local items = char:getInv():getItems()
 
 		for k, v in pairs(items) do
-			if (v.id != item.id) then
+			if (v.id ~= item.id) then
 				if (v.pacData and v.outfitCategory == item.outfitCategory and v:getData("equip")) then
 					item.player:notify("You're already equipping this kind of outfit")
 
@@ -120,7 +120,7 @@ ITEM.functions.Equip = {
 		return false
 	end,
 	onCanRun = function(item)
-		return (!IsValid(item.entity) and item:getData("equip") != true)
+		return (!IsValid(item.entity) and item:getData("equip") ~= true)
 	end
 }
 

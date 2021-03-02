@@ -449,9 +449,9 @@ function SWEP:allowPickup(target)
 			(not phys:HasGameFlag(FVPHYSICS_NO_PLAYER_PICKUP)) and
 			phys:GetMass() <= CARRY_WEIGHT_LIMIT and
 			(not isPlayerStandsOn(target)) and
-			(target.CanPickup != false) and
-			hook.Run("GravGunPickupAllowed", self:GetOwner(), target) != false and 
-			(target.GravGunPickupAllowed and (target:GravGunPickupAllowed(self:GetOwner()) != false) or true)
+			(target.CanPickup ~= false) and
+			hook.Run("GravGunPickupAllowed", self:GetOwner(), target) ~= false and 
+			(target.GravGunPickupAllowed and (target:GravGunPickupAllowed(self:GetOwner()) ~= false) or true)
 		)
 end
 
@@ -715,7 +715,7 @@ function SWEP:doPunch()
 		local context = {damage = damage}
 		local result = hook.Run("PlayerGetFistDamage", self.Owner, damage, context)
 
-		if (result != nil) then
+		if (result ~= nil) then
 			damage = result
 		else
 			damage = context.damage

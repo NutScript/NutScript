@@ -16,6 +16,17 @@ NUT_ITEM_DEFAULT_FUNCTIONS = {
 				and not item.noDrop
 		end
 	},
+	inspect = {
+		tip = "Inspect uniqueID",
+		icon = "icon16/world.png",
+		onRun = function(item)
+			print("UNIQUEID", item.uniqueID)
+			return false
+		end,
+		onCanRun = function(item)
+			return true
+		end
+	},
 	take = {
 		tip = "takeTip",
 		icon = "icon16/box.png",

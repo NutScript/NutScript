@@ -152,7 +152,7 @@ end
 
 function ENT:setAnim()
 	for k, v in ipairs(self:GetSequenceList()) do
-		if (v:lower():find("idle") and v != "idlenoise") then
+		if (v:lower():find("idle") and v ~= "idlenoise") then
 			return self:ResetSequence(k)
 		end
 	end

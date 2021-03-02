@@ -54,14 +54,6 @@ function nut.plugin.load(uniqueID, path, isSingleFile, variable)
 	)
 	PLUGIN.loading = false
 
-	if string.gmatch(PLUGIN.author, "STEAM_0:") then
-  		PLUGIN.author = util.SteamIDTo64(PLUGIN.author)
-	end
-	if tonumber(PLUGIN.author) then
-   		steamworks.RequestPlayerInfo(PLUGIN.author, function(steamName)
-    		PLUGIN.author = steamName
-  		end)
-	end
 	-- Add helper methods for persistent data.
 	local uniqueID2 = uniqueID
 	if (uniqueID2 == "schema") then

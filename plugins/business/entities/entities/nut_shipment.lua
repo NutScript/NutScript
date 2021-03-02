@@ -30,7 +30,7 @@ if (SERVER) then
 	end
 
 	function ENT:Use(activator)
-		if (activator:getChar() and activator:getChar():getID() == self:getNetVar("owner", 0) and hook.Run("PlayerCanOpenShipment", activator, self) != false) then
+		if (activator:getChar() and activator:getChar():getID() == self:getNetVar("owner", 0) and hook.Run("PlayerCanOpenShipment", activator, self) ~= false) then
 			activator.nutShipment = self
 			netstream.Start(activator, "openShp", self, self.items)
 		end

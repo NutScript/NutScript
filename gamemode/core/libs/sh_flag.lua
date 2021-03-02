@@ -63,7 +63,7 @@ do
 			end
 
 			-- Only change the flag string if it is different.
-			if (addedFlags != "") then
+			if (addedFlags ~= "") then
 				self:setFlags(self:getFlags()..addedFlags)
 			end
 		end
@@ -87,7 +87,7 @@ do
 				newFlags = newFlags:gsub(flag, "")
 			end
 
-			if (newFlags != oldFlags) then
+			if (newFlags ~= oldFlags) then
 				self:setFlags(newFlags)
 			end
 		end

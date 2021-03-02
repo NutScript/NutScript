@@ -33,7 +33,7 @@ if (SERVER) then
 
 		-- Save all the character variables.
 		for k, v in pairs(nut.char.vars) do
-			if (v.field and self.vars[k] != nil) then
+			if (v.field and self.vars[k] ~= nil) then
 				data[v.field] = self.vars[k]
 			end
 		end
@@ -41,7 +41,7 @@ if (SERVER) then
 		-- Let plugins/schema determine if the character should be saved.
 		local shouldSave = hook.Run("CharacterPreSave", self)
 
-		if (shouldSave != false) then
+		if (shouldSave ~= false) then
 			-- Run a query to save the character to the database.
 			nut.db.updateTable(data, function()
 				if (callback) then
@@ -65,7 +65,7 @@ if (SERVER) then
 			local data = {}
 
 			for k, v in pairs(self.vars) do
-				if (nut.char.vars[k] != nil and !nut.char.vars[k].noNetworking) then
+				if (nut.char.vars[k] ~= nil and !nut.char.vars[k].noNetworking) then
 					data[k] = v
 				end
 			end
@@ -267,7 +267,7 @@ function nut.char.registerVar(key, data)
 		CHAR["get"..upperName] = function(self, default)
 			local value = self.vars[key]
 
-			if (value != nil) then
+			if (value ~= nil) then
 				return value
 			end
 

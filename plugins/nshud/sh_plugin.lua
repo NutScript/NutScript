@@ -158,7 +158,7 @@ function PLUGIN:ShouldDrawEntityInfo(entity)
 	if (entity.onShouldDrawEntityInfo) then
 		return entity:onShouldDrawEntityInfo()
 	end
-	if (entity:IsPlayer() and entity:getChar() and entity:GetNoDraw() != true) then
+	if (entity:IsPlayer() and entity:getChar() and entity:GetNoDraw() ~= true) then
 		return true
 	end
 end
@@ -202,7 +202,7 @@ function PLUGIN:HUDPaintBackground()
 				frameTime * 1000
 			)
 
-			if (lastEntity != entity) then
+			if (lastEntity ~= entity) then
 				paintedEntitiesCache[entity] = false
 			end
 

@@ -60,7 +60,7 @@ function PLUGIN:copyParentDoor(child)
 		for k, v in ipairs(variables) do
 			local value = parent:getNetVar(v)
 
-			if (child:getNetVar(v) != value) then
+			if (child:getNetVar(v) ~= value) then
 				child:setNetVar(v, value)
 			end
 		end
@@ -185,11 +185,11 @@ function PLUGIN:CanPlayerAccessDoor(client, door, access)
 
 	if (class and classData and classData2) then
 		if (classData.team) then
-			if (classData.team != classData2.team) then
+			if (classData.team ~= classData2.team) then
 				return false
 			end
 		else
-			if (charClass != class) then
+			if (charClass ~= class) then
 				return false
 			end
 		end
@@ -242,7 +242,7 @@ function PLUGIN:PlayerDisconnected(client)
 end
 
 netstream.Hook("doorPerm", function(client, door, target, access)
-	if (IsValid(target) and target:getChar() and door.nutAccess and door:GetDTEntity(0) == client and target != client) then
+	if (IsValid(target) and target:getChar() and door.nutAccess and door:GetDTEntity(0) == client and target ~= client) then
 		access = math.Clamp(access or 0, DOOR_NONE, DOOR_TENANT)
 
 		if (access == door.nutAccess[target]) then
