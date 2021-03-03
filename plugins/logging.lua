@@ -28,7 +28,7 @@ if (SERVER) then
 	end)
 
 	nut.log.addType("playerDisconnected", function(client, ...)
-		return string.format("%s (%s) has disconnected from the server.", client:Name(), client:SteamID())
+		return string.format("%s[%s] has disconnected from the server.", client:Name(), client:SteamID())
 	end)
 
 	nut.log.addType("itemTake", function(client, ...)
