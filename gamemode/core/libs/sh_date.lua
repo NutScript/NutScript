@@ -1,24 +1,53 @@
 -- Module for date and time calculations
 
 nut.date = nut.date or {}
+nut.date.diff = nut.date.diff or 0
 
 if (not nut.config) then
     include("nutscript/gamemode/core/sh_config.lua")
 end
 
-nut.config.add("year", tonumber(os.date("%Y")), "The current year of the schema." , nil, {
+if SERVER then
+	util.AddNetworkString("syncClientTime")
+
+	nut.date.syncClientTime = function(client)
+		net.Start("syncClientTime")
+		net.WriteString(tostring(nut.date.diff))
+		net.Send(client)
+	end
+end
+
+nut.config.add("year", tonumber(os.date("%Y")), "The current year of the schema." , function()
+	if SERVER then
+		for k, client in pairs(player.GetHumans()) do
+			nut.date.syncClientTime(client)
+		end
+	end
+end, {
     data = {min = 0, max = 4000},
     category = "date"
 }
 )
 
-nut.config.add("month", tonumber(os.date("%m")), "The current month of the schema." , nil, {
+nut.config.add("month", tonumber(os.date("%m")), "The current month of the schema." , function()
+	if SERVER then
+		for k, client in pairs(player.GetHumans()) do
+			nut.date.syncClientTime(client)
+		end
+	end
+end, {
     data = {min = 1, max = 12},
     category = "date"
 }
 )
 
-nut.config.add("day", tonumber(os.date("%d")), "The current day of the schema." , nil, {
+nut.config.add("day", tonumber(os.date("%d")), "The current day of the schema." , function()
+	if SERVER then
+		for k, client in pairs(player.GetHumans()) do
+			nut.date.syncClientTime(client)
+		end
+	end
+end, {
     data = {min = 1, max = 31},
     category = "date"
 }
@@ -35,13 +64,13 @@ nut.config.add("yearAppendix", "", "Add a custom appendix to your date, if you u
 
 function nut.date.get()
 	return os.time({
-        year=os.date("%Y"),
-        month=nut.config.get("month"),
-        day=nut.config.get("day"),
-        hour=os.date("%H"),
-        min=os.date("%M"),
-        sec=os.date("%S")
-    })
+		year=os.date("%Y"),
+		month=nut.config.get("month"),
+		day=nut.config.get("day"),
+		hour=os.date("!%H"),
+		min=os.date("!%M"),
+		sec=os.date("!%S")
+	}) + (nut.date.diff or 0)
 end
 
 --function takes the time number if provided, or current time and applies a string format to it
@@ -56,6 +85,12 @@ if SERVER then
 	-- Checks the time difference between the old time values and current time, and updates month and day to advance in the time difference
 	-- creates a timer that updates the month and day values, in case the server runs continuously without restarts.
 	function nut.date.initialize()
+		local function getTimeZoneDifference()
+  			local now = os.time()
+  			return now - os.time(os.date("!*t", now))
+		end
+
+		nut.date.diff = getTimeZoneDifference()
 
 		-- Migrations
 		if (istable(nut.data.get("date", os.time(), true))) then
@@ -111,5 +146,19 @@ if SERVER then
 
 	hook.Add("SaveData", "nutDateSave", function()
 		nut.date.save()
+	end)
+
+	net.Receive("syncClientTime", function(_, client)
+		nut.date.syncClientTime(client)
+	end)
+
+elseif CLIENT then
+	net.Receive("syncClientTime", function()
+		nut.date.diff = tonumber(net.ReadString())
+	end)
+
+	hook.Add("InitPostEntity", "nutSyncTime", function()
+		net.Start("syncClientTime")
+		net.SendToServer()
 	end)
 end

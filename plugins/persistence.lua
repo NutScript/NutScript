@@ -51,10 +51,10 @@ properties.Add( "persist", {
 		if ( !self:Filter( ent, ply ) ) then return end
 
 		ent:setNetVar( "persistent", true )
-    
+
     -- Register the entity
 		PLUGIN.entities[#PLUGIN.entities + 1] = ent
-    
+
 		-- Add new log
 		nut.log.add(ply, "persistedEntity", ent )
 	end
@@ -89,7 +89,7 @@ properties.Add( "persist_end", {
 		if ( !IsValid( ent ) ) then return end
 		if ( !properties.CanBeTargeted( ent, ply ) ) then return end
 		if ( !self:Filter( ent, ply ) ) then return end
-    
+
 		ent:setNetVar( "persistent", false )
 
 		-- Remove entity from registration
