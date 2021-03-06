@@ -28,7 +28,7 @@ if (SERVER) then
 	netstream.Hook("nutCharFetchNames", function(client)
 		netstream.Start(client, "nutCharFetchNames", nut.char.names)
 	end)
-	
+
 	-- Removes name from table upon character deletion
 	hook.Add("nutCharDeleted", "nutCharRemoveName", function(client, character)
 		nut.char.names[character:getID()] = nil
@@ -101,9 +101,9 @@ do
 			if (not isstring(value) or not value:find("%S")) then
 				return false, "invalid", "name"
 			end
-				
+
 			local allowExistNames = nut.config.get("allowExistNames", true)
-			
+
 			-- Fetch existing character names
 			if (CLIENT and #nut.char.names < 1 and !allowExistNames) then
 				netstream.Start("nutCharFetchNames")
@@ -112,7 +112,7 @@ do
 					nut.char.names = data
 				end)
 			end
-				
+
 			-- Check whether the chosen character name already exists
 			if (!nut.config.get("allowExistNames", true)) then
 				for k, v in pairs(nut.char.names) do
@@ -121,7 +121,7 @@ do
 					end
 				end
 			end
-			
+
 			return true
 		end,
 		onAdjust = function(client, data, value, newData)

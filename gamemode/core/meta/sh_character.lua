@@ -103,7 +103,7 @@ if (SERVER) then
 
 		if (IsValid(client)) then
 			-- Set the faction, model, and character index for the player.
-			client:SetModel(self:getModel())
+			client:SetModel(isstring(self:getModel()) and self:getModel() or self:getModel()[1])
 			client:SetTeam(self:getFaction())
 			client:setNetVar("char", self:getID())
 
