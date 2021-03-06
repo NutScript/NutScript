@@ -660,7 +660,7 @@ Issues with ULX/Ulib on your server will be ignored and we're
 going to consider that you're taking the risk of ULX/Ulib's 
 critical performance issue.
 
-Nutscript 1.1 only displays this message when you have ULX or
+Nutscript 1.2 only displays this message when you have ULX or
 ULib on your server.
 
                                -Nutscript Development Team
@@ -668,11 +668,7 @@ ULib on your server.
 */------------------------------------------------------------]]
 function GM:InitializedPlugins()
 	if (ulx or ULib) then
-		local psaTable = string.Explode("\n", psaString)
-
-		for k, v in ipairs(psaTable) do
-			MsgC(Color(255, 0, 0), v .. "\n")
-		end
+		MsgC(Color(255, 0, 0), psaString .. "\n")
 	end
 end
 

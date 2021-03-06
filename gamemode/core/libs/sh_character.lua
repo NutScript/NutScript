@@ -11,7 +11,7 @@ if (SERVER) then
 	if (not nut.db) then
 		include("sv_database.lua")
 	end
-	
+
 	-- Fetches all the character names and stores
 	-- them into a table so they only have to be fetched once
 	if (#nut.char.names < 1) then
