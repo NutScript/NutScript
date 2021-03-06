@@ -30,9 +30,9 @@ properties.Add( "persist", {
 
 		if ( ent:IsPlayer() ) then return false end
 		if ( PLUGIN.blacklist[ent:GetClass()] ) then return false end
-		if ( !gamemode.Call( "CanProperty", ply, "persist", ent ) ) then return false end
+		if ( not gamemode.Call( "CanProperty", ply, "persist", ent ) ) then return false end
 
-		return !ent:getNetVar( "persistent", false )
+		return not ent:getNetVar( "persistent", false )
 
 	end,
 
@@ -47,8 +47,8 @@ properties.Add( "persist", {
 	Receive = function( self, length, ply )
 
 		local ent = net.ReadEntity()
-		if ( !IsValid( ent ) ) then return end
-		if ( !self:Filter( ent, ply ) ) then return end
+		if ( not IsValid( ent ) ) then return end
+		if ( not self:Filter( ent, ply ) ) then return end
 
 		ent:setNetVar( "persistent", true )
 
@@ -69,7 +69,7 @@ properties.Add( "persist_end", {
 	Filter = function( self, ent, ply )
 
 		if ( ent:IsPlayer() ) then return false end
-		if ( !gamemode.Call( "CanProperty", ply, "persist", ent ) ) then return false end
+		if ( not gamemode.Call( "CanProperty", ply, "persist", ent ) ) then return false end
 
 		return ent:getNetVar( "persistent", false )
 
@@ -86,10 +86,9 @@ properties.Add( "persist_end", {
 	Receive = function( self, length, ply )
 
 		local ent = net.ReadEntity()
-		if ( !IsValid( ent ) ) then return end
-		if ( !properties.CanBeTargeted( ent, ply ) ) then return end
-		if ( !self:Filter( ent, ply ) ) then return end
-
+		if ( not IsValid( ent ) ) then return end
+		if ( not properties.CanBeTargeted( ent, ply ) ) then return end
+		if ( not self:Filter( ent, ply ) ) then return end
 		ent:setNetVar( "persistent", false )
 
 		-- Remove entity from registration
