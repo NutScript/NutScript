@@ -95,7 +95,7 @@ modules.tmysql4 = {
 	end,
 	connect = function(callback)
 		if (not pcall(require, "tmysql4")) then
-			return setNetVar("dbError", system.IsWindows() and "Server is missing VC++ redistributablesnot " or "Server is missing binaries for tmysql4not ")
+			return setNetVar("dbError", system.IsWindows() and "Server is missing VC++ redistributables! " or "Server is missing binaries for tmysql4! ")
 		end
 
 		local hostname = nut.db.hostname
@@ -200,7 +200,7 @@ modules.mysqloo = {
 	end,
 	connect = function(callback)
 		if (not pcall(require, "mysqloo")) then
-			return setNetVar("dbError", system.IsWindows() and "Server is missing VC++ redistributablesnot " or "Server is missing binaries for mysqloonot ")
+			return setNetVar("dbError", system.IsWindows() and "Server is missing VC++ redistributables! " or "Server is missing binaries for mysqloo! ")
 		end
 
 		if (mysqloo.VERSION ~= "9" or not mysqloo.MINOR_VERSION or tonumber(mysqloo.MINOR_VERSION) < 1) then
@@ -335,7 +335,7 @@ function nut.db.connect(callback, reconnect)
 		nut.db.escape = dbModule.escape
 		nut.db.query = dbModule.query
 	else
-		ErrorNoHalt("[NutScript] '"..(nut.db.module or "nil").."' is not a valid data storage methodnot \n")
+		ErrorNoHalt("[NutScript] '"..(nut.db.module or "nil").."' is not a valid data storage method! \n")
 	end
 end
 
