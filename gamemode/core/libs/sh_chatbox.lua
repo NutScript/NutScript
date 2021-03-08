@@ -7,6 +7,11 @@ if (!nut.command) then
 	include("sh_command.lua")
 end
 
+-- Returns a timestamp
+function nut.chat.timestamp(ooc)
+	return nut.config.get("chatShowTime") and (ooc and " " or "").."("..nut.date.getFormatted("%H:%M")..")"..(ooc and "" or " ") or ""
+end
+
 -- Registers a new chat type with the information provided.
 function nut.chat.register(chatType, data)
 	if (!data.onCanHear) then
@@ -52,9 +57,10 @@ function nut.chat.register(chatType, data)
 				color = data.onGetColor(speaker, text)
 			end
 
+			local timestamp = nut.chat.timestamp(false)
 			local translated = L2(chatType.."Format", name, text)
 
-			chat.AddText(color, translated or string.format(data.format, name, text))
+			chat.AddText(timestamp, color, translated or timestamp..string.format(data.format, name, text))
 		end
 	end
 
@@ -303,7 +309,7 @@ do
 
 				icon = Material(hook.Run("GetPlayerIcon", speaker) or icon)
 
-				chat.AddText(icon, Color(255, 50, 50), " [OOC] ", speaker, color_white, ": "..text)
+				chat.AddText(icon, nut.chat.timestamp(true), Color(255, 50, 50), " [OOC] ", speaker, color_white, ": "..text)
 			end,
 			prefix = {"//", "/ooc"},
 			noSpaceAfter = true,
@@ -334,7 +340,7 @@ do
 				speaker.nutLastLOOC = CurTime()
 			end,
 			onChatAdd = function(speaker, text)
-				chat.AddText(Color(255, 50, 50), "[LOOC] ", nut.config.get("chatColor"), speaker:Name()..": "..text)
+				chat.AddText(nut.chat.timestamp(false), Color(255, 50, 50), "[LOOC] ", nut.config.get("chatColor"), speaker:Name()..": "..text)
 			end,
 			onCanHear = nut.config.get("chatRange", 280),
 			prefix = {".//", "[[", "/looc"},
