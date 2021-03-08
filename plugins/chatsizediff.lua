@@ -1,11 +1,3 @@
---[[
-	This script is part of Black Mesa Roleplay schema by Zoephix and
-	exclusively made for LimeFruit (limefruit.net)
-
-	© Copyright 2020: Zoephix. do not share, use, re-distribute or modify
-	without written permission from Zoephix.
---]]
-
 PLUGIN.name = "Chat Size Difference"
 PLUGIN.desc = "Overrides size for different chat types."
 PLUGIN.author = "Zoephix"
@@ -16,7 +8,6 @@ nut.config.add("chatSizeDiff", true, "Whether or not to use different chat sizes
 
 if (CLIENT) then
 	function PLUGIN:LoadFonts(font)
-		print(font)
 		surface.CreateFont("nutSmallChatFont", {
 			font = font,
 			size = math.max(ScreenScale(7), 17),
@@ -53,6 +44,8 @@ if (CLIENT) then
 					return "<font=nutBigChatFont>"
 				elseif (string.match(chatMode, "whisper")) then
 					return "<font=nutSmallChatFont>"
+				elseif (string.match(chatMode, "ooc") or string.match(chatMode, "looc")) then
+					return "<font=nutChatFont>"
 				else
 					return "<font=nutMediumChatFont>"
 				end
