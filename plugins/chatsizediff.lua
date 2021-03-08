@@ -33,7 +33,7 @@ if (CLIENT) then
 	function PLUGIN:ChatAddText(text, ...)
 		if (nut.config.get("chatSizeDiff", true)) then
 			local chatText = {...}
-			local chatMode = #chatText > 5 and chatText[3] or chatText[#chatText]
+			local chatMode = #chatText <= 4 and chatText[2] or chatText[3]
 
 			if (istable(chatMode)) then
 				return "<font=nutChatFont>"
