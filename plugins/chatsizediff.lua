@@ -43,7 +43,7 @@ if (CLIENT) then
 			local chatText = {...}
 			local chatMode = #chatText <= 4 and chatText[2] or chatText[3]
 
-			if (istable(chatMode)) then
+			if (!chatMode or istable(chatMode)) then
 				return "<font=nutChatFont>"
 			else
 				local chatMode = string.lower(chatMode)
