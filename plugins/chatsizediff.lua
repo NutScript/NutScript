@@ -10,21 +10,21 @@ if (CLIENT) then
 	function PLUGIN:LoadFonts(font)
 		surface.CreateFont("nutSmallChatFont", {
 			font = font,
-			size = math.max(ScreenScale(7), 17),
+			size = math.max(ScreenScale(6), 17),
 			extended = true,
 			weight = 200
 		})
 
 		surface.CreateFont("nutMediumChatFont", {
 			font = font,
-			size = math.max(ScreenScale(9), 17),
+			size = math.max(ScreenScale(7), 17),
 			extended = true,
 			weight = 200
 		})
 
 		surface.CreateFont("nutBigChatFont", {
 			font = font,
-			size = math.max(ScreenScale(11), 17),
+			size = math.max(ScreenScale(8), 17),
 			extended = true,
 			weight = 200
 		})
