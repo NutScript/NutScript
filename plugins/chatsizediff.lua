@@ -15,6 +15,14 @@ if (CLIENT) then
 			weight = 200
 		})
 
+		surface.CreateFont("nutItalicsChatFont", {
+			font = font,
+			size = math.max(ScreenScale(7), 17),
+			extended = true,
+			weight = 600,
+			italic = true
+		})
+
 		surface.CreateFont("nutMediumChatFont", {
 			font = font,
 			size = math.max(ScreenScale(7), 17),
@@ -42,6 +50,8 @@ if (CLIENT) then
 
 				if (string.match(chatMode, "yell")) then
 					return "<font=nutBigChatFont>"
+				elseif (string.sub(chatMode, 1, 2) == "**") then
+					return "<font=nutItalicsChatFont>"
 				elseif (string.match(chatMode, "whisper")) then
 					return "<font=nutSmallChatFont>"
 				elseif (string.match(chatMode, "ooc") or string.match(chatMode, "looc")) then
