@@ -12,7 +12,7 @@ if (CLIENT) then
 			font = font,
 			size = math.max(ScreenScale(6), 17),
 			extended = true,
-			weight = 200
+			weight = 750
 		})
 
 		surface.CreateFont("nutItalicsChatFont", {
