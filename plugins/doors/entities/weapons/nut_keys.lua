@@ -112,6 +112,10 @@ function SWEP:PrimaryAttack()
 		data.filter = self.Owner
 	local entity = util.TraceLine(data).Entity
 
+	if (hook.Run("KeyLockOverride",self:GetOwner(),entity)) then
+		return
+	end
+
 	--[[
 		Locks the entity if the contiditon fits:
 			1. The entity is door and client has access to the door.
@@ -192,6 +196,9 @@ function SWEP:SecondaryAttack()
 		data.filter = self.Owner
 	local entity = util.TraceLine(data).Entity
 
+	if (hook.Run("KeyUnlockOverride",self:GetOwner(),entity)) then
+		return
+	end
 
 	--[[
 		Unlocks the entity if the contiditon fits:
