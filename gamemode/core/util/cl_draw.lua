@@ -44,7 +44,7 @@ function nut.util.wrapText(text, width, font)
 		end
 	end
 
-	if (line != "") then
+	if (line ~= "") then
 		lines[#lines + 1] = line
 	end
 
@@ -57,7 +57,7 @@ local LAST_HEIGHT = ScrH()
 timer.Create("nutResolutionMonitor", 1, 0, function()
 	local scrW, scrH = ScrW(), ScrH()
 
-	if (scrW != LAST_WIDTH or scrH != LAST_HEIGHT) then
+	if (scrW ~= LAST_WIDTH or scrH ~= LAST_HEIGHT) then
 		hook.Run("ScreenResolutionChanged", LAST_WIDTH, LAST_HEIGHT)
 
 		LAST_WIDTH = scrW

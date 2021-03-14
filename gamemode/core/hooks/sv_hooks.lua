@@ -107,7 +107,7 @@ function GM:CanPlayerDropItem(client, item)
 
 		if (inventory) then
 			local items = inventory:getItems()
-			
+
 			for id, item in pairs(items) do
 				if (not item.ignoreEquipCheck and item:getData("equip") == true) then
 					client:notifyLocalized("cantDropBagHasEquipped")
@@ -158,7 +158,7 @@ function GM:CanPlayerTakeItem(client, item)
 end
 
 function GM:PlayerShouldTakeDamage(client, attacker)
-	return client:getChar() != nil
+	return client:getChar() ~= nil
 end
 
 function GM:EntityTakeDamage(entity, dmgInfo)
@@ -607,7 +607,7 @@ end
 
 function GM:OnServerLog(client, logType, ...)
 	for k, v in pairs(nut.util.getAdmins()) do
-		if (hook.Run("CanPlayerSeeLog", v, logType) != false) then
+		if (hook.Run("CanPlayerSeeLog", v, logType) ~= false) then
 			nut.log.send(v, nut.log.getString(client, logType, ...))
 		end
 	end

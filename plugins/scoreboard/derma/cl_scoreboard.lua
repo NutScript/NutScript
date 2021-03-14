@@ -52,7 +52,7 @@ local PANEL = {}
 			list:SetTall(28)
 			list.Think = function(this)
 				for k2, v2 in ipairs(team.GetPlayers(k)) do
-					if (!IsValid(v2.nutScoreSlot) or v2.nutScoreSlot:GetParent() != this) then
+					if (!IsValid(v2.nutScoreSlot) or v2.nutScoreSlot:GetParent() ~= this) then
 						if (IsValid(v2.nutPlayerSlot)) then
 							v2.nutPlayerSlot:SetParent(this)
 						else
@@ -192,13 +192,13 @@ local PANEL = {}
 		local oldTeam = client:Team()
 
 		function slot:update()
-			if (!IsValid(client) or !client:getChar() or !self.character or self.character != client:getChar() or oldTeam != client:Team()) then
+			if (!IsValid(client) or !client:getChar() or !self.character or self.character ~= client:getChar() or oldTeam ~= client:Team()) then
 				self:Remove()
 
 				local i = 0
 
 				for k, v in ipairs(parent:GetChildren()) do
-					if (IsValid(v.model) and v != self) then
+					if (IsValid(v.model) and v ~= self) then
 						i = i + 1
 						v.Paint = paintFunctions[i % 2]
 					end
@@ -218,14 +218,14 @@ local PANEL = {}
 
 			self.model:setHidden(overrideName)
 
-			if (self.lastName != name) then
+			if (self.lastName ~= name) then
 				self.name:SetText(name)
 				self.lastName = name
 			end
 
 			local entity = self.model.Entity
 
-			if (self.lastDesc != desc) then
+			if (self.lastDesc ~= desc) then
 				self.desc:SetText(desc)
 				self.lastDesc = desc
 			end
@@ -234,7 +234,7 @@ local PANEL = {}
 				return
 			end
 
-			if (self.lastModel != model or self.lastSkin != skin) then
+			if (self.lastModel ~= model or self.lastSkin ~= skin) then
 				self.model:SetModel(client:GetModel(), client:GetSkin())
 				self.model:SetTooltip(L("sbOptions", client:steamName()))
 				

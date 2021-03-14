@@ -105,7 +105,7 @@ function ITEM:getData(key, default)
 
 	-- Try to get the data stored in the item.
 	local value = self.data[key]
-	if (value != nil) then return value end
+	if (value ~= nil) then return value end
 
 	-- If that didn't work, back up to getting the data from its entity.
 	if (IsValid(self.entity)) then

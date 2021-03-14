@@ -53,12 +53,12 @@ function nut.config.get(key, default)
 	local config = nut.config.stored[key]
 
 	if (config) then
-		if (config.value != nil) then
+		if (config.value ~= nil) then
 			if istable(config.value) and config.value.r and config.value.g and config.value.b then -- if the value is a table with rgb values
 				config.value = Color(config.value.r, config.value.g, config.value.b) -- convert it to a Color table
 			end
 			return config.value
-		elseif (config.default != nil) then
+		elseif (config.default ~= nil) then
 			return config.default
 		end
 	end
@@ -94,7 +94,7 @@ if (SERVER) then
 		local data = {}
 
 		for k, v in pairs(nut.config.stored) do
-			if (v.default != v.value) then
+			if (v.default ~= v.value) then
 				data[k] = v.value
 			end
 		end
@@ -124,7 +124,7 @@ if (SERVER) then
 	end
 
 	netstream.Hook("cfgSet", function(client, key, value)
-		if (client:IsSuperAdmin() and type(nut.config.stored[key].default) == type(value) and hook.Run("CanPlayerModifyConfig", client, key) != false) then
+		if (client:IsSuperAdmin() and type(nut.config.stored[key].default) == type(value) and hook.Run("CanPlayerModifyConfig", client, key) ~= false) then
 			nut.config.set(key, value)
 
 			if (type(value) == "table") then
@@ -182,7 +182,7 @@ end
 
 if (CLIENT) then
 	hook.Add("CreateMenuButtons", "nutConfig", function(tabs)
-		if (LocalPlayer():IsSuperAdmin() and hook.Run("CanPlayerUseConfig", LocalPlayer()) != false) then
+		if (LocalPlayer():IsSuperAdmin() and hook.Run("CanPlayerUseConfig", LocalPlayer()) ~= false) then
 			tabs["config"] = function(panel)
 				local scroll = panel:Add("DScrollPanel")
 				scroll:Dock(FILL)

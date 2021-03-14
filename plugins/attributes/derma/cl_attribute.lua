@@ -104,7 +104,7 @@ local PANEL = {}
 		
 		self.nextPress = CurTime() + 0.2
 		
-		if (self:onChanged(self.pressing) != false) then
+		if (self:onChanged(self.pressing) ~= false) then
 			self.value = math.Clamp(self.value + self.pressing, 0, self.max)
 		end
 	end

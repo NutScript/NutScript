@@ -374,6 +374,6 @@ function GM:CanItemBeTransfered(itemObject, curInv, inventory)
 	if (itemObject.onCanBeTransfered) then
 		local itemHook = itemObject:onCanBeTransfered(curInv, inventory)
 		
-		return (itemHook != false)
+		return (itemHook ~= false)
 	end
 end

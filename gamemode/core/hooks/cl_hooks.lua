@@ -285,7 +285,8 @@ function GM:InitializedConfig()
 end
 
 function GM:CharacterListLoaded()
-	local shouldPlayIntro = not nut.config.get("playIntroOnlyOnce", true) or not nut.localData.intro or nil
+	local shouldPlayIntro = nut.config.get("alwaysPlayIntro", true) or not nut.localData.intro or nil
+	print("shouldPlayIntro", shouldPlayIntro)
 	timer.Create("nutWaitUntilPlayerValid", 0.5, 0, function()
 		if (not IsValid(LocalPlayer())) then return end
 		timer.Remove("nutWaitUntilPlayerValid")
@@ -294,7 +295,7 @@ function GM:CharacterListLoaded()
 		if (IsValid(nut.gui.loading)) then
 			nut.gui.loading:Remove()
 		end
-
+		RunConsoleCommand("stopsound")
 		-- Show the intro if needed, then show the character menu.
 		local intro =
 			shouldPlayIntro and hook.Run("CreateIntroduction") or nil
@@ -462,7 +463,7 @@ function GM:ItemShowEntityMenu(entity)
 				surface.PlaySound(v.sound)
 			end
 
-			if (send != false) then
+			if (send ~= false) then
 				callback(k)
 			end
 		end

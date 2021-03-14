@@ -140,7 +140,7 @@ function nut.bar.drawAll()
 
 			deltas[i] = value
 
-			if (deltas[i] != realValue) then
+			if (deltas[i] ~= realValue) then
 				bar.lifeTime = curTime + 5
 			end
 

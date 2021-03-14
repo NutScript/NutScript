@@ -147,12 +147,12 @@ if (SERVER) then
 	function nut.chat.send(speaker, chatType, text, anonymous, receivers)
 		local class = nut.chat.classes[chatType]
 
-		if (class and class.onCanSay(speaker, text) != false) then
+		if (class and class.onCanSay(speaker, text) ~= false) then
 			if (class.onCanHear and !receivers) then
 				receivers = {}
 
 				for k, v in ipairs(player.GetAll()) do
-					if (v:getChar() and class.onCanHear(speaker, v) != false) then
+					if (v:getChar() and class.onCanHear(speaker, v) ~= false) then
 						receivers[#receivers + 1] = v
 					end
 				end
@@ -175,7 +175,7 @@ else
 			if (class) then
 				CHAT_CLASS = class
 					class.onChatAdd(client, text, anonymous)
-					if (SOUND_CUSTOM_CHAT_SOUND and SOUND_CUSTOM_CHAT_SOUND != "") then
+					if (SOUND_CUSTOM_CHAT_SOUND and SOUND_CUSTOM_CHAT_SOUND ~= "") then
 						surface.PlaySound(SOUND_CUSTOM_CHAT_SOUND)
 					else
 						chat.PlaySound()

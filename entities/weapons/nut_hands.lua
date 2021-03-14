@@ -100,7 +100,7 @@ local CurTime = CurTime
 
 
 local function SetSubPhysMotionEnabled(entity, enable)
-	if (!IsValid(entity)) then
+	if (not IsValid(entity)) then
 		return
 	end
 
@@ -183,8 +183,8 @@ function SWEP:reset(throw)
 	if (IsValid(self.holdingEntity)) then
 		local owner = self:GetOwner()
 
-		if (!self.holdingEntity:IsWeapon()) then
-			if (!IsValid(self.prevOwner)) then
+		if (not self.holdingEntity:IsWeapon()) then
+			if (not IsValid(self.prevOwner)) then
 				self.holdingEntity:SetOwner(nil)
 			else
 				self.holdingEntity:SetOwner(self.prevOwner)
@@ -201,7 +201,7 @@ function SWEP:reset(throw)
 			phys:EnableMotion(true)
 		end
 
-		if (!throw) then
+		if (not throw) then
 			removeVelocity(self.holdingEntity)
 		else
 			throwVelocity(self.holdingEntity, owner, 300)
@@ -219,8 +219,8 @@ function SWEP:reset(throw)
 end
 
 function SWEP:drop(throw)
-	if (!self:checkValidity()) then return end
-	if (!self:allowEntityDrop()) then return end
+	if (not self:checkValidity()) then return end
+	if (not self:allowEntityDrop()) then return end
 
 	if (SERVER) then
 		self.constr:Remove()
@@ -253,7 +253,7 @@ function SWEP:drop(throw)
 end
 
 function SWEP:checkValidity()
-	if (!IsValid(self.holdingEntity)) or (!IsValid(self.carryHack)) or (!IsValid(self.constr)) then
+	if (not IsValid(self.holdingEntity)) or (not IsValid(self.carryHack)) or (not IsValid(self.constr)) then
 		-- if one of them is not valid but another is non-nil...
 		if (self.holdingEntity or self.carryHack or self.constr) then
 			self:reset()
@@ -281,7 +281,7 @@ if (SERVER) then
 
 	local stand_time = 0
 	function SWEP:Think()
-		if (!self:checkValidity()) then
+		if (not self:checkValidity()) then
 			return
 		end
 
@@ -322,7 +322,7 @@ if (SERVER) then
 	end
 else
 	function SWEP:Think()
-		local owner = self:GetOwner()		
+		local owner = self:GetOwner()
 
 		if (CLIENT and owner) then
 			local viewModel = owner:GetViewModel()
@@ -335,14 +335,14 @@ else
 end
 
 function SWEP:PrimaryAttack()
-	if (!IsFirstTimePredicted()) then
+	if (not IsFirstTimePredicted()) then
 		return
 	end
 
 	local owner = self:GetOwner()
 
 	if (IsValid(self.holdingEntity)) then
-		self:doPickup(!self.isWepRaised or owner:isWepRaised())
+		self:doPickup(not self.isWepRaised or owner:isWepRaised())
 		return
 	end
 
@@ -379,7 +379,7 @@ end
 
 local hull = Vector(4, 4, 4)
 function SWEP:SecondaryAttack()
-	if (!IsFirstTimePredicted()) then
+	if (not IsFirstTimePredicted()) then
 		return
 	end
 
@@ -407,9 +407,9 @@ function SWEP:SecondaryAttack()
 			self:doPunchAnimation()
 			self:SetNextSecondaryFire(CurTime() + 0.4)
 			self:SetNextPrimaryFire(CurTime() + 1)
-		elseif (!entity:IsPlayer() and !entity:IsNPC()) then
+		elseif (not entity:IsPlayer() and not entity:IsNPC()) then
 			self:doPickup(false, entity, trace)
-		elseif (IsValid(self.heldEntity) and !self.heldEntity:IsPlayerHolding()) then
+		elseif (IsValid(self.heldEntity) and not self.heldEntity:IsPlayerHolding()) then
 			self.heldEntity = nil
 		end
 	else
@@ -419,8 +419,8 @@ function SWEP:SecondaryAttack()
 	end
 end
 
-function SWEP:dragObject(phys, targetpos, is_ragdoll)
-	if (!IsValid(phys)) then
+function SWEP:dragObject(phys, targetpos)
+	if (not IsValid(phys)) then
 		return
 	end
 
@@ -430,8 +430,6 @@ function SWEP:dragObject(phys, targetpos, is_ragdoll)
 	local physDirection = targetpos - point
 	local length = physDirection:Length2D()
 	physDirection:Normalize()
-
-	local mass = phys:GetMass()
 
 	phys:SetVelocity(physDirection * math.min(length, 250))
 end
@@ -451,12 +449,12 @@ function SWEP:allowPickup(target)
 
 	return
 		IsValid(phys) and IsValid(client) and client:getChar() and
-		(!phys:HasGameFlag(FVPHYSICS_NO_PLAYER_PICKUP)) and
+		(not phys:HasGameFlag(FVPHYSICS_NO_PLAYER_PICKUP)) and
 		phys:GetMass() <= CARRY_WEIGHT_LIMIT and
-		(!isPlayerStandsOn(target)) and
-		(target.CanPickup != false) and
-		hook.Run("GravGunPickupAllowed", client, target) != false and
-		(target.GravGunPickupAllowed and (target:GravGunPickupAllowed(client) != false) or true)
+		(not isPlayerStandsOn(target)) and
+		(target.CanPickup ~= false) and
+		hook.Run("GravGunPickupAllowed", client, target) ~= false and
+		(target.GravGunPickupAllowed and (target:GravGunPickupAllowed(client) ~= false) or true)
 end
 
 function SWEP:doPickup(throw, entity, trace)
@@ -474,7 +472,7 @@ function SWEP:doPickup(throw, entity, trace)
 	if (IsValid(entity)) then
 		local phys = entity:GetPhysicsObject()
 
-		if (!IsValid(phys) or !phys:IsMoveable() or phys:HasGameFlag(FVPHYSICS_PLAYER_HELD)) then
+		if (not IsValid(phys) or not phys:IsMoveable() or phys:HasGameFlag(FVPHYSICS_PLAYER_HELD)) then
 			hook.Run("OnPickupObject", false, client, entity)
 			return
 		end
@@ -492,7 +490,7 @@ function SWEP:doPickup(throw, entity, trace)
 				self:SetNextSecondaryFire(CurTime() + delay)
 				return
 			else
-				local is_ragdoll = entity:GetClass() == "prop_ragdoll"
+				--local is_ragdoll = entity:GetClass() == "prop_ragdoll"
 
 				--[[
 					--Drag ragdoll/props
@@ -552,7 +550,7 @@ function SWEP:pickup(entity, trace)
 			-- TODO: set the desired angles before adding the constraint
 			local preferredAngles = hook.Run("GetPreferredCarryAngles", self.holdingEntity)
 
-			if (client:KeyDown(IN_RELOAD) and !preferredAngles) then
+			if (client:KeyDown(IN_RELOAD) and not preferredAngles) then
 				preferredAngles = Angle()
 			end
 
@@ -572,7 +570,7 @@ function SWEP:pickup(entity, trace)
 
 			self.carryHack:Spawn()
 
-			if (!self.holdingEntity:IsWeapon()) then
+			if (not self.holdingEntity:IsWeapon()) then
 				self.prevOwner = self.holdingEntity:GetOwner()
 
 				self.holdingEntity:SetOwner(client)
@@ -614,7 +612,7 @@ local down = Vector(0, 0, -1)
 function SWEP:allowEntityDrop()
 	local client = self:GetOwner()
 
-	if (!IsValid(client)) or (!IsValid(self.carryHack)) then return false end
+	if (not IsValid(client)) or (not IsValid(self.carryHack)) then return false end
 
 	local ground = client:GetGroundEntity()
 	if ground and (ground:IsWorld() or IsValid(ground)) then return true end
@@ -648,8 +646,8 @@ ACT_VM_FISTS_HOLSTER = 2
 
 function SWEP:Deploy()
 	local owner = self:GetOwner()
-	
-	if (!IsValid(owner)) then
+
+	if (not IsValid(owner)) then
 		return
 	end
 
@@ -668,7 +666,7 @@ end
 function SWEP:Holster()
 	local owner = self:GetOwner()
 
-	if (!IsValid(owner)) then
+	if (not IsValid(owner)) then
 		return
 	end
 
@@ -721,7 +719,7 @@ function SWEP:doPunch()
 		local context = {damage = damage}
 		local result = hook.Run("PlayerGetFistDamage", owner, damage, context)
 
-		if (result != nil) then
+		if (result ~= nil) then
 			damage = result
 		else
 			damage = context.damage

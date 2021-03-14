@@ -47,7 +47,7 @@ if (SERVER) then
 			local current = client:getLocalVar("stm", 0)
 			local value = math.Clamp(current + offset, 0, 100)
 
-			if (current != value) then
+			if (current ~= value) then
 				client:setLocalVar("stm", value)
 
 				if (value == 0 and !client:getNetVar("brth", false)) then

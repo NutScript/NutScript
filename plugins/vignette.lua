@@ -11,7 +11,7 @@ if (SERVER) then return end
 local vignette = nut.util.getMaterial("nutscript/gui/vignette.png")
 local vignetteAlphaGoal = 0
 local vignetteAlphaDelta = 0
-local hasVignetteMaterial = vignette != "___error"
+local hasVignetteMaterial = vignette ~= "___error"
 local mathApproach = math.Approach
 
 timer.Create("nutVignetteChecker", 1, 0, function()

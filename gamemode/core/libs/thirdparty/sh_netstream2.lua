@@ -56,7 +56,7 @@ if (SERVER) then
 		local bShouldSend = false;
 		local bSendPVS = false;
 
-		if (type(player) != "table") then
+		if (type(player) ~= "table") then
 			if (!player) then
 				player = _player.GetAll();
 			elseif (type(player) == "Vector") then
@@ -66,7 +66,7 @@ if (SERVER) then
 			end;
 		end;
 		
-		if (type(player) != "Vector") then
+		if (type(player) ~= "Vector") then
 			for k, v in pairs(player) do
 				if (type(v) == "Player") then
 					recipients[#recipients + 1] = v;

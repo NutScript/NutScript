@@ -38,7 +38,7 @@ nut.command.add("storagelock", {
 		if (ent and ent:IsValid()) then
 			local password = table.concat(arguments, " ")
 
-			if (password != "") then
+			if (password ~= "") then
 				ent:setNetVar("locked", true)
 				ent.password = password
 				client:notifyLocalized("storPass", password)

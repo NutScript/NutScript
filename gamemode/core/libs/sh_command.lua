@@ -76,12 +76,12 @@ function nut.command.add(command, data)
 			nut.command.list[alias:lower()] = data
 		end
 	end
-	
+
 	if (command == command:lower()) then
 		nut.command.list[command] = data
 	else
 		data.realCommand = command
-		
+
 		nut.command.list[command:lower()] = data
 	end
 end
@@ -122,7 +122,7 @@ function nut.command.extractArgs(text)
 			else
 				curString = curString..c
 			end
-		elseif (c == " " and curString != "") then
+		elseif (c == " " and curString ~= "") then
 			arguments[#arguments + 1] = curString
 			curString = ""
 		else
@@ -134,7 +134,7 @@ function nut.command.extractArgs(text)
 		end
 	end
 
-	if (curString != "") then
+	if (curString ~= "") then
 		arguments[#arguments + 1] = curString
 	end
 
