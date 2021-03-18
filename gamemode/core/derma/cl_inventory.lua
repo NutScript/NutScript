@@ -14,7 +14,7 @@ function renderNewIcon(panel, itemTable)
 			cam_fov = iconCam.fov,
 		}
 		renderedIcons[string.lower(itemTable.model)] = true
-		
+
 		panel.Icon:RebuildSpawnIconEx(
 			iconCam
 		)
@@ -160,7 +160,7 @@ function PANEL:openActionMenu()
 						end
 					end
 
-					if (send ~= false) then
+					if (send != false) then
 						netstream.Start("invAct", k, itemTable.id, self.invID)
 					end
 					itemTable.player = nil
@@ -190,7 +190,7 @@ function PANEL:openActionMenu()
 							end
 						end
 
-						if (send ~= false) then
+						if (send != false) then
 							netstream.Start(
 								"invAct",
 								k,
@@ -221,7 +221,7 @@ function PANEL:openActionMenu()
 						end
 					end
 
-					if (send ~= false) then
+					if (send != false) then
 						netstream.Start("invAct", k, itemTable.id, self.invID)
 					end
 				itemTable.player = nil
@@ -287,7 +287,7 @@ vgui.Register("nutInventory", PANEL, "DFrame")
 
 local margin = 10
 hook.Add("CreateMenuButtons", "nutInventory", function(tabs)
-	if (hook.Run("CanPlayerViewInventory") ~= false) then
+	if (hook.Run("CanPlayerViewInventory") != false) then
 		tabs["inv"] = function(panel)
 			local inventory = LocalPlayer():getChar():getInv()
 
@@ -302,7 +302,7 @@ hook.Add("CreateMenuButtons", "nutInventory", function(tabs)
 				totalSize.y = math.max(totalSize.y, mainPanel:GetTall())
 
 				for id, item in pairs(inventory:getItems()) do
-					if (item.isBag and hook.Run("CanOpenBagPanel", item) ~= false) then
+					if (item.isBag and hook.Run("CanOpenBagPanel", item) != false) then
 						local inventory = item:getInv()
 
 						local childPanels = inventory:show(mainPanel)
