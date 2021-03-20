@@ -2,7 +2,7 @@ PLUGIN.name = "Chat Size Difference"
 PLUGIN.desc = "Overrides size for different chat types."
 PLUGIN.author = "Zoephix"
 
-nut.config.add("chatSizeDiff", true, "Whether or not to use different chat sizes.", nil, {
+nut.config.add("chatSizeDiff", false, "Whether or not to use different chat sizes.", nil, {
 	category = "chat"
 })
 
