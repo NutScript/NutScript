@@ -6,7 +6,7 @@ renderedIcons = renderedIcons or {}
 -- To make making inventory variant, This must be followed up.
 function renderNewIcon(panel, itemTable)
 	-- re-render icons
-	if ((itemTable.iconCam and !renderedIcons[string.lower(itemTable.model)]) or itemTable.forceRender) then
+	if ((itemTable.iconCam and not renderedIcons[string.lower(itemTable.model)]) or itemTable.forceRender) then
 		local iconCam = itemTable.iconCam
 		iconCam = {
 			cam_pos = iconCam.pos,
@@ -14,7 +14,7 @@ function renderNewIcon(panel, itemTable)
 			cam_fov = iconCam.fov,
 		}
 		renderedIcons[string.lower(itemTable.model)] = true
-		
+
 		panel.Icon:RebuildSpawnIconEx(
 			iconCam
 		)

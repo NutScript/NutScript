@@ -34,7 +34,7 @@ end)
 
 function PLUGIN:HUDPaintBackground()
 	local frameTime = FrameTime()
-	local scrW, scrH = surface.ScreenWidth(), surface.ScreenHeight()
+	local scrW, scrH = ScrW(), ScrH()
 
 	if (hasVignetteMaterial and nut.config.get("vignette")) then
 		vignetteAlphaDelta =

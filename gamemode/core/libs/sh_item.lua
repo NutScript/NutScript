@@ -19,7 +19,7 @@ function nut.item.load(path, baseID, isBaseItem)
 	if (uniqueID) then
 		uniqueID = (isBaseItem and "base_" or "")..uniqueID
 		nut.item.register(uniqueID, baseID, isBaseItem, path)
-	elseif (!path:find(".txt")) then
+	elseif (not path:find(".txt")) then
 		ErrorNoHalt(
 			"[NutScript] Item at '"..path.."' follows invalid "..
 			"naming convention!\n"
@@ -102,23 +102,23 @@ function nut.item.loadFromDir(directory)
 
 	files = file.Find(directory.."/base/*.lua", "LUA")
 
-	for k, v in ipairs(files) do
+	for _, v in ipairs(files) do
 		nut.item.load(directory.."/base/"..v, nil, true)
 	end
 
 	files, folders = file.Find(directory.."/*", "LUA")
 
-	for k, v in ipairs(folders) do
+	for _, v in ipairs(folders) do
 		if (v == "base") then
 			continue
 		end
 
-		for k2, v2 in ipairs(file.Find(directory.."/"..v.."/*.lua", "LUA")) do
+		for _, v2 in ipairs(file.Find(directory.."/"..v.."/*.lua", "LUA")) do
 			nut.item.load(directory.."/"..v .. "/".. v2, "base_"..v)
 		end
 	end
 
-	for k, v in ipairs(files) do
+	for _, v in ipairs(files) do
 		nut.item.load(directory.."/"..v)
 	end
 end

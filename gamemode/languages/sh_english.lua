@@ -259,5 +259,9 @@ LANGUAGE = {
 	panelAdded = "You have added a 3D panel.",
 	itemOnGround = "Your item has been placed on the ground.",
 	forbiddenActionStorage = "You can't do this action with storaged item.",
-	cantDropBagHasEquipped = "You can't drop bag that has equipped item."
+	cantDropBagHasEquipped = "You can't drop bag that has equipped item.",
+
+	-- 2021 patch
+	lookToUseAt = "You need to be looking at someone to use '@'",
+	mustProvideString = "You must provide a string for the variable",
 }

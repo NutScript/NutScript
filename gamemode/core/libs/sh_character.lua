@@ -105,7 +105,7 @@ do
 			local allowExistNames = nut.config.get("allowExistNames", true)
 
 			-- Fetch existing character names
-			if (CLIENT and #nut.char.names < 1 and !allowExistNames) then
+			if (CLIENT and #nut.char.names < 1 and not allowExistNames) then
 				netstream.Start("nutCharFetchNames")
 
 				netstream.Hook("nutCharFetchNames", function(data)
@@ -114,7 +114,7 @@ do
 			end
 
 			-- Check whether the chosen character name already exists
-			if (!nut.config.get("allowExistNames", true)) then
+			if (not nut.config.get("allowExistNames", true)) then
 				for k, v in pairs(nut.char.names) do
 					if (v == value) then
 						return false, "A character with this name already exists."
@@ -161,7 +161,7 @@ do
 
 			local minLength = nut.config.get("minDescLen", 16)
 
-			if (!value or #value:gsub("%s", "") < minLength) then
+			if (not value or #value:gsub("%s", "") < minLength) then
 				return false, "descMinLen", minLength
 			end
 		end
@@ -244,7 +244,7 @@ do
 			local faction = nut.faction.indices[data.faction]
 
 			if (faction) then
-				if (!data.model or !faction.models[data.model]) then
+				if (not data.model or not faction.models[data.model]) then
 					return false, "needModel"
 				end
 			else
@@ -337,7 +337,7 @@ do
 
 			data[key] = value
 
-			if (!noReplication and IsValid(client)) then
+			if (not noReplication and IsValid(client)) then
 				netstream.Start(
 					receiver or client,
 					"charData",
@@ -352,7 +352,7 @@ do
 			local data = character.vars.data or {}
 
 			if (key) then
-				if (!data) then
+				if (not data) then
 					return default
 				end
 
@@ -374,7 +374,7 @@ do
 
 			data[key] = value
 
-			if (!noReplication and IsValid(client)) then
+			if (not noReplication and IsValid(client)) then
 				local id
 
 				if (
@@ -396,7 +396,7 @@ do
 			local data = character.vars.vars or {}
 
 			if (key) then
-				if (!data) then
+				if (not data) then
 					return default
 				end
 
