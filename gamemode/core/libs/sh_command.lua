@@ -28,7 +28,7 @@ function nut.command.add(command, data)
 		-- Or if we specify a usergroup allowed to use this.
 		elseif (data.group) then
 			-- The group property can be a table of usergroups.
-			if (type(data.group) == "table") then
+			if istable(data.group) then
 				data.onCheckAccess = function(client)
 					-- Check if the client's group is allowed.
 					for _, v in ipairs(data.group) do
@@ -68,11 +68,11 @@ function nut.command.add(command, data)
 	local alias = data.alias
 
 	if (alias) then
-		if (type(alias) == "table") then
+		if istable(alias) then
 			for _, v in ipairs(alias) do
 				nut.command.list[v:lower()] = data
 			end
-		elseif (type(alias) == "string") then
+		elseif isstring(alias) then
 			nut.command.list[alias:lower()] = data
 		end
 	end
@@ -145,7 +145,7 @@ if (SERVER) then
 	-- Finds a player or gives an error notification.
 	function nut.command.findPlayer(client, name)
 		if isstring(name) then
-			if name == "^" then
+			if name == "^" then -- thank you Hein/Hankshark - Tov
 				return client
 			elseif name == "@" then
 				local trace = client:GetEyeTrace().Entity
@@ -193,7 +193,7 @@ if (SERVER) then
 			local result = results[1]
 
 			-- If a string is returned, it is a notification.
-			if (type(result) == "string") then
+			if isstring(result) then
 				-- Normal player here.
 				if (IsValid(client)) then
 					if (result:sub(1, 1) == "@") then
@@ -268,7 +268,7 @@ if (SERVER) then
 			local arguments2 = {}
 
 			for _, v in ipairs(arguments) do
-				if (type(v) == "string" or type(v) == "number") then
+				if (isstring(v) or isnumber(v)) then
 					arguments2[#arguments2 + 1] = tostring(v)
 				end
 			end
