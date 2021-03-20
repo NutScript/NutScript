@@ -406,10 +406,10 @@ nut.command.add("doorsethidden", {
 
 		-- Validate it is a door.
 		if (IsValid(entity) and entity:isDoor()) then
-			local hidden = util.tobool(arguments[1] or true)
+			local hidden = tobool(arguments[1] or true)
 
 			entity:setNetVar("hidden", hidden)
-			
+
 			PLUGIN:callOnDoorChildren(entity, function(child)
 				child:setNetVar("hidden", hidden)
 			end)

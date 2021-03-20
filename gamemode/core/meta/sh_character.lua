@@ -97,7 +97,7 @@ if (SERVER) then
 		end
 	end
 
-	-- Sets up the "appearance" related inforomation for the character.
+	-- Sets up the "appearance" related information for the character.
 	function CHAR:setup(noNetworking)
 		local client = self:getPlayer()
 
@@ -141,7 +141,7 @@ if (SERVER) then
 		local isCurrentChar = self and self:getID() == id
 
 		-- Return the player to the character menu.
-		if (self and self.steamID == steamID) then			
+		if (self and self.steamID == steamID) then
 			netstream.Start(client, "charKick", id, isCurrentChar)
 
 			if (isCurrentChar) then
@@ -200,12 +200,10 @@ function CHAR:getPlayer()
 	else
 		for k, v in ipairs(player.GetAll()) do
 			local char = v:getChar()
-			if (char) then
-				if (char:getID() == self:getID()) then
-					self.player = v
+			if char and (char:getID() == self:getID()) then
+				self.player = v
 
-					return v
-				end
+				return v
 			end
 		end
 	end

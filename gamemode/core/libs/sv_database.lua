@@ -72,7 +72,7 @@ modules.tmysql4 = {
 				if (result) then
 					result = result[1]
 
-					local queryStatus, queryError, affected, lastID, time, data = result.status, result.error, result.affected, result.lastid, result.time, result.data 
+					local queryStatus, queryError, affected, lastID, time, data = result.status, result.error, result.affected, result.lastid, result.time, result.data
 
 					if (queryStatus and queryStatus == true and callback) then
 						callback(data, lastID)
@@ -116,7 +116,7 @@ modules.tmysql4 = {
 			end
 		else
 			ThrowConnectionFault(fault)
-		end	
+		end
 	end
 }
 
