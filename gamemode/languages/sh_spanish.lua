@@ -218,7 +218,10 @@ LANGUAGE = {
 	vendorPriceReq = "Introduce el nuevo precio del objeto.",
 	vendorEditCurStock = "Editar Stock actual",
 	you = "Tú",
-
+	model = "Modelo",
+	business = "Negocios",
+	invalidFaction = "Has provisto una facción inválida.",
+	notAllowed = "Ésta acción no está permitida.",
 	-- 2021 patch
 
 	thirdpersonConfig = "Configuración de cámara en tercera persona",
