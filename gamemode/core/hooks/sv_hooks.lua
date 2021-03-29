@@ -721,7 +721,7 @@ function GM:CreateSalaryTimer(client)
 	local character = client:getChar()
 	if (not character) then return end
 
-	local faction = nut.faction.indices[character:getFaction()] or {}
+	local faction = nut.faction.indices[character:getFaction()] or nil
 	local class = nut.class.indices[character:getClass()] or nil
 	
 	local pay = hook.Run("GetSalaryAmount", client, faction, class) or (class and class.pay) or (faction and faction.pay) or nil --thank you Tov.
