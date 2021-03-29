@@ -721,11 +721,10 @@ function GM:CreateSalaryTimer(client)
 	local character = client:getChar()
 	if (not character) then return end
 
-	local faction = nut.faction.indices[character:getFaction()]
-	local class = nut.class.indices[character:getClass()]
-	if ((not faction or not isnumber(faction.pay) or faction.pay <= 0) and (not class or not isnumber(class.pay) or class.pay <= 0)) then
-		return
-	end
+	local faction = nut.faction.indices[character:getFaction()] or {}
+	local class = nut.class.indices[character:getClass()] or {}
+	
+	local pay = (class and class.pay) or (faction and faction.pay) or nil --thank you Tov.
 
 	local timerID = "nutSalary"..client:SteamID()
 	local timerFunc = timer.Exists(timerID) and timer.Adjust or timer.Create
@@ -737,9 +736,10 @@ function GM:CreateSalaryTimer(client)
 			return
 		end
 
-		local pay = hook.Run("GetSalaryAmount", client, faction, class) or class.pay or faction.pay
-		character:giveMoney(pay)
-		client:notifyLocalized("salary", nut.currency.get(pay))
+		if (pay) then
+			character:giveMoney(pay)
+			client:notifyLocalized("salary", nut.currency.get(pay))
+		end
 	end)
 end
 
