@@ -98,7 +98,7 @@ local PANEL = {}
 				local faction = nut.faction.indices[k]
 				
 				if (amount != 0) then
-					v:SetVisible(hook.Run("HideFactionInScoreboard",faction) != false or LocalPlayer():IsAdmin())
+					v:SetVisible(hook.Run("HideFactionInScoreboard", faction) or LocalPlayer():IsAdmin())
 				end
 			end
 
