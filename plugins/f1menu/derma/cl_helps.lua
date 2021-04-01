@@ -49,7 +49,6 @@
 				if (node.onGetHTML) then
 					local source = node:onGetHTML()
 					if IsValid(helpPanel) then
-						print("this triggered")
 						helpPanel:Remove()
 					end
 					if nut.gui.creditsPanel then
