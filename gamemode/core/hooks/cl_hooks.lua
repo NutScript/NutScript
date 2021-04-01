@@ -540,18 +540,19 @@ function GM:ScreenResolutionChanged(oldW, oldH)
 end
 
 function GM:NutScriptLoaded()
+	local namecache = {}
 	for _, PLUGIN in pairs(nut.plugin.list) do
-		local author64ID = tonumber(PLUGIN.author)
-		local authorSteamID = string.match(PLUGIN.author, "STEAM_", 1)
-
-		if (author64ID or authorSteamID) then
-			-- Store the Steam ID
-			PLUGIN.authorID = author64ID and util.SteamIDFrom64(PLUGIN.author) or PLUGIN.author
-
-			steamworks.RequestPlayerInfo(authorSteamID and util.SteamIDTo64(PLUGIN.author) or PLUGIN.author, function(steamName)
-				-- Update the author name
-				PLUGIN.author = steamName
-			end)
+		local authorID = (tonumber(PLUGIN.author) and tostring(PLUGIN.author)) or (string.match(PLUGIN.author, "STEAM_") and util.SteamIDTo64(PLUGIN.author)) or nil
+		if authorID then
+			if namecache[authorID] ~= nil then
+				PLUGIN.author = namecache[authorID]
+			else
+				steamworks.RequestPlayerInfo(authorID, function(newName)
+					namecache[authorID] = newName
+					PLUGIN.author = newName or PLUGIN.author
+				end)
+			end
 		end
 	end
+	nut.plugin.namecache = namecache
 end
