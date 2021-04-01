@@ -180,12 +180,10 @@ function PANEL:Init()
             curNum = k
             self.creditPanels[curNum]:SetSize(self:GetWide(), ScrH*0.05)
             self.creditPanels[curNum]:setPerson(v, true)
-            --self.creditPanels[curNum]:SizeToChildren(false, true)
             self.creditPanels[curNum]:Dock(TOP)
             self.creditPanels[curNum]:DockMargin(0,0,0,ScrH*0.01)
         else
             self.creditPanels[curNum]:setPerson(v, false)
-           -- self.creditPanels[curNum]:SizeToChildren(false, true)
             self.creditPanels[curNum]:Dock(TOP)
             self.creditPanels[curNum]:DockMargin(0,0,0,ScrH*0.01)
         end
