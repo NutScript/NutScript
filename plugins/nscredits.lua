@@ -8,6 +8,7 @@ local ScrW, ScrH = ScrW(), ScrH()
 local logoMat = Material("nutscript/logo.png")
 local logoGlowMat = Material("nutscript/logo_glow.png")
 local textureID = surface.GetTextureID("models/effects/portalfunnel_sheet")
+local sin = math.sin
 surface.CreateFont("nutSmallCredits", {
     font = "Roboto",
     size = 20,
@@ -141,8 +142,10 @@ end
 
 function PANEL:Paint(w,h)
     surface.SetMaterial(logoGlowMat)
+    surface.SetDrawColor(255, 255, 255, 64*sin(CurTime())+191)
     surface.DrawTexturedRect((w/2)-128,(h/2)-128,256,256)
     surface.SetMaterial(logoMat)
+    surface.SetDrawColor(255, 255, 255, 255)
     surface.DrawTexturedRect((w/2)-128,(h/2)-128,256,256)
 end
 
