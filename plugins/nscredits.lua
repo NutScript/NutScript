@@ -24,13 +24,14 @@ surface.CreateFont("nutBigCredits", {
 local authorCredits = {
     {desc = "Creator", steamid = "76561198030127257", color = Color(255, 0, 0)}, -- Chessnut
     {desc = "Co-Creator", steamid = "76561197999893894", color = Color(255, 0, 0)}, -- Black Tea
-    {desc = "Head Developer", steamid = "76561198060659964", color = Color(138,43,226)}, -- Zoephix
-    {desc = "Head Developer", steamid = "76561198070441753", color = Color(138,43,226)}, -- TovarischPootis
+    {desc = "Lead Developer", steamid = "76561198060659964", color = Color(138,43,226)}, -- Zoephix
+    {desc = "Lead Developer", steamid = "76561198070441753", color = Color(138,43,226)}, -- TovarischPootis
     {desc = "Developer", steamid = "76561198036551982", color = Color(34,139,34)}, -- Seamus
     {desc = "Developer", steamid = "76561198031437460", color = Color(34,139,34)}, -- Milk
 }
 
 local contributors = {desc = "View All Contributors", url = "https://github.com/NutScript/NutScript/graphs/contributors"}
+local discord = {desc = "Join the NutScript Community Discord", url = "https://discord.gg/ySZY8TY"}
 
 local PANEL = {}
 
@@ -103,6 +104,16 @@ function PANEL:Init()
     end
     self.contButton.Paint = function() end
     self.contButton:Dock(TOP)
+
+    self.discordButton = self:Add("DButton")
+    self.discordButton:SetFont("nutBigCredits")
+    self.discordButton:SetText(discord.desc)
+    self.discordButton.DoClick = function()
+        surface.PlaySound("buttons/button14.wav")
+		gui.OpenURL(discord.url)
+    end
+    self.discordButton.Paint = function() end
+    self.discordButton:Dock(TOP)
     self:SizeToChildren(true, true)
 end
 
