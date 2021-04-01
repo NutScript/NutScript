@@ -260,7 +260,7 @@ local PANEL = {}
 			text = "<font="..(CHAT_CLASS.font or "nutChatFont")..">"
 		end
 
-		text = hook.Run("ChatAddText", text, ...)
+		text = hook.Run("ChatAddText", text, ...) or text
 
 		for k, v in ipairs({...}) do
 			if (type(v) == "IMaterial") then
