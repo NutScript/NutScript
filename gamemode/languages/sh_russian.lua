@@ -5,6 +5,7 @@ Shadow Nova (http://steamcommunity.com/profiles/76561197989134302),
 Schwarz Kruppzo (http://steamcommunity.com/id/schwarzkruppzo),
 Neon (http://steamcommunity.com/id/ru_neon),
 kirukiru (https://steamcommunity.com/id/kiruthekillah/)
+Tov (https://steamcommunity.com/id/TOVARISCHPOOTIS)
 --]]
 
 NAME = "Русский"
@@ -255,5 +256,38 @@ LANGUAGE = {
 	flags = "Флаги",
 	moneyLeft = "Ваши деньги: ",
 	currentMoney = "Осталось денег: ",
-	moneyGiven = "Вы дали %s"
+	moneyGiven = "Вы дали %s",
+
+	-- 2021 patch
+	itemCreated = "Предмет успешно создан.",
+	flagGiveTitle = "Дать флаги",
+	flagGiveDesc = "Выдать следующие флаги игроку.",
+	flagTakeTitle = "Отнять флаги",
+	flagTakeDesc = "Отнять следующие флаги от игрока.",
+	limitFaction = "Данная фракция полна. Попробуйте попозже.",
+	toggleObserverTP = "Переключить телепортирование при наблюдении.",
+	toggleESPAdvanced = "Переключить расширенный режим ESP",
+	thirdpersonConfig = "Настройка третьего лица",
+	ammoLoadAll = "Зарадить всё",
+	ammoLoadAmount = "Зарадить %s",
+	ammoLoadCustom = "Зарадить...",
+	split = "Разделить",
+	splitHelp = "Введите сумму для разделения.",
+	splitHalf = "Разделить 1/2",
+	splitQuarter = "Разделить 1/4",
+	recognize = "Позволить этому персонажу узнать вашу личность.",
+	recognized = "Данный персонаж узнал вашу личность.",
+	already_recognized = "Данный персонаж уже знает вашу личность.",
+	untying = "Развязывание...",
+	beingUntied = "Вас развязывают...",
+	beingTied = "Вас связывают...",
+	sameOutfitCategory = "Такой вид экипировки на вас уже надет.",
+	noBusiness = "В данный момент вы не можете ничего купить.",
+	panelRemoved = "Вы удалили %s 3D панелей.",
+	panelAdded = "Вы добавили 3D панель.",
+	itemOnGround = "Вас предмет был положет на землю.",
+	forbiddenActionStorage = "Действие с хранимым предметом запрещено.",
+	cantDropBagHasEquipped = "Запрещено бросать сумку с экипированным предметом.",
+	lookToUseAt = "Необходимо смотреть на игрока для использования '@'",
+	mustProvideString = "Необходимо предьявить строковую для этой функции",
 }

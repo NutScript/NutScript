@@ -66,7 +66,7 @@ function ikon:init()
 	*/
 	OLD_HALOADD = OLD_HALOADD or halo.Add
 	function halo.Add(...)
-		if (ikon.rendering != true) then
+		if (ikon.rendering ~= true) then
 			OLD_HALOADD(...)
 		end
 	end
@@ -74,7 +74,7 @@ function ikon:init()
 	OLD_HALORENDER = OLD_HALORENDER or halo.Render
 	function halo.Render(...)
 
-		if (ikon.rendering != true) then
+		if (ikon.rendering ~= true) then
 			OLD_HALORENDER(...)
 		end
 	end

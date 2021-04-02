@@ -74,7 +74,7 @@ local PANEL = {}
 
 			if (!suppress or !suppress.class) then
 				local class = nut.class.list[LocalPlayer():getChar():getClass()]
-				
+
 				if (class) then
 					self.class = self.info:Add("DLabel")
 					self.class:Dock(TOP)
@@ -126,7 +126,7 @@ local PANEL = {}
 		end
 
 		if (self.time) then
-			local format = "%A, %d %B "..nut.config.get("yearAppendix", "").." %Y %T"
+			local format = "%A, %d %B "..nut.config.get("year") .. nut.config.get("yearAppendix", "").." %T"
 
 			self.time:SetText(L("curTime", nut.date.getFormatted(format)))
 			self.time.Think = function(this)

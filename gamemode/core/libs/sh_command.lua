@@ -28,10 +28,10 @@ function nut.command.add(command, data)
 		-- Or if we specify a usergroup allowed to use this.
 		elseif (data.group) then
 			-- The group property can be a table of usergroups.
-			if (type(data.group) == "table") then
+			if istable(data.group) then
 				data.onCheckAccess = function(client)
 					-- Check if the client's group is allowed.
-					for k, v in ipairs(data.group) do
+					for _, v in ipairs(data.group) do
 						if (client:IsUserGroup(v)) then
 							return true
 						end
@@ -43,7 +43,7 @@ function nut.command.add(command, data)
 			else
 				data.onCheckAccess = function(client)
 					return client:IsUserGroup(data.group)
-				end		
+				end
 			end
 		end
 	end
@@ -68,20 +68,20 @@ function nut.command.add(command, data)
 	local alias = data.alias
 
 	if (alias) then
-		if (type(alias) == "table") then
-			for k, v in ipairs(alias) do
+		if istable(alias) then
+			for _, v in ipairs(alias) do
 				nut.command.list[v:lower()] = data
 			end
-		elseif (type(alias) == "string") then
+		elseif isstring(alias) then
 			nut.command.list[alias:lower()] = data
 		end
 	end
-	
+
 	if (command == command:lower()) then
 		nut.command.list[command] = data
 	else
 		data.realCommand = command
-		
+
 		nut.command.list[command:lower()] = data
 	end
 end
@@ -122,7 +122,7 @@ function nut.command.extractArgs(text)
 			else
 				curString = curString..c
 			end
-		elseif (c == " " and curString != "") then
+		elseif (c == " " and curString ~= "") then
 			arguments[#arguments + 1] = curString
 			curString = ""
 		else
@@ -134,7 +134,7 @@ function nut.command.extractArgs(text)
 		end
 	end
 
-	if (curString != "") then
+	if (curString ~= "") then
 		arguments[#arguments + 1] = curString
 	end
 
@@ -144,22 +144,37 @@ end
 if (SERVER) then
 	-- Finds a player or gives an error notification.
 	function nut.command.findPlayer(client, name)
-		local target = type(name) == "string" and nut.util.findPlayer(name) or NULL
+		if isstring(name) then
+			if name == "^" then -- thank you Hein/Hankshark - Tov
+				return client
+			elseif name == "@" then
+				local trace = client:GetEyeTrace().Entity
+				if IsValid(trace) and trace:IsPlayer() then
+					return trace
+				else
+					client:notifyLocalized("lookToUseAt")
+					return
+				end
+			end
+			local target = nut.util.findPlayer(name) or NULL
 
-		if (IsValid(target)) then
-			return target
+			if (IsValid(target)) then
+				return target
+			else
+				client:notifyLocalized("plyNoExist")
+			end
 		else
-			client:notifyLocalized("plyNoExist")
+			client:notifyLocalized("mustProvideString")
 		end
 	end
-	
+
 	-- Finds a faction based on the uniqueID, and then the name if no such uniqueID exists.
 	function nut.command.findFaction(client, name)
 		if (nut.faction.teams[name]) then
 			return nut.faction.teams[name]
 		end
 
-		for k, v in ipairs(nut.faction.indices) do
+		for _, v in ipairs(nut.faction.indices) do
 			if (nut.util.stringMatches(L(v.name,client), name)) then
 				return v --This interrupt means we don't need an if statement below.
 			end
@@ -170,7 +185,7 @@ if (SERVER) then
 
 	-- Forces a player to run a command.
 	function nut.command.run(client, command, arguments)
-		local command = nut.command.list[command:lower()]
+		command = nut.command.list[command:lower()]
 
 		if (command) then
 			-- Run the command's callback and get the return.
@@ -178,7 +193,7 @@ if (SERVER) then
 			local result = results[1]
 
 			-- If a string is returned, it is a notification.
-			if (type(result) == "string") then
+			if isstring(result) then
 				-- Normal player here.
 				if (IsValid(client)) then
 					if (result:sub(1, 1) == "@") then
@@ -210,8 +225,8 @@ if (SERVER) then
 
 				match = post[1]:utf8sub(2, len)
 			end
-			
-			local match = match:lower()
+
+			match = match:lower()
 
 			local command = nut.command.list[match]
 			-- We have a valid, registered command.
@@ -252,8 +267,8 @@ if (SERVER) then
 		if ((client.nutNextCmd or 0) < CurTime()) then
 			local arguments2 = {}
 
-			for k, v in ipairs(arguments) do
-				if (type(v) == "string" or type(v) == "number") then
+			for _, v in ipairs(arguments) do
+				if (isstring(v) or isnumber(v)) then
 					arguments2[#arguments2 + 1] = tostring(v)
 				end
 			end

@@ -57,7 +57,7 @@ function entityMeta:setNetVar(key, value, receiver)
 
 	nut.net[self] = nut.net[self] or {}
 
-	if (nut.net[self][key] != value) then
+	if (nut.net[self][key] ~= value) then
 		nut.net[self][key] = value
 	end
 
@@ -65,7 +65,7 @@ function entityMeta:setNetVar(key, value, receiver)
 end
 
 function entityMeta:getNetVar(key, default)
-	if (nut.net[self] and nut.net[self][key] != nil) then
+	if (nut.net[self] and nut.net[self][key] ~= nil) then
 		return nut.net[self][key]
 	end
 
@@ -86,7 +86,7 @@ playerMeta.getLocalVar = entityMeta.getNetVar
 function getNetVar(key, default)
 	local value = nut.net.globals[key]
 
-	return value != nil and value or default
+	return value ~= nil and value or default
 end
 
 hook.Add("EntityRemoved", "nCleanUp", function(entity)

@@ -97,7 +97,7 @@ function PLUGIN:PostDrawHUD()
 	end
 
 	if (icon) then
-		if (icon != lastIcon) then
+		if (icon ~= lastIcon) then
 			lastIcon = icon
 		end
 

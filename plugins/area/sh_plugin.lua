@@ -54,6 +54,27 @@ if (SERVER) then
 		return clientPos:WithinAABox(areaData.minVector, areaData.maxVector), areaData
 	end
 
+	function PLUGIN:createAreaTimer()
+		timer.Create("nutAreaController", 0.33, 0, function()
+			for k, v in ipairs(player.GetAll()) do
+				local char = v:getChar()
+
+				if (char and v:Alive()) then
+					local area = v:getArea()
+					for id, areaData in pairs(nut.area.getAllArea()) do
+						local clientPos = v:GetPos() + v:OBBCenter()
+
+						if (clientPos:WithinAABox(areaData.minVector, areaData.maxVector) and area ~= id) then
+							v.curArea = id
+
+							hook.Run("OnPlayerAreaChanged", v, id)
+						end
+					end
+				end
+			end
+		end)
+	end
+
 	-- This is for continous check (ex: checking gas area whatever.)
 	function playerMeta:getArea()
 		return self.curArea
@@ -65,6 +86,10 @@ if (SERVER) then
 
 	function PLUGIN:LoadData()
 		self.areaTable = self:getData() or {}
+
+		if (#self.areaTable > 0) then
+			self:createAreaTimer()
+		end
 	end
 
 	function PLUGIN:PlayerLoadedChar(client, character, lastChar)
@@ -114,28 +139,6 @@ if (SERVER) then
 
 		PLUGIN:saveAreas()
 	end
-
-	-- Timer instead of heavy think.
-	timer.Create("nutAreaController", 0.33, 0, function()
-		for k, v in ipairs(player.GetAll()) do
-			local char = v:getChar()
-
-			if (char and v:Alive()) then
-				local area = v:getArea()
-				for id, areaData in pairs(nut.area.getAllArea()) do
-					local clientPos = v:GetPos() + v:OBBCenter()
-
-					if (clientPos:WithinAABox(areaData.minVector, areaData.maxVector)) then
-						if (area != id) then
-							v.curArea = id
-
-							hook.Run("OnPlayerAreaChanged", v, id)
-						end
-					end
-				end
-			end
-		end
-	end)
 
 	-- If area is changed, set display Area's Name to the client's screen.
 	function PLUGIN:OnPlayerAreaChanged(client, areaID)
@@ -336,9 +339,9 @@ else
 		scale = Lerp(ft*1, scale, targetScale)
 
 		-- change event
-		if (maxDisplay != curChar and curChar < strEnd) then
+		if (maxDisplay ~= curChar and curChar < strEnd) then
 			curChar = maxDisplay
-			if (string.utf8sub(dispString, curChar, curChar) != " ") then
+			if (string.utf8sub(dispString, curChar, curChar) ~= " ") then
 				LocalPlayer():EmitSound(tickSound, 100, math.random(190, 200))
 			end
 		end
@@ -370,7 +373,7 @@ else
 		end
 
 		if (maxDisplay >= strEnd) then
-			if (dieTrigger != true) then
+			if (dieTrigger ~= true) then
 				dieTrigger = true
 				dieTimer = RealTime() + 2
 			else
@@ -414,6 +417,10 @@ nut.command.add("areaadd", {
 
 			nut.area.addArea(name, min, max)
 
+			if (SERVER and !timer.Exists("nutAreaController")) then
+				PLUGIN:createAreaTimer()
+			end
+
 			return "@areaAdded", name
 		end
 	end
@@ -433,6 +440,10 @@ nut.command.add("arearemove", {
 		if (areaData) then
 			table.remove(PLUGIN.areaTable, areaID)
 			PLUGIN:saveAreas()
+
+			if (SERVER and #nut.area.getAllArea() < 1) then
+				timer.Remove("nutAreaController")
+			end
 
 			return "@areaRemoved", areaData.name
 		end

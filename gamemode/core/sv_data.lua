@@ -34,7 +34,7 @@ function nut.data.get(key, default, global, ignoreMap, refresh)
 	if (!refresh) then
 		local stored = nut.data.stored[key]
 
-		if (stored != nil) then
+		if (stored ~= nil) then
 			return stored
 		end
 	end
@@ -47,7 +47,7 @@ function nut.data.get(key, default, global, ignoreMap, refresh)
 	-- Read the data from a local file.
 	local contents = file.Read(path..key..".txt", "DATA")
 
-	if (contents and contents != "") then
+	if (contents and contents ~= "") then
 		-- Decode the contents and return the data.
 		local status, decoded = pcall(pon.decode, contents)
 
@@ -55,7 +55,7 @@ function nut.data.get(key, default, global, ignoreMap, refresh)
 			local value = decoded[1]
 			nut.data.stored[key] = value
 
-			if (value != nil) then
+			if (value ~= nil) then
 				return value
 			else
 				return default
@@ -80,7 +80,7 @@ function nut.data.delete(key, global, ignoreMap)
 	-- Read the data from a local file.
 	local contents = file.Read(path..key..".txt", "DATA")
 
-	if (contents and contents != "") then
+	if (contents and contents ~= "") then
 		file.Delete(path..key..".txt")
 		nut.data.stored[key] = nil
 		return true

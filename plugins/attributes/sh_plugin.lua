@@ -21,7 +21,7 @@ nut.char.registerVar("attribs", {
 	isLocal = true,
 	index = 4,
 	onValidate = function(value, data, client)
-		if (value != nil) then
+		if (value ~= nil) then
 			if (istable(value)) then
 				local count = 0
 

@@ -107,7 +107,7 @@ function GM:CanPlayerDropItem(client, item)
 
 		if (inventory) then
 			local items = inventory:getItems()
-			
+
 			for id, item in pairs(items) do
 				if (not item.ignoreEquipCheck and item:getData("equip") == true) then
 					client:notifyLocalized("cantDropBagHasEquipped")
@@ -158,7 +158,7 @@ function GM:CanPlayerTakeItem(client, item)
 end
 
 function GM:PlayerShouldTakeDamage(client, attacker)
-	return client:getChar() != nil
+	return client:getChar() ~= nil
 end
 
 function GM:EntityTakeDamage(entity, dmgInfo)
@@ -607,7 +607,7 @@ end
 
 function GM:OnServerLog(client, logType, ...)
 	for k, v in pairs(nut.util.getAdmins()) do
-		if (hook.Run("CanPlayerSeeLog", v, logType) != false) then
+		if (hook.Run("CanPlayerSeeLog", v, logType) ~= false) then
 			nut.log.send(v, nut.log.getString(client, logType, ...))
 		end
 	end
@@ -660,7 +660,7 @@ Issues with ULX/Ulib on your server will be ignored and we're
 going to consider that you're taking the risk of ULX/Ulib's 
 critical performance issue.
 
-Nutscript 1.1 only displays this message when you have ULX or
+Nutscript 1.2 only displays this message when you have ULX or
 ULib on your server.
 
                                -Nutscript Development Team
@@ -722,9 +722,11 @@ function GM:CreateSalaryTimer(client)
 	if (not character) then return end
 
 	local faction = nut.faction.indices[character:getFaction()]
-	if (not faction or not isnumber(faction.pay) or faction.pay <= 0) then
-		return
-	end
+	local class = nut.class.indices[character:getClass()]
+	
+	local pay = hook.Run("GetSalaryAmount", client, faction, class) or (class and class.pay) or (faction and faction.pay) or nil
+	
+	if (!pay) then return end
 
 	local timerID = "nutSalary"..client:SteamID()
 	local timerFunc = timer.Exists(timerID) and timer.Adjust or timer.Create
@@ -736,8 +738,6 @@ function GM:CreateSalaryTimer(client)
 			return
 		end
 
-
-		local pay = hook.Run("GetSalaryAmount", client, faction) or faction.pay
 		character:giveMoney(pay)
 		client:notifyLocalized("salary", nut.currency.get(pay))
 	end)

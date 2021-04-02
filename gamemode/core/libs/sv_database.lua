@@ -1,8 +1,6 @@
 nut.db = nut.db or {}
 nut.db.queryQueue = nut.db.queue or {}
 
-nut.util.include("nutscript/gamemode/config/sv_database.lua")
-
 local function ThrowQueryFault(query, fault)
 	MsgC(Color(255, 0, 0), "* "..query.."\n")
 	MsgC(Color(255, 0, 0), fault.."\n")
@@ -74,12 +72,10 @@ modules.tmysql4 = {
 				if (result) then
 					result = result[1]
 
-					local queryStatus, queryError, affected, lastID, time, data = result.status, result.error, result.affected, result.lastid, result.time, result.data 
+					local queryStatus, queryError, affected, lastID, time, data = result.status, result.error, result.affected, result.lastid, result.time, result.data
 
-					if (queryStatus and queryStatus == true) then
-						if (callback) then
-							callback(data, lastID)
-						end
+					if (queryStatus and queryStatus == true and callback) then
+						callback(data, lastID)
 					end
 				else
 					file.Write("nut_queryerror.txt", query)
@@ -98,8 +94,8 @@ modules.tmysql4 = {
 		return tmysql and tmysql.escape and tmysql.escape(value) or sql.SQLStr(value, true)
 	end,
 	connect = function(callback)
-		if (!pcall(require, "tmysql4")) then
-			return setNetVar("dbError", system.IsWindows() and "Server is missing VC++ redistributables!" or "Server is missing binaries for tmysql4!")
+		if (not pcall(require, "tmysql4")) then
+			return setNetVar("dbError", system.IsWindows() and "Server is missing VC++ redistributables! " or "Server is missing binaries for tmysql4! ")
 		end
 
 		local hostname = nut.db.hostname
@@ -120,7 +116,7 @@ modules.tmysql4 = {
 			end
 		else
 			ThrowConnectionFault(fault)
-		end	
+		end
 	end
 }
 
@@ -189,7 +185,7 @@ modules.mysqloo = {
 
 		for k, db in pairs(nut.db.pool) do
 			local queueSize = db:queueSize()
-			if (!lowest || queueSize < lowestCount) then
+			if (not lowest or queueSize < lowestCount) then
 				lowest = db
 				lowestCount = queueSize
 				lowestIndex = k
@@ -203,11 +199,11 @@ modules.mysqloo = {
 		return lowest, lowestIndex
 	end,
 	connect = function(callback)
-		if (!pcall(require, "mysqloo")) then
-			return setNetVar("dbError", system.IsWindows() and "Server is missing VC++ redistributables!" or "Server is missing binaries for mysqloo!")
+		if (not pcall(require, "mysqloo")) then
+			return setNetVar("dbError", system.IsWindows() and "Server is missing VC++ redistributables! " or "Server is missing binaries for mysqloo! ")
 		end
 
-		if (mysqloo.VERSION != "9" || !mysqloo.MINOR_VERSION || tonumber(mysqloo.MINOR_VERSION) < 1) then
+		if (mysqloo.VERSION ~= "9" or not mysqloo.MINOR_VERSION or tonumber(mysqloo.MINOR_VERSION) < 1) then
 			MsgC(Color(255, 0, 0), "You are using an outdated mysqloo version\n")
 			MsgC(Color(255, 0, 0), "Download the latest mysqloo9 from here\n")
 			MsgC(Color(86, 156, 214), "https://github.com/syl0r/MySQLOO/releases")
@@ -251,7 +247,7 @@ modules.mysqloo = {
 					if (callback) then
 						callback()
 					end
-					
+
 					hook.Run("OnMySQLOOConnected")
 				end
 			end
@@ -339,7 +335,7 @@ function nut.db.connect(callback, reconnect)
 		nut.db.escape = dbModule.escape
 		nut.db.query = dbModule.query
 	else
-		ErrorNoHalt("[NutScript] '"..(nut.db.module or "nil").."' is not a valid data storage method!\n")
+		ErrorNoHalt("[NutScript] '"..(nut.db.module or "nil").."' is not a valid data storage method! \n")
 	end
 end
 
@@ -356,7 +352,6 @@ CREATE TABLE IF NOT EXISTS `nut_players` (
 	`_intro` BINARY(1) NULL DEFAULT 0,
 	PRIMARY KEY (`_steamID`)
 );
-
 CREATE TABLE IF NOT EXISTS `nut_characters` (
 	`_id` INT(12) NOT NULL AUTO_INCREMENT,
 	`_steamID` VARCHAR(20) NOT NULL COLLATE 'utf8mb4_general_ci',
@@ -372,14 +367,12 @@ CREATE TABLE IF NOT EXISTS `nut_characters` (
 	`_faction` VARCHAR(24) DEFAULT NULL COLLATE 'utf8mb4_general_ci',
 	PRIMARY KEY (`_id`)
 );
-
 CREATE TABLE IF NOT EXISTS `nut_inventories` (
 	`_invID` INT(12) NOT NULL AUTO_INCREMENT,
 	`_charID` INT(12) NULL DEFAULT NULL,
 	`_invType` VARCHAR(24) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
 	PRIMARY KEY (`_invID`)
 );
-
 CREATE TABLE IF NOT EXISTS `nut_items` (
 	`_itemID` INT(12) NOT NULL AUTO_INCREMENT,
 	`_invID` INT(12) NULL DEFAULT NULL,
@@ -390,7 +383,6 @@ CREATE TABLE IF NOT EXISTS `nut_items` (
 	`_y` INT(4),
 	PRIMARY KEY (`_itemID`)
 );
-
 CREATE TABLE IF NOT EXISTS `nut_invdata` (
 	`_invID` INT(12) NOT NULL,
 	`_key` VARCHAR(32) NOT NULL COLLATE 'utf8mb4_general_ci',
@@ -409,7 +401,6 @@ CREATE TABLE IF NOT EXISTS nut_players (
 	_data varchar,
 	_intro binary
 );
-
 CREATE TABLE IF NOT EXISTS nut_characters (
 	_id integer PRIMARY KEY AUTOINCREMENT,
 	_steamID varchar,
@@ -424,13 +415,11 @@ CREATE TABLE IF NOT EXISTS nut_characters (
 	_money varchar,
 	_faction varchar
 );
-
 CREATE TABLE IF NOT EXISTS nut_inventories (
 	_invID integer PRIMARY KEY AUTOINCREMENT,
 	_charID integer,
 	_invType varchar
 );
-
 CREATE TABLE IF NOT EXISTS nut_items (
 	_itemID integer PRIMARY KEY AUTOINCREMENT,
 	_invID integer,
@@ -440,7 +429,6 @@ CREATE TABLE IF NOT EXISTS nut_items (
 	_x integer,
 	_y integer
 );
-
 CREATE TABLE IF NOT EXISTS nut_invdata (
 	_invID integer,
 	_key text,
@@ -509,7 +497,7 @@ end
 local resetCalled = 0
 concommand.Add("nut_recreatedb", function(client)
 	-- this command can be run in RCON or SERVER CONSOLE
-	if (!IsValid(client)) then
+	if (not IsValid(client)) then
 		if (resetCalled < RealTime()) then
 			resetCalled = RealTime() + 3
 
@@ -682,6 +670,46 @@ function nut.db.delete(dbTable, condition)
 		d:resolve({results = results, lastID = lastID})
 	end)
 	return d
+end
+
+local defaultConfig = {
+	module = "sqlite",
+	hostname = "127.0.0.1",
+	username = "",
+	password = "",
+	database = "",
+	port = 3306
+}
+
+local validConfig = {
+	engine.ActiveGamemode().."/database.json",
+	engine.ActiveGamemode().."/nutscript.json",
+	"nutscript/database.json",
+	"nutscript/nutscript.json"
+}
+
+function GM:SetupDatabase()
+	for _, configPath in ipairs(validConfig) do
+		local config = file.Read(tostring(configPath), "LUA")
+
+		if (config) then
+			nut.db.config = config
+
+			for k, v in pairs(util.JSONToTable(nut.db.config)) do
+				nut.db[k] = v
+			end
+
+			break
+		end
+	end
+
+	if (not nut.db.config) then
+		MsgC(Color(255, 0, 0), "Database not configured.\n")
+
+		for k, v in pairs(defaultConfig) do
+			nut.db[k] = v
+		end
+	end
 end
 
 function GM:OnMySQLOOConnected()

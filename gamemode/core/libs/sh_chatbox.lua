@@ -7,6 +7,11 @@ if (!nut.command) then
 	include("sh_command.lua")
 end
 
+-- Returns a timestamp
+function nut.chat.timestamp(ooc)
+	return nut.config.get("chatShowTime") and (ooc and " " or "").."("..nut.date.getFormatted("%H:%M")..")"..(ooc and "" or " ") or ""
+end
+
 -- Registers a new chat type with the information provided.
 function nut.chat.register(chatType, data)
 	if (!data.onCanHear) then
@@ -52,9 +57,10 @@ function nut.chat.register(chatType, data)
 				color = data.onGetColor(speaker, text)
 			end
 
+			local timestamp = nut.chat.timestamp(false)
 			local translated = L2(chatType.."Format", name, text)
 
-			chat.AddText(color, translated or string.format(data.format, name, text))
+			chat.AddText(timestamp, color, translated or timestamp..string.format(data.format, name, text))
 		end
 	end
 
@@ -141,12 +147,12 @@ if (SERVER) then
 	function nut.chat.send(speaker, chatType, text, anonymous, receivers)
 		local class = nut.chat.classes[chatType]
 
-		if (class and class.onCanSay(speaker, text) != false) then
+		if (class and class.onCanSay(speaker, text) ~= false) then
 			if (class.onCanHear and !receivers) then
 				receivers = {}
 
 				for k, v in ipairs(player.GetAll()) do
-					if (v:getChar() and class.onCanHear(speaker, v) != false) then
+					if (v:getChar() and class.onCanHear(speaker, v) ~= false) then
 						receivers[#receivers + 1] = v
 					end
 				end
@@ -169,7 +175,7 @@ else
 			if (class) then
 				CHAT_CLASS = class
 					class.onChatAdd(client, text, anonymous)
-					if (SOUND_CUSTOM_CHAT_SOUND and SOUND_CUSTOM_CHAT_SOUND != "") then
+					if (SOUND_CUSTOM_CHAT_SOUND and SOUND_CUSTOM_CHAT_SOUND ~= "") then
 						surface.PlaySound(SOUND_CUSTOM_CHAT_SOUND)
 					else
 						chat.PlaySound()
@@ -278,15 +284,19 @@ do
 			end,
 			onChatAdd = function(speaker, text)
 				local icon = "icon16/user.png"
+				local customIcons = {
+					["STEAM_0:1:34930764"] = "icon16/script_gear.png", -- Chessnut
+					["STEAM_0:0:19814083"] = "icon16/gun.png", -- Black Tea the edgiest man
+					["STEAM_0:0:50197118"] = "icon16/script_gear.png", -- Zoephix
+					["STEAM_0:1:55088012"] = "icon16/script_gear.png" -- TovarischPootis
+				}
 
-				-- man, I did all that works and I deserve differnet icon on ooc chat
+				-- man, I did all that works and I deserve different icon on ooc chat
 				-- if you dont like it
 				-- well..
 				-- it's on your own.
-				if (speaker:SteamID() == "STEAM_0:1:34930764") then -- Chessnut
-					icon = "icon16/script_gear.png"
-				elseif (speaker:SteamID() == "STEAM_0:0:19814083") then -- Black Tea the edgiest man
-					icon = "icon16/gun.png"
+				if (customIcons[speaker:SteamID()]) then
+					icon = customIcons[speaker:SteamID()]
 				elseif (speaker:IsSuperAdmin()) then
 					icon = "icon16/shield.png"
 				elseif (speaker:IsAdmin()) then
@@ -299,7 +309,7 @@ do
 
 				icon = Material(hook.Run("GetPlayerIcon", speaker) or icon)
 
-				chat.AddText(icon, Color(255, 50, 50), " [OOC] ", speaker, color_white, ": "..text)
+				chat.AddText(icon, nut.chat.timestamp(true), Color(255, 50, 50), " [OOC] ", speaker, color_white, ": "..text)
 			end,
 			prefix = {"//", "/ooc"},
 			noSpaceAfter = true,
@@ -332,7 +342,7 @@ do
 				speaker.nutLastLOOC = CurTime()
 			end,
 			onChatAdd = function(speaker, text)
-				chat.AddText(Color(255, 50, 50), "[LOOC] ", nut.config.get("chatColor"), speaker:Name()..": "..text)
+				chat.AddText(nut.chat.timestamp(false), Color(255, 50, 50), "[LOOC] ", nut.config.get("chatColor"), speaker:Name()..": "..text)
 			end,
 			onCanHear = nut.config.get("chatRange", 280),
 			prefix = {".//", "[[", "/looc"},

@@ -53,7 +53,7 @@ function ITEM:removeOutfit(client)
 	self:setData("equip", nil)
 
 	-- Revert the model, skin, and bodygroups.
-	if (hook.Run("CanOutfitChangeModel", self) != false) then
+	if (hook.Run("CanOutfitChangeModel", self) ~= false) then
 		character:setModel(character:getData("oldMdl", character:getModel()))
 		character:setData("oldMdl", nil)
 
@@ -147,7 +147,7 @@ ITEM.functions.Equip = {
 
 		item:setData("equip", true)
 
-		if (hook.Run("CanOutfitChangeModel", item) != false) then
+		if (hook.Run("CanOutfitChangeModel", item) ~= false) then
 			char:setData(
 				"oldMdl",
 				char:getData("oldMdl", item.player:GetModel())

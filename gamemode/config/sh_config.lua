@@ -62,6 +62,10 @@ nut.config.add("loocDelayAdmin", false, "Whether or not LOOC chat delay is enabl
 	category = "chat"
 })
 
+nut.config.add("chatShowTime", false, "Whether or not to show timestamps in front of chat messages.", nil, {
+	category = "chat"
+})
+
 nut.config.add("spawnTime", 5, "The time it takes to respawn.", nil, {
 	data = {min = 0, max = 10000},
 	category = "characters"

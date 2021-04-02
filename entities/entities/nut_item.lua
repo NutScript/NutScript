@@ -57,6 +57,7 @@ if (SERVER) then
 		self:PhysicsInit(SOLID_VPHYSICS)
 		self:SetSolid(SOLID_VPHYSICS)
 		self:setNetVar("id", itemTable.uniqueID)
+		self:setNetVar("instanceID", itemTable:getID())
 		self.nutItemID = itemID
 
 		if (table.Count(itemTable.data) > 0) then
@@ -192,11 +193,11 @@ else
 end
 
 function ENT:getItemID()
-	return self:getNetVar("id", "")
+	return self:getNetVar("instanceID", "")
 end
 
 function ENT:getItemTable()
-	return nut.item.list[self:getItemID()]
+	return nut.item.instances[self:getItemID()]
 end
 
 function ENT:getData(key, default)

@@ -153,7 +153,7 @@ function PANEL:Init()
 			surface.DrawOutlinedRect(0, 0, w, h)
 		end
 		button.DoClick = function(this)
-			if (self.selected != this) then
+			if (self.selected ~= this) then
 				self.selected = this
 				self:loadItems(realName)
 				timer.Simple(0.01, function() 
@@ -213,7 +213,7 @@ function PANEL:loadItems(category, search)
 		end
 
 		if (itemTable.category == category) then
-			if (search and search != "" and !L(itemTable.name):lower():find(search, 1, true)) then
+			if (search and search ~= "" and !L(itemTable.name):lower():find(search, 1, true)) then
 				continue
 			end
 
@@ -445,7 +445,7 @@ PANEL = {}
 vgui.Register("nutBusinessCheckout", PANEL, "DFrame")
 
 hook.Add("CreateMenuButtons", "nutBusiness", function(tabs)
-	if (hook.Run("BuildBusinessMenu", panel) != false) then
+	if (hook.Run("BuildBusinessMenu", panel) ~= false) then
 		tabs["business"] = function(panel)
 			panel:Add("nutBusiness")
 		end

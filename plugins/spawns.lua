@@ -72,7 +72,7 @@ nut.command.add("spawnadd", {
 			end
 
 			if (info) then
-				if (class and class != "") then
+				if (class and class ~= "") then
 					local found = false
 
 					for k, v in ipairs(nut.class.list) do

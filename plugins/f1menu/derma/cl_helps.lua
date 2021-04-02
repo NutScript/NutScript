@@ -1,11 +1,11 @@
-if (CLIENT) then
+
 	local HELP_DEFAULT
 
-	hook.Add("CreateMenuButtons", "nutHelpMenu", function(tabs)		
+	hook.Add("CreateMenuButtons", "nutHelpMenu", function(tabs)
 		HELP_DEFAULT = [[
 			<div id="parent"><div id="child">
 				<center>
-				    <img src="http://img2.wikia.nocookie.net/__cb20140827051941/nutscript/images/c/c9/Logo.png"></img>
+				    <img src="https://static.miraheze.org/nutscriptwiki/2/26/Nutscript.png"></img>
 					<br><font size=15>]] .. L"helpDefault" .. [[</font>
 				</center>
 			</div></div>
@@ -48,8 +48,24 @@ if (CLIENT) then
 			tree.OnNodeSelected = function(this, node)
 				if (node.onGetHTML) then
 					local source = node:onGetHTML()
+					if IsValid(helpPanel) then
+						helpPanel:Remove()
+					end
+					if nut.gui.creditsPanel then
+						nut.gui.creditsPanel:Remove()
+					end
 
-					if (source:sub(1, 4) == "http") then
+					helpPanel = panel:Add("DListView")
+					helpPanel:Dock(FILL)
+					helpPanel.Paint = function()
+					end
+					helpPanel:InvalidateLayout(true)
+
+					html = helpPanel:Add("DHTML")
+					html:Dock(FILL)
+					html:SetHTML(header..HELP_DEFAULT)
+
+					if (source and source:sub(1, 4) == "http") then
 						html:OpenURL(source)
 					else
 						html:SetHTML(header..node:onGetHTML().."</body></html>")
@@ -57,11 +73,17 @@ if (CLIENT) then
 				end
 			end
 
-			html = panel:Add("DHTML")
-			html:Dock(FILL)
-			html:SetHTML(header..HELP_DEFAULT)
+			if not IsValid(helpPanel) then
+				helpPanel = panel:Add("DListView")
+				helpPanel:Dock(FILL)
+				helpPanel.Paint = function()
+				end
 
-			local tabs = {}
+				html = helpPanel:Add("DHTML")
+				html:Dock(FILL)
+				html:SetHTML(header..HELP_DEFAULT)
+			end
+			tabs = {}
 			hook.Run("BuildHelpMenu", tabs)
 
 			for k, v in SortedPairs(tabs) do
@@ -75,7 +97,6 @@ if (CLIENT) then
 			end
 		end
 	end)
-end
 
 hook.Add("BuildHelpMenu", "nutBasicHelp", function(tabs)
 	tabs["commands"] = function(node)
@@ -84,14 +105,14 @@ hook.Add("BuildHelpMenu", "nutBasicHelp", function(tabs)
 		for k, v in SortedPairs(nut.command.list) do
 			local allowed = false
 
-			if (v.adminOnly and !LocalPlayer():IsAdmin()or v.superAdminOnly and !LocalPlayer():IsSuperAdmin()) then
+			if (v.adminOnly and not LocalPlayer():IsAdmin()or v.superAdminOnly and not LocalPlayer():IsSuperAdmin()) then
 				continue
 			end
 
 			if (v.group) then
 				if (istable(v.group)) then
-					for k, v in pairs(v.group) do
-						if (LocalPlayer():IsUserGroup(v)) then
+					for _, v1 in pairs(v.group) do
+						if (LocalPlayer():IsUserGroup(v1)) then
 							allowed = true
 
 							break
@@ -107,28 +128,6 @@ hook.Add("BuildHelpMenu", "nutBasicHelp", function(tabs)
 			if (allowed) then
 				body = body.."<h2>/"..k.."</h2><strong>Syntax:</strong> <em>"..v.syntax.."</em><br /><br />"
 			end
-		end
-
-		return body
-	end
-
-	tabs["plugins"] = function(node)
-		local body = ""
-
-		for k, v in SortedPairsByMemberValue(nut.plugin.list, "name") do
-			body = (body..[[
-				<p>
-					<span style="font-size: 22;"><b>%s</b><br /></span>
-					<span style="font-size: smaller;">
-					<b>%s</b>: %s<br />
-					<b>%s</b>: %s
-			]]):format(v.name or "Unknown", L"desc", v.desc or L"noDesc", L"author", v.author)
-
-			if (v.version) then
-				body = body.."<br /><b>"..L"version".."</b>: "..v.version
-			end
-
-			body = body.."</span></p>"
 		end
 
 		return body
@@ -156,5 +155,27 @@ hook.Add("BuildHelpMenu", "nutBasicHelp", function(tabs)
 		end
 
 		return body.."</table>"
+	end
+
+	tabs["plugins"] = function(node)
+		local body = ""
+
+		for _, v in SortedPairsByMemberValue(nut.plugin.list, "name") do
+			body = (body..[[
+				<p>
+					<span style="font-size: 22;"><b>%s</b><br /></span>
+					<span style="font-size: smaller;">
+					<b>%s</b>: %s<br />
+					<b>%s</b>: %s
+			]]):format(v.name or "Unknown", L"desc", v.desc or L"noDesc", L"author", nut.plugin.namecache[v.author] or v.author)
+
+			if (v.version) then
+				body = body.."<br /><b>"..L"version".."</b>: "..v.version
+			end
+
+			body = body.."</span></p>"
+		end
+
+		return body
 	end
 end)

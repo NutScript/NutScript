@@ -25,13 +25,13 @@ end)
 function getNetVar(key, default)
 	local value = nut.net.globals[key]
 
-	return value != nil and value or default
+	return value ~= nil and value or default
 end
 
 function entityMeta:getNetVar(key, default)
 	local index = self:EntIndex()
 
-	if (nut.net[index] and nut.net[index][key] != nil) then
+	if (nut.net[index] and nut.net[index][key] ~= nil) then
 		return nut.net[index][key]
 	end
 
