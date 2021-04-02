@@ -12,6 +12,12 @@ local easeInBack, easeOutBack, easeInOutBack, easeOutInBack
 local easeInElastic, easeOutElastic, easeInOutElastic, easeOutInElastic
 local easeInBounce, easeOutBounce, easeInOutBounce, easeOutInBounce
 
+--[[
+t = timeElapsed
+tMax = duration of animation/ending time of animation
+start = starting time
+delta = change to apply per change ]]
+
 function nut.ease.easeIn(t, tMax, start, delta)
     return start + (delta * easeIn(t / tMax))
 end
