@@ -94,6 +94,12 @@ local PANEL = {}
 				elseif (!visible and amount > 0) then
 					v:SetVisible(true)
 				end
+				
+				local faction = nut.faction.indices[k]
+				
+				if (amount != 0) then
+					v:SetVisible(hook.Run("ShowFactionInScoreboard", faction) ~= false or LocalPlayer():IsAdmin())
+				end
 			end
 
 			for k, v in pairs(self.slots) do
