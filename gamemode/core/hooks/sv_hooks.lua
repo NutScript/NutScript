@@ -53,6 +53,13 @@ function GM:PlayerInitialSpawn(client)
 			"nutDataSync",
 			data, client.firstJoin, client.lastJoin
 		)
+
+		for _, v in pairs(nut.item.instances) do
+			if v.entity and v.invID == 0 then
+				v:sync(client)
+			end
+		end
+
 		hook.Run("PlayerNutDataLoaded", client)
 	end)
 
