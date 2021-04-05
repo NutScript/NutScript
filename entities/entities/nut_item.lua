@@ -43,8 +43,7 @@ if (SERVER) then
 		local itemTable = nut.item.instances[itemID]
 		if (not itemTable) then return self:Remove() end
 
-
-		netstream.Start(nil, "syncItemOnEntsetItem", itemID, itemTable.uniqueID)
+		itemTable:sync() -- sync it with the clients to be able to properly interact with the item
 
 		local model = itemTable.onGetDropModel
 			and itemTable:onGetDropModel(self)
@@ -126,11 +125,6 @@ if (SERVER) then
 		return true
 	end
 else
-	netstream.Hook("syncItemOnEntsetItem",function( itemID, uniqueID)
-		if not (itemID and uniqueID) then return end
-		nut.item.new(uniqueID, itemID)
-	end)
-
 	ENT.DrawEntityInfo = true
 
 	local toScreen = FindMetaTable("Vector").ToScreen
