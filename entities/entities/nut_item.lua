@@ -200,6 +200,7 @@ end
 
 function ENT:getItemID()
 	return self:getNetVar("instanceID")
+
 end
 
 function ENT:getItemTable()
