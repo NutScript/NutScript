@@ -60,7 +60,7 @@ function nut.chat.register(chatType, data)
 			local timestamp = nut.chat.timestamp(false)
 			local translated = L2(chatType.."Format", name, text)
 
-			chat.AddText(timestamp, color, translated or timestamp..string.format(data.format, name, text))
+			chat.AddText(timestamp, color, translated or string.format(data.format, name, text))
 		end
 	end
 
@@ -219,7 +219,7 @@ do
 		-- Actions and such.
 		nut.chat.register("it", {
 			onChatAdd = function(speaker, text)
-				chat.AddText(nut.config.get("chatColor"), "**"..text)
+				chat.AddText(nut.chat.timestamp(false), nut.config.get("chatColor"), "**"..text)
 			end,
 			onCanHear = nut.config.get("chatRange", 280),
 			prefix = {"/it"},
@@ -377,7 +377,7 @@ nut.chat.register("event", {
 	end,
 	onCanHear = 1000000,
 	onChatAdd = function(speaker, text)
-		chat.AddText(Color(255, 150, 0), text)
+		chat.AddText(nut.chat.timestamp(false), Color(255, 150, 0), text)
 	end,
 	prefix = {"/event"}
 })

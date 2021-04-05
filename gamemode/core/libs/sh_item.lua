@@ -124,6 +124,7 @@ function nut.item.loadFromDir(directory)
 end
 
 function nut.item.new(uniqueID, id)
+
 	id = id and tonumber(id) or id
 	assert(isnumber(id), "non-number ID given to nut.item.new")
 
