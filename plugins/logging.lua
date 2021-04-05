@@ -4,7 +4,7 @@ PLUGIN.author = "Black Tea"
 PLUGIN.desc = "You can modfiy the logging text/lists on this plugin."
 
 if (SERVER) then
-	local L, type, IsValid = Format, type, IsValid
+	local L, IsValid = Format, IsValid
 
 	nut.log.addType("playerHurt", function(client, attacker, damage, health)
 		attacker = tostring(attacker)
@@ -104,7 +104,7 @@ if (SERVER) then
 		local arg = {...}
 		return (L("%s purchased the door", client:Name()))
 	end)
-	
+
 	nut.log.addType("observerEnter", function(client, ...)
 		return string.format("%s has entered observer.", client:Name())
 	end)
@@ -126,7 +126,7 @@ if (SERVER) then
 	function PLUGIN:OnCharCreated(client, character)
 		nut.log.add(client, "charCreate", character)
 	end
-	
+
 	function PLUGIN:OnTakeShipmentItem(client, itemClass, amount)
 		local itemTable = nut.item.list[itemClass]
 		nut.log.add(client, "shipment", itemTable.name)

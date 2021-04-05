@@ -43,7 +43,7 @@ function GM:PlayerInitialSpawn(client)
 
 	-- Load and send the NutScript data for the player.
 	client:loadNutData(function(data)
-		if (!IsValid(client)) then return end
+		if (not IsValid(client)) then return end
 
 		local address = client:IPAddress()
 		client:setNutData("lastIP", address)
@@ -53,6 +53,13 @@ function GM:PlayerInitialSpawn(client)
 			"nutDataSync",
 			data, client.firstJoin, client.lastJoin
 		)
+
+		for _, v in pairs(nut.item.instances) do
+			if v.entity and v.invID == 0 then
+				v:sync(client)
+			end
+		end
+
 		hook.Run("PlayerNutDataLoaded", client)
 	end)
 
@@ -71,7 +78,7 @@ function GM:PlayerUse(client, entity)
 		if (result == false) then
 			return false
 		else
-			local result = hook.Run("PlayerUseDoor", client, entity)
+			result = hook.Run("PlayerUseDoor", client, entity)
 			if (result ~= nil) then
 				return result
 			end
@@ -107,12 +114,12 @@ function GM:CanPlayerDropItem(client, item)
 
 		if (inventory) then
 			local items = inventory:getItems()
+			for _, item in pairs(items) do
 
-			for id, item in pairs(items) do
 				if (not item.ignoreEquipCheck and item:getData("equip") == true) then
 					client:notifyLocalized("cantDropBagHasEquipped")
 					return false
-				end	
+				end
 			end
 		end
 	end
@@ -192,23 +199,20 @@ function GM:PlayerLoadedChar(client, character, lastChar)
 	if (lastChar) then
 		local charEnts = lastChar:getVar("charEnts") or {}
 
-		for k, v in ipairs(charEnts) do
+		for _, v in ipairs(charEnts) do
 			if (v and IsValid(v)) then
 				v:Remove()
 			end
 		end
 
-		lastChar:setVar("charEnts", nil) 
+		lastChar:setVar("charEnts", nil)
 	end
 
 	if (character) then
-		for k, v in pairs(nut.class.list) do
-			if (v.faction == client:Team()) then
-				if (v.isDefault) then
-					character:setClass(v.index)
-
-					break
-				end
+		for _, v in pairs(nut.class.list) do
+			if (v.faction == client:Team()) and v.isDefault then
+				character:setClass(v.index)
+				break
 			end
 		end
 	end
@@ -246,10 +250,8 @@ end
 function GM:PlayerSay(client, message)
 	local chatType, message, anonymous = nut.chat.parse(client, message, true)
 
-	if (chatType == "ic") then
-		if (nut.command.parse(client, message)) then
-			return ""
-		end
+	if (chatType == "ic") and (nut.command.parse(client, message)) then
+		return ""
 	end
 
 	nut.chat.send(client, chatType, message, anonymous)
@@ -309,7 +311,7 @@ function GM:PlayerSpawnVehicle(client, model, name, data)
 			return client:getChar():hasFlags("C")
 		end
 	end
-	
+
 	return false
 end
 
@@ -320,7 +322,7 @@ function GM:PlayerLoadout(client)
 
 		return
 	end
-	
+
 	client:SetWeaponColor(Vector(client:GetInfo("cl_weaponcolor")))
 	client:StripWeapons()
 	client:setLocalVar("blur", nil)
@@ -335,7 +337,7 @@ function GM:PlayerLoadout(client)
 		client:Give("nut_hands")
 		client:SetWalkSpeed(nut.config.get("walkSpeed", 130))
 		client:SetRunSpeed(nut.config.get("runSpeed", 235))
-		
+
 		local faction = nut.faction.indices[client:Team()]
 
 		if (faction) then
@@ -346,7 +348,7 @@ function GM:PlayerLoadout(client)
 
 			-- If the faction has default weapons, give them to the player.
 			if (faction.weapons) then
-				for k, v in ipairs(faction.weapons) do
+				for _, v in ipairs(faction.weapons) do
 					client:Give(v)
 				end
 			end
@@ -361,7 +363,7 @@ function GM:PlayerLoadout(client)
 			end
 
 			if (class.weapons) then
-				for k, v in ipairs(class.weapons) do
+				for _, v in ipairs(class.weapons) do
 					client:Give(v)
 				end
 			end
@@ -439,7 +441,7 @@ function GM:PlayerDisconnected(client)
 	if (character) then
 		local charEnts = character:getVar("charEnts") or {}
 
-		for k, v in ipairs(charEnts) do
+		for _, v in ipairs(charEnts) do
 			if (v and IsValid(v)) then
 				v:Remove()
 			end
@@ -450,7 +452,7 @@ function GM:PlayerDisconnected(client)
 		hook.Run("OnCharDisconnect", client, character)
 		character:save()
 	end
-	
+
 	if (IsValid(client.nutRagdoll)) then
 		client.nutRagdoll.nutNoReset = true
 		client.nutRagdoll.nutIgnoreDelete = true
@@ -463,18 +465,18 @@ end
 function GM:PlayerAuthed(client, steamID, uniqueID)
 	nut.log.add(client, "playerConnected", client, steamID)
 end
-	
+
 function GM:InitPostEntity()
 	local doors = ents.FindByClass("prop_door_rotating")
 
-	for k, v in ipairs(doors) do
+	for _, v in ipairs(doors) do
 		local parent = v:GetOwner()
 
 		if (IsValid(parent)) then
 			v.nutPartner = parent
 			parent.nutPartner = v
 		else
-			for k2, v2 in ipairs(doors) do
+			for _, v2 in ipairs(doors) do
 				if (v2:GetOwner() == v) then
 					v2.nutPartner = v
 					v.nutPartner = v2
@@ -505,7 +507,7 @@ function GM:ShutDown()
 
 	hook.Run("SaveData")
 
-	for k, v in ipairs(player.GetAll()) do
+	for _, v in ipairs(player.GetAll()) do
 		v:saveNutData()
 
 		if (v:getChar()) then
@@ -519,7 +521,7 @@ function GM:PlayerDeathSound()
 end
 
 function GM:InitializedSchema()
-	if (!nut.data.get("date", nil, false, true)) then
+	if (not nut.data.get("date", nil, false, true)) then
 		nut.data.set("date", os.time(), false, true)
 	end
 
@@ -534,21 +536,21 @@ end
 
 function GM:PlayerCanHearPlayersVoice(listener, speaker)
 	local allowVoice = nut.config.get("allowVoice")
-	
-	if (!allowVoice) then
+
+	if (not allowVoice) then
 		return false, false
 	end
-	
+
 	if (listener:GetPos():DistToSqr(speaker:GetPos()) > nut.config.squaredVoiceDistance) then
 		return false, false
 	end
-	
+
 	return true, true
 end
 
 function GM:OnPhysgunFreeze(weapon, physObj, entity, client)
 	-- Object is already frozen (!?)
-	if (!physObj:IsMoveable()) then return false end
+	if (not physObj:IsMoveable()) then return false end
 	if (entity:GetUnFreezable()) then return false end
 
 	physObj:EnableMotion(false)
@@ -598,7 +600,7 @@ function GM:CharacterPreSave(character)
 	if (not character:getInv()) then
 		return
 	end
-	for k, v in pairs(character:getInv():getItems()) do
+	for _, v in pairs(character:getInv():getItems()) do
 		if (v.onSave) then
 			v:call("onSave", client)
 		end
@@ -606,7 +608,8 @@ function GM:CharacterPreSave(character)
 end
 
 function GM:OnServerLog(client, logType, ...)
-	for k, v in pairs(nut.util.getAdmins()) do
+	for _, v in pairs(nut.util.getAdmins()) do
+
 		if (hook.Run("CanPlayerSeeLog", v, logType) ~= false) then
 			nut.log.send(v, nut.log.getString(client, logType, ...))
 		end
@@ -650,14 +653,14 @@ PUBLIC SERVICE ANNOUNCEMENT FOR NUTSCRIPT SERVER OWNERS
 
 There is a ENOURMOUS performance issue with ULX Admin mod.
 Nutscript Development Team found ULX is the main issue
-that make the server freeze when player count is higher 
+that make the server freeze when player count is higher
 than 20-30. The duration of freeze will be increased as you get
 more players on your server.
 
 If you're planning to open big server with ULX/ULib, Nutscript
 Development Team does not recommend your plan. Server Performance
-Issues with ULX/Ulib on your server will be ignored and we're 
-going to consider that you're taking the risk of ULX/Ulib's 
+Issues with ULX/Ulib on your server will be ignored and we're
+going to consider that you're taking the risk of ULX/Ulib's
 critical performance issue.
 
 Nutscript 1.2 only displays this message when you have ULX or
@@ -723,10 +726,10 @@ function GM:CreateSalaryTimer(client)
 
 	local faction = nut.faction.indices[character:getFaction()]
 	local class = nut.class.list[character:getClass()]
-	
+
 	local pay = hook.Run("GetSalaryAmount", client, faction, class) or (class and class.pay) or (faction and faction.pay) or nil
-	
-	if (!pay) then return end
+
+	if (not pay) then return end
 
 	local timerID = "nutSalary"..client:SteamID()
 	local timerFunc = timer.Exists(timerID) and timer.Adjust or timer.Create
