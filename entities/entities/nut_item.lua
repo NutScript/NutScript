@@ -126,7 +126,7 @@ if (SERVER) then
 	end
 else
 	netstream.Hook("syncItemOnEntsetItem",function( itemID, uniqueID)
-		if not itemID or itemTable then return end
+		if not (itemID and uniqueID) then return end
 		nut.item.new(uniqueID, itemID)
 	end)
 
@@ -147,11 +147,8 @@ else
 	end
 
 	function ENT:onDrawEntityInfo(alpha)
-		print("fuck this fucking fuck")
-		print(self:getNetVar("instanceID"))
 		local itemTable = self:getItemTable()
 		if (not itemTable) then return end
-		print("lmao this shit broke")
 		local oldEntity = itemTable.entity
 		itemTable.entity = self
 
@@ -206,7 +203,7 @@ function ENT:getItemID()
 end
 
 function ENT:getItemTable()
-	return nut.item.instances[self:getNetVar("instanceID")]
+	return nut.item.instances[self:getItemID()]
 end
 
 function ENT:getData(key, default)
