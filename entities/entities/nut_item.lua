@@ -43,6 +43,7 @@ if (SERVER) then
 		local itemTable = nut.item.instances[itemID]
 		if (not itemTable) then return self:Remove() end
 
+
 		netstream.Start(nil, "syncItemOnEntsetItem", itemID, itemTable.uniqueID)
 
 		local model = itemTable.onGetDropModel
