@@ -4,7 +4,7 @@ util.AddNetworkString("nutItemInstance")
 
 netstream.Hook("invAct", function(client, action, item, invID, data)
 	local character = client:getChar()
-	if (!character) then
+	if (not character) then
 		return
 	end
 
