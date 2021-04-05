@@ -43,6 +43,8 @@ if (SERVER) then
 		local itemTable = nut.item.instances[itemID]
 		if (not itemTable) then return self:Remove() end
 
+		netstream.Start(nil, "syncItemOnEntsetItem", itemID, itemTable.uniqueID)
+
 		local model = itemTable.onGetDropModel
 			and itemTable:onGetDropModel(self)
 			or itemTable.model
@@ -57,7 +59,7 @@ if (SERVER) then
 		self:PhysicsInit(SOLID_VPHYSICS)
 		self:SetSolid(SOLID_VPHYSICS)
 		self:setNetVar("id", itemTable.uniqueID)
-		self:setNetVar("instanceID", itemTable:getID())
+		self:setNetVar("instanceID", itemTable.id)
 		self.nutItemID = itemID
 
 		if (table.Count(itemTable.data) > 0) then
@@ -123,6 +125,11 @@ if (SERVER) then
 		return true
 	end
 else
+	netstream.Hook("syncItemOnEntsetItem",function( itemID, uniqueID)
+		if not (itemID and uniqueID) then return end
+		nut.item.new(uniqueID, itemID)
+	end)
+
 	ENT.DrawEntityInfo = true
 
 	local toScreen = FindMetaTable("Vector").ToScreen
@@ -142,7 +149,6 @@ else
 	function ENT:onDrawEntityInfo(alpha)
 		local itemTable = self:getItemTable()
 		if (not itemTable) then return end
-
 		local oldEntity = itemTable.entity
 		itemTable.entity = self
 
@@ -193,7 +199,8 @@ else
 end
 
 function ENT:getItemID()
-	return self:getNetVar("instanceID", "")
+	return self:getNetVar("instanceID")
+
 end
 
 function ENT:getItemTable()

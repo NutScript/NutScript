@@ -58,7 +58,7 @@ function nut.item.instance(index, uniqueID, itemData, x, y, callback)
 
 	if (MYSQLOO_PREPARED and isnumber(index)) then
 		nut.db.preparedCall(
-			"itemInstance", onItemCreated, index, uniqueID, itemData, x, y, itemTable.maxQuantity or 1 
+			"itemInstance", onItemCreated, index, uniqueID, itemData, x, y, itemTable.maxQuantity or 1
 		)
 	else
 		nut.db.insertTable({
@@ -67,7 +67,7 @@ function nut.item.instance(index, uniqueID, itemData, x, y, callback)
 			_data = itemData,
 			_x = x,
 			_y = y,
-			_quantity = itemTable.maxQuantity or 1 
+			_quantity = itemTable.maxQuantity or 1
 		}, onItemCreated, "items")
 	end
 
