@@ -58,8 +58,6 @@ if (SERVER) then
 			local value = math.Clamp(current + offset, 0, nut.config.get("defaultStamina", 100))
 
 			if (current ~= value) then
-			print(PLUGIN.staminaRegen, offset)
-			--awprint(nut.config.get("defaultStamina", 100))
 				client:setLocalVar("stm", value)
 
 				if (value == 0 and not client:getNetVar("brth", false)) then
