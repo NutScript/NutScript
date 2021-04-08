@@ -116,7 +116,7 @@ function PLUGIN:DrawEntityInfo(entity, alpha, position)
 		teamGetColor(entity.Team(entity))
 	}
 
-	local description = character.getDesc(character)
+	local description = hookRun("GetDisplayedDescription", entity) or character.getDesc(character)
 	if (description ~= entity.nutDescCache) then
 		entity.nutDescCache = description
 
