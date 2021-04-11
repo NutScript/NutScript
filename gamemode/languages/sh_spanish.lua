@@ -1,4 +1,4 @@
-NAME = "Español" ---//Edited by Barata\\----
+NAME = "Español" ---//Contact DasBarata#2411 if you have any translation change suggestion\\----
 
 LANGUAGE = {
 	loading = "Cargando",
