@@ -259,7 +259,7 @@ LANGUAGE = {
     panelAdded = "Adicionaste 1 3D panel.",
     itemOnGround = "O teu item foi colocado no chão.",
     forbiddenActionStorage = "Não podes fazer isto com itens armazenados.",
-    cantDropBagHasEquipped = "Não podes largar uma mala equipada."
+    cantDropBagHasEquipped = "Não podes largar uma mala equipada.",
 	
 	-- 2021 patch
 	lookToUseAt = "Precisas de estar a olhar para alguém para usar '@'",
