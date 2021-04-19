@@ -611,8 +611,9 @@ end
 local down = Vector(0, 0, -1)
 function SWEP:allowEntityDrop()
 	local client = self:GetOwner()
+	local ent = self.carryHack
 
-	if (not IsValid(client)) or (not IsValid(self.carryHack)) then return false end
+	if (not IsValid(client)) or (not IsValid(ent)) then return false end
 
 	local ground = client:GetGroundEntity()
 	if ground and (ground:IsWorld() or IsValid(ground)) then return true end
