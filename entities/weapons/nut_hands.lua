@@ -591,7 +591,7 @@ function SWEP:pickup(entity, trace)
 			local max_force = CARRY_FORCE_LIMIT
 
 			if (entity:GetClass() == "prop_ragdoll") then
-				self.dt.carried_rag = ent
+				self.dt.carried_rag = entity
 
 				bone = trace.PhysicsBone
 				max_force = 0
