@@ -591,7 +591,7 @@ function SWEP:pickup(entity, trace)
 			local max_force = CARRY_FORCE_LIMIT
 
 			if (entity:GetClass() == "prop_ragdoll") then
-				self.dt.carried_rag = ent
+				self.dt.carried_rag = entity
 
 				bone = trace.PhysicsBone
 				max_force = 0
@@ -611,8 +611,9 @@ end
 local down = Vector(0, 0, -1)
 function SWEP:allowEntityDrop()
 	local client = self:GetOwner()
+	local ent = self.carryHack
 
-	if (not IsValid(client)) or (not IsValid(self.carryHack)) then return false end
+	if (not IsValid(client)) or (not IsValid(ent)) then return false end
 
 	local ground = client:GetGroundEntity()
 	if ground and (ground:IsWorld() or IsValid(ground)) then return true end
