@@ -102,11 +102,11 @@ function PANEL:PaintOver(w, h)
 
 	if (itemTable and itemTable.paintOver) then
 		local w, h = self:GetSize()
-		
-		hook.Run("ItemPaintOver", self, itemTable, w, h)
 
 		itemTable.paintOver(self, itemTable, w, h)
 	end
+	
+	hook.Run("ItemPaintOver", self, itemTable, w, h)
 end
 
 function PANEL:PaintBehind(w, h)
