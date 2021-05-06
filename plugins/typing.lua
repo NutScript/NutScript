@@ -31,13 +31,15 @@ if (CLIENT) then
 		data.filter = localPlayer
 
 		for k, v in ipairs(player.GetAll()) do
+			local isActing = v:getNetVar("actAng")
+
 			if (
 				v ~= localPlayer and
 				v:getNetVar("typing") and
-				v:GetMoveType() == MOVETYPE_WALK
+				(v:GetMoveType() == MOVETYPE_WALK or isActing)
 			) then
 				data.endpos = v:EyePos()
-				if (util.TraceLine(data).Entity ~= v) then continue end
+				if (util.TraceLine(data).Entity ~= v and not isActing) then continue end
 				local position = v:GetPos()
 				alpha = (1 - (ourPos:DistToSqr(position) / 65536)) * 255
 				if (alpha <= 0) then continue end
