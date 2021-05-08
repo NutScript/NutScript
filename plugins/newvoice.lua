@@ -11,7 +11,7 @@ if (CLIENT) then
 		hi:SetFont("nutIconsMedium")
 		hi:Dock(LEFT)
 		hi:DockMargin(8, 0, 8, 0)
-		hi:SetTextColor(Color(255, 255, 255, 255))
+		hi:SetTextColor(color_white)
 		hi:SetText("i")
 		hi:SetWide(30)
 
@@ -19,7 +19,7 @@ if (CLIENT) then
 		self.LabelName:SetFont("nutMediumFont")
 		self.LabelName:Dock(FILL)
 		self.LabelName:DockMargin(0, 0, 0, 0)
-		self.LabelName:SetTextColor(Color(255, 255, 255, 255))
+		self.LabelName:SetTextColor(color_white)
 
 		self.Color = color_transparent
 
