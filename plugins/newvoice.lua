@@ -30,7 +30,7 @@ if (CLIENT) then
 	end
 
 	function PANEL:Setup(client)
-		self.client= client
+		self.client = client
 		self.name = hook.Run("ShouldAllowScoreboardOverride", client, "name") and hook.Run("GetDisplayedName", client) or client:Nick()
 		self.LabelName:SetText(self.name)
 		self:InvalidateLayout()
@@ -121,7 +121,7 @@ if (CLIENT) then
 		if (IsValid(g_VoicePanelList)) then
 			g_VoicePanelList:Remove()
 		end
-		
+
 		g_VoicePanelList = vgui.Create("DPanel")
 
 		g_VoicePanelList:ParentToHUD()
