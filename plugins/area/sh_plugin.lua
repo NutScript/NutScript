@@ -44,7 +44,7 @@ if (SERVER) then
 			return false, "Area you specified is not valid."
 		end
 
-		local char = v:getChar()
+		local char = self:getChar()
 
 		if (!char) then
 			return false, "Your character is not valid."
