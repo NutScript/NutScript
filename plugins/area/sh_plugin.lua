@@ -174,7 +174,7 @@ if (SERVER) then
 
 		if (areaData) then
 			local min, max = areaData.maxVector, areaData.minVector
-			client:SetPos(min + (max - min)/2)
+			client:SetPos(min + (max - min) / 2)
 		end
 	end)
 
@@ -259,7 +259,6 @@ else
 	-- draw matrix string.
 	local function drawMatrixString(str, font, x, y, scale, angle, color)
 		surface.SetFont(font)
-		local tx, ty = surface.GetTextSize(str)
 
 		local matrix = Matrix()
 		matrix:Translate(Vector(x, y, 1))
@@ -284,10 +283,8 @@ else
 	-- local scale = 0
 	local scale = 0
 	local flipTable = {}
-	local powTime = RealTime()*speed
+	local powTime = RealTime() * speed
 	local curChar = 0
-	local mathsin = math.sin
-	local mathcos = math.cos
 	local dieTrigger = false
 	local dieTimer = RealTime()
 	local dieAlpha = 0
@@ -301,7 +298,7 @@ else
 
 		scale = targetScale * .5
 		flipTable = {}
-		powTime = RealTime()*speed
+		powTime = RealTime() * speed
 		curChar = 0
 		dieTrigger = false
 		dieTimer = RealTime()
@@ -328,15 +325,15 @@ else
 		local sx, sy = surface.GetTextSize(dispString)
 
 		-- Number of characters to display.
-		local maxDisplay = math.Round(rTime*speed - powTime)
+		local maxDisplay = math.Round(rTime * speed - powTime)
 
 		-- resize if it's too big.
-		while (sx and sx*targetScale > w*.8) do
+		while (sx and sx * targetScale > w * .8) do
 			targetScale = targetScale * .9
 		end
 
 		-- scale lerp
-		scale = Lerp(ft*1, scale, targetScale)
+		scale = Lerp(ft * 1, scale, targetScale)
 
 		-- change event
 		if (maxDisplay ~= curChar and curChar < strEnd) then
@@ -352,16 +349,16 @@ else
 			flipTable[i] = flipTable[i] or {}
 			flipTable[i][1] = flipTable[i][1] or .1
 			flipTable[i][2] = flipTable[i][2] or 0
-			flipTable[i][1] = Lerp(ft*4, flipTable[i][1], scale)
-			flipTable[i][2] = Lerp(ft*4, flipTable[i][2], 255)
+			flipTable[i][1] = Lerp(ft * 4, flipTable[i][1], scale)
+			flipTable[i][2] = Lerp(ft * 4, flipTable[i][2], 255)
 
 			-- draw character.
 			local char = string.utf8sub(dispString, i, i)
-			local tx, ty = surface.GetTextSize(char)
+			local tx = surface.GetTextSize(char)
 			drawMatrixString(char,
 				"nutAreaDisplay",
-				math.Round(w/2 + dsx - (sx or 0)*scale/2),
-				math.Round(h/3*1 - (sy or 0)*scale/2),
+				math.Round(w / 2 + dsx - (sx or 0) * scale / 2),
+				math.Round(h / 3 - (sy or 0) * scale / 2),
 				Vector(Format("%.2f", flipTable[i][1]), Format("%.2f", scale), 1),
 				nil,
 				Color(255, 255, 255,
@@ -369,7 +366,7 @@ else
 			)
 
 			-- next
-			dsx = dsx + tx*scale
+			dsx = dsx + tx * scale
 		end
 
 		if (maxDisplay >= strEnd) then
@@ -378,7 +375,7 @@ else
 				dieTimer = RealTime() + 2
 			else
 				if (dieTimer < RealTime()) then
-					dieAlpha = Lerp(ft*4, dieAlpha, 0)
+					dieAlpha = Lerp(ft * 4, dieAlpha, 0)
 				end
 			end
 		end
