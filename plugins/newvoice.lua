@@ -73,7 +73,7 @@ if (CLIENT) then
 	vgui.Register("VoicePanel", PANEL, "DPanel")
 
 	function PLUGIN:PlayerStartVoice(client)
-		if (!IsValid(g_VoicePanelList)) then return end
+		if (!IsValid(g_VoicePanelList) or !nut.config.get("allowVoice", false)) then return end
 
 		hook.Run("PlayerEndVoice", client)
 
