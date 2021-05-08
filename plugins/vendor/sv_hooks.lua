@@ -118,7 +118,7 @@ function PLUGIN:VendorTradeAttempt(
 				return
 			end
 
-			local canTransferItem, reason = hook.Run("CanItemBeTransfered", item, inventory, VENDOR_INVENTORY_MEASURE)
+			local canTransferItem, reason = hook.Run("CanItemBeTransfered", item, inventory, VENDOR_INVENTORY_MEASURE, client)
 			if (canTransferItem == false) then
 				client:notifyLocalized(reason or "vendorError")
 			

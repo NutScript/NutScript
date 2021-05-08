@@ -44,7 +44,7 @@ local function CanNotTransferBagIfNestedItemCanNotBe(inventory, action, context)
 
 	for _, item in pairs(bagInventory:getItems()) do
 		local canTransferItem, reason =
-			hook.Run("CanItemBeTransfered", item, bagInventory, bagInventory)
+			hook.Run("CanItemBeTransfered", item, bagInventory, bagInventory, context.client)
 		if (canTransferItem == false) then
 			return false, reason or "An item in the bag cannot be transfered"
 		end
