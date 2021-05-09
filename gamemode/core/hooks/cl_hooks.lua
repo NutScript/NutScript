@@ -1,6 +1,7 @@
 function GM:LoadNutFonts(font, genericFont)
 	local oldFont, oldGenericFont = font, genericFont
-
+	local scale = math.Round(nut.config.get("fontScale", 1), 2)
+	print(ScreenScale(14) * scale, ScreenScale(14))
 	surface.CreateFont("nut3D2DFont", {
 		font = font,
 		size = 2048,
@@ -10,28 +11,28 @@ function GM:LoadNutFonts(font, genericFont)
 
 	surface.CreateFont("nutTitleFont", {
 		font = font,
-		size = ScreenScale(30),
+		size = ScreenScale(30) * scale,
 		extended = true,
 		weight = 1000
 	})
 
 	surface.CreateFont("nutSubTitleFont", {
 		font = font,
-		size = ScreenScale(18),
+		size = ScreenScale(18) * scale,
 		extended = true,
 		weight = 500
 	})
 
 	surface.CreateFont("nutMenuButtonFont", {
 		font = font,
-		size = ScreenScale(14),
+		size = ScreenScale(14) * scale,
 		extended = true,
 		weight = 1000
 	})
 
 	surface.CreateFont("nutMenuButtonLightFont", {
 		font = font,
-		size = ScreenScale(14),
+		size = ScreenScale(14) * scale,
 		extended = true,
 		weight = 200
 	})
@@ -45,21 +46,21 @@ function GM:LoadNutFonts(font, genericFont)
 
 	surface.CreateFont("nutDynFontSmall", {
 		font = font,
-		size = ScreenScale(22),
+		size = ScreenScale(22) * scale,
 		extended = true,
 		weight = 1000
 	})
 
 	surface.CreateFont("nutDynFontMedium", {
 		font = font,
-		size = ScreenScale(28),
+		size = ScreenScale(28) * scale,
 		extended = true,
 		weight = 1000
 	})
 
 	surface.CreateFont("nutDynFontBig", {
 		font = font,
-		size = ScreenScale(48),
+		size = ScreenScale(48) * scale,
 		extended = true,
 		weight = 1000
 	})
@@ -69,63 +70,63 @@ function GM:LoadNutFonts(font, genericFont)
 
 	surface.CreateFont("nutCleanTitleFont", {
 		font = font,
-		size = 200,
+		size = 200 * scale,
 		extended = true,
 		weight = 1000
 	})
 
 	surface.CreateFont("nutHugeFont", {
 		font = font,
-		size = 72,
+		size = 72 * scale,
 		extended = true,
 		weight = 1000
 	})
 
 	surface.CreateFont("nutBigFont", {
 		font = font,
-		size = 36,
+		size = 36 * scale,
 		extended = true,
 		weight = 1000
 	})
 
 	surface.CreateFont("nutMediumFont", {
 		font = font,
-		size = 25,
+		size = 25 * scale,
 		extended = true,
 		weight = 1000
 	})
 
 	surface.CreateFont("nutMediumLightFont", {
 		font = font,
-		size = 25,
+		size = 25 * scale,
 		extended = true,
 		weight = 200
 	})
 
 	surface.CreateFont("nutGenericFont", {
 		font = font,
-		size = 20,
+		size = 20 * scale,
 		extended = true,
 		weight = 1000
 	})
 
 	surface.CreateFont("nutGenericLightFont", {
 		font = font,
-		size = 20,
+		size = 20 * scale,
 		extended = true,
 		weight = 500
 	})
 
 	surface.CreateFont("nutChatFont", {
 		font = font,
-		size = math.max(ScreenScale(7), 17),
+		size = math.max(ScreenScale(7), 17) * scale,
 		extended = true,
 		weight = 200
 	})
 
 	surface.CreateFont("nutChatFontItalics", {
 		font = font,
-		size = math.max(ScreenScale(7), 17),
+		size = math.max(ScreenScale(7), 17) * scale,
 		extended = true,
 		weight = 200,
 		italic = true
@@ -133,21 +134,21 @@ function GM:LoadNutFonts(font, genericFont)
 
 	surface.CreateFont("nutChatFontBold", {
 		font = font,
-		size = math.max(ScreenScale(7), 17),
+		size = math.max(ScreenScale(7), 17) * scale,
 		extended = true,
 		weight = 800,
 	})
 
 	surface.CreateFont("nutSmallFont", {
 		font = font,
-		size = math.max(ScreenScale(6), 17),
+		size = math.max(ScreenScale(6), 17) * scale,
 		extended = true,
 		weight = 500
 	})
 
 	surface.CreateFont("nutItemDescFont", {
 		font = font,
-		size = math.max(ScreenScale(6), 17),
+		size = math.max(ScreenScale(6), 17) * scale,
 		extended = true,
 		shadow = true,
 		weight = 500
@@ -155,7 +156,7 @@ function GM:LoadNutFonts(font, genericFont)
 
 	surface.CreateFont("nutSmallBoldFont", {
 		font = font,
-		size = math.max(ScreenScale(8), 20),
+		size = math.max(ScreenScale(8), 20) * scale,
 		extended = true,
 		weight = 800
 	})
@@ -163,7 +164,7 @@ function GM:LoadNutFonts(font, genericFont)
 	surface.CreateFont("nutItemBoldFont", {
 		font = font,
 		shadow = true,
-		size = math.max(ScreenScale(8), 20),
+		size = math.max(ScreenScale(8), 20) * scale,
 		extended = true,
 		weight = 800
 	})
@@ -286,7 +287,6 @@ end
 
 function GM:CharacterListLoaded()
 	local shouldPlayIntro = nut.config.get("alwaysPlayIntro", true) or not nut.localData.intro or nil
-	print("shouldPlayIntro", shouldPlayIntro)
 	timer.Create("nutWaitUntilPlayerValid", 0.5, 0, function()
 		if (not IsValid(LocalPlayer())) then return end
 		timer.Remove("nutWaitUntilPlayerValid")
@@ -345,7 +345,7 @@ function GM:CalcView(client, origin, angles, fov)
 				view.origin = data.Pos
 				view.angles = data.Ang
 			end
-			
+
 			return view
 		end
 	end
@@ -387,7 +387,7 @@ end
 
 function GM:PlayerBindPress(client, bind, pressed)
 	bind = bind:lower()
-	
+
 	if ((bind:find("use") or bind:find("attack")) and pressed) then
 		local menu, callback = nut.menu.getActiveMenu()
 
@@ -440,7 +440,7 @@ function GM:ItemShowEntityMenu(entity)
 	itemTable.entity = entity
 
 	if (input.IsShiftDown()) then
-		callback("take") 
+		callback("take")
 	end
 
 	for k, v in SortedPairs(itemTable.functions) do
@@ -505,7 +505,7 @@ function GM:SetupQuickMenu(menu)
 
 		local button = menu:addCheck(name, function(panel)
 			panel.checked = true
-			
+
 			if (IsValid(current)) then
 				if (current == panel) then
 					return
