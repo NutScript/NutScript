@@ -11,7 +11,7 @@ if (CLIENT) then
 		hi:SetFont("nutIconsMedium")
 		hi:Dock(LEFT)
 		hi:DockMargin(8, 0, 8, 0)
-		hi:SetTextColor(Color(255, 255, 255, 255))
+		hi:SetTextColor(color_white)
 		hi:SetText("i")
 		hi:SetWide(30)
 
@@ -19,7 +19,7 @@ if (CLIENT) then
 		self.LabelName:SetFont("nutMediumFont")
 		self.LabelName:Dock(FILL)
 		self.LabelName:DockMargin(0, 0, 0, 0)
-		self.LabelName:SetTextColor(Color(255, 255, 255, 255))
+		self.LabelName:SetTextColor(color_white)
 
 		self.Color = color_transparent
 
@@ -30,7 +30,7 @@ if (CLIENT) then
 	end
 
 	function PANEL:Setup(client)
-		self.client= client
+		self.client = client
 		self.name = hook.Run("ShouldAllowScoreboardOverride", client, "name") and hook.Run("GetDisplayedName", client) or client:Nick()
 		self.LabelName:SetText(self.name)
 		self:InvalidateLayout()
@@ -73,7 +73,7 @@ if (CLIENT) then
 	vgui.Register("VoicePanel", PANEL, "DPanel")
 
 	function PLUGIN:PlayerStartVoice(client)
-		if (!IsValid(g_VoicePanelList)) then return end
+		if (!IsValid(g_VoicePanelList) or !nut.config.get("allowVoice", false)) then return end
 
 		hook.Run("PlayerEndVoice", client)
 
@@ -121,7 +121,7 @@ if (CLIENT) then
 		if (IsValid(g_VoicePanelList)) then
 			g_VoicePanelList:Remove()
 		end
-		
+
 		g_VoicePanelList = vgui.Create("DPanel")
 
 		g_VoicePanelList:ParentToHUD()

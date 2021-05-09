@@ -111,6 +111,8 @@ function PANEL:PaintOver(w, h)
 
 		itemTable.paintOver(self, itemTable, w, h)
 	end
+	
+	hook.Run("ItemPaintOver", self, itemTable, w, h)
 end
 
 function PANEL:PaintBehind(w, h)
