@@ -219,7 +219,20 @@ if (CLIENT) then
 					local form = v.data and v.data.form
 					local value = nut.config.stored[k].default
 
-					if (not form) then
+					-- Let's see if the parameter has a form to perform some additional operations.
+					if (form) then
+						if (form == "Int") then
+							-- math.Round can create an error without failing silently as expected if the parameter is invalid.
+							-- So an alternate value is entered directly into the function and not outside of it.
+							value = math.Round(nut.config.get(k) or value)
+						elseif (form == "Float") then
+							value = tonumber(nut.config.get(k)) or value
+						elseif (form == "Boolean") then
+							value = tobool(nut.config.get(k)) or value
+						else
+							value = nut.config.get(k) or value
+						end
+					else
 						local formType = type(value)
 
 						if (formType == "number") then
