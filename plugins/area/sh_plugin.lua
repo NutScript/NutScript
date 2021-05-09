@@ -6,7 +6,7 @@ PLUGIN.areaTable = PLUGIN.areaTable or {}
 nut.area = nut.area or {}
 ALWAYS_RAISED["nut_areahelper"] = true
 
-nut.config.add("areaFontSize", 26, "The size of the font of Area Display.", 
+nut.config.add("areaFontSize", 26, "The size of the font of Area Display.",
 	function(oldValue, newValue)
 		if (CLIENT) then
 			hook.Run(
@@ -133,7 +133,7 @@ if (SERVER) then
 		table.insert(PLUGIN.areaTable, {
 			name = name,
 			minVector = minVector,
-			maxVector = maxVector, 
+			maxVector = maxVector,
 			desc = desc or "",
 		})
 
@@ -222,7 +222,7 @@ else
 		panel:SetTall(30)
 		frame:AddItem(panel)
 	end
-	
+
 	function nut.area.openAreaManager()
 		local frame = vgui.Create("DFrame")
 		frame:SetSize(400, 300)
@@ -315,9 +315,9 @@ else
 	function PLUGIN:HUDPaint()
 		-- values
 		if ((hook.Run("CanDisplayArea") == false) or (dieTrigger and dieTimer < RealTime() and dieAlpha <= 1)) then
-			return	 
+			return
 		end
-		
+
 		ft = FrameTime()
 		w, h = ScrW(), ScrH()
 		dsx, dsy = 0
@@ -325,7 +325,7 @@ else
 		local rTime = RealTime()
 
 		surface.SetFont("nutAreaDisplay")
-		local sx, sy = surface.GetTextSize(dispString)	
+		local sx, sy = surface.GetTextSize(dispString)
 
 		-- Number of characters to display.
 		local maxDisplay = math.Round(rTime*speed - powTime)
@@ -368,7 +368,7 @@ else
 				(dieTrigger and dieTimer < RealTime()) and dieAlpha or flipTable[i][2])
 			)
 
-			-- next 
+			-- next
 			dsx = dsx + tx*scale
 		end
 
