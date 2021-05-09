@@ -213,14 +213,16 @@ do
 				-- Otherwise, use the normal chat color.
 				return nut.config.get("chatColor")
 			end,
-			onCanHear = nut.config.get("chatRange", 280)
+			radius = function()
+				return nut.config.get("chatRange", 280)
+			end
 		})
 
 		-- Actions and such.
 		nut.chat.register("me", {
 			format = "**%s %s",
 			onGetColor = nut.chat.classes.ic.onGetColor,
-			onCanHear = nut.config.get("chatRange", 280),
+			radius = function() return nut.config.get("chatRange", 280) end,
 			prefix = {"/me", "/action"},
 			font = "nutChatFontItalics",
 			filter = "actions",
@@ -232,7 +234,9 @@ do
 			onChatAdd = function(speaker, text)
 				chat.AddText(nut.chat.timestamp(false), nut.config.get("chatColor"), "**" .. text)
 			end,
-			onCanHear = nut.config.get("chatRange", 280),
+			radius = function()
+				return nut.config.get("chatRange", 280)
+			end,
 			prefix = {"/it"},
 			font = "nutChatFontItalics",
 			filter = "actions",
@@ -248,7 +252,9 @@ do
 				-- Make the whisper chat slightly darker than IC chat.
 				return Color(color.r - 35, color.g - 35, color.b - 35)
 			end,
-			onCanHear = nut.config.get("chatRange", 280) * 0.25,
+			radius = function()
+				return nut.config.get("chatRange", 280) * 0.25
+			end,
 			prefix = {"/w", "/whisper"}
 		})
 
@@ -261,7 +267,9 @@ do
 				-- Make the yell chat slightly brighter than IC chat.
 				return Color(color.r + 35, color.g + 35, color.b + 35)
 			end,
-			onCanHear = nut.config.get("chatRange", 280) * 2,
+			radius = function()
+				return nut.config.get("chatRange", 280) * 2
+			end,
 			prefix = {"/y", "/yell"}
 		})
 
@@ -347,7 +355,9 @@ do
 			onChatAdd = function(speaker, text)
 				chat.AddText(nut.chat.timestamp(false), Color(255, 50, 50), "[LOOC] ", nut.config.get("chatColor"), speaker:Name() .. ": " .. text)
 			end,
-			onCanHear = nut.config.get("chatRange", 280),
+			radius = function()
+				return nut.config.get("chatRange", 280)
+			end,
 			prefix = {".//", "[[", "/looc"},
 			noSpaceAfter = true,
 			filter = "ooc"
@@ -359,7 +369,7 @@ do
 			color = Color(155, 111, 176),
 			filter = "actions",
 			font = "nutChatFontItalics",
-			onCanHear = nut.config.get("chatRange", 280),
+			radius = function() return nut.config.get("chatRange", 280) end,
 			deadCanChat = true
 		})
 	end)
@@ -378,7 +388,6 @@ nut.chat.register("event", {
 	onCanSay =  function(speaker, text)
 		return speaker:IsAdmin()
 	end,
-	onCanHear = 1000000,
 	onChatAdd = function(speaker, text)
 		chat.AddText(nut.chat.timestamp(false), Color(255, 150, 0), text)
 	end,
