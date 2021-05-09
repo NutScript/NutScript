@@ -2,10 +2,10 @@ nut.config = nut.config or {}
 nut.config.stored = nut.config.stored or {}
 
 function nut.config.add(key, value, desc, callback, data, noNetworking, schemaOnly)
-	assert(isstring(key), "expected config key to be string, got "..type(key))
+	assert(isstring(key), "expected config key to be string, got " .. type(key))
 	local oldConfig = nut.config.stored[key]
 
-	nut.config.stored[key] = {data = data, value = oldConfig and oldConfig.value or value, default = value, desc = desc, noNetworking = noNetworking, global = !schemaOnly, callback = callback}
+	nut.config.stored[key] = {data = data, value = oldConfig and oldConfig.value or value, default = value, desc = desc, noNetworking = noNetworking, global = not schemaOnly, callback = callback}
 end
 
 function nut.config.setDefault(key, value)
@@ -36,7 +36,7 @@ function nut.config.set(key, value)
 		config.value = value
 
 		if (SERVER) then
-			if (!config.noNetworking) then
+			if (not config.noNetworking) then
 				netstream.Start(nil, "cfgSet", key, value)
 			end
 
@@ -132,14 +132,14 @@ if (SERVER) then
 				local count = table.Count(value)
 				local i = 1
 
-				for k, v in SortedPairs(value) do
-					value2 = value2..v..(i == count and "]" or ", ")
+				for _, v in SortedPairs(value) do
+					value2 = value2 .. v .. (i == count and "]" or ", ")
 					i = i + 1
 				end
 				value = value2
 			end
 
-			nut.util.notifyLocalized("cfgSet", nil, client:Name(), key, tostring(value), v)
+			nut.util.notifyLocalized("cfgSet", nil, client:Name(), key, tostring(value))
 		end
 	end)
 else
@@ -182,94 +182,98 @@ end
 
 if (CLIENT) then
 	hook.Add("CreateMenuButtons", "nutConfig", function(tabs)
-		if (LocalPlayer():IsSuperAdmin() and hook.Run("CanPlayerUseConfig", LocalPlayer()) ~= false) then
-			tabs["config"] = function(panel)
-				local scroll = panel:Add("DScrollPanel")
-				scroll:Dock(FILL)
+		if (not LocalPlayer():IsSuperAdmin() or hook.Run("CanPlayerUseConfig", LocalPlayer()) == false) then
+			return
+		end
 
-				hook.Run("CreateConfigPanel", panel)
+		tabs["config"] = function(panel)
+			local scroll = panel:Add("DScrollPanel")
+			scroll:Dock(FILL)
 
-				local properties = scroll:Add("DProperties")
-				properties:SetSize(panel:GetSize())
+			hook.Run("CreateConfigPanel", panel)
 
-				nut.gui.properties = properties
+			local properties = scroll:Add("DProperties")
+			properties:SetSize(panel:GetSize())
 
-				-- We're about to store the categories in this buffer.
-				local buffer = {}
+			nut.gui.properties = properties
 
-				for k, v in pairs(nut.config.stored) do
-					-- Get the category name.
-					local index = v.data and v.data.category or "misc"
+			-- We're about to store the categories in this buffer.
+			local buffer = {}
 
-					-- Insert the config into the category list.
-					buffer[index] = buffer[index] or {}
-					buffer[index][k] = v
-				end
+			for k, v in pairs(nut.config.stored) do
+				-- Get the category name.
+				local index = v.data and v.data.category or "misc"
 
-				-- Loop through the categories in alphabetical order.
-				for category, configs in SortedPairs(buffer) do
-					category = L(category)
+				-- Insert the config into the category list.
+				buffer[index] = buffer[index] or {}
+				buffer[index][k] = v
+			end
 
-					-- Ditto, except we're looping through configs.
-					for k, v in SortedPairs(configs) do
-						-- Determine which type of panel to create.
-						local form = v.data and v.data.form
-						local value = nut.config.stored[k].default
+			-- Loop through the categories in alphabetical order.
+			for category, configs in SortedPairs(buffer) do
+				category = L(category)
 
-						if (!form) then
-							local formType = type(value)
+				-- Ditto, except we're looping through configs.
+				for k, v in SortedPairs(configs) do
+					-- Determine which type of panel to create.
+					local form = v.data and v.data.form
+					local value = nut.config.stored[k].default
 
-							if (formType == "number") then
-								form = "Int"
-								value = tonumber(nut.config.get(k)) or value
-							elseif (formType == "boolean") then
-								form = "Boolean"
-								value = tobool(nut.config.get(k))
-							else
-								form = "Generic"
-								value = nut.config.get(k) or value
+					if (not form) then
+						local formType = type(value)
+
+						if (formType == "number") then
+							form = "Int"
+							value = tonumber(nut.config.get(k)) or value
+						elseif (formType == "boolean") then
+							form = "Boolean"
+							value = tobool(nut.config.get(k))
+						else
+							form = "Generic"
+							value = nut.config.get(k) or value
+						end
+					end
+
+					-- VectorColor currently only exists for DProperties.
+					if (form == "Generic" and type(value) == "table" and value.r and value.g and value.b) then
+						-- Convert the color to a vector.
+						value = Vector(value.r / 255, value.g / 255, value.b / 255)
+						form = "VectorColor"
+					end
+
+					local delay = 1
+
+					if (form == "Boolean") then
+						delay = 0
+					end
+
+					-- Add a new row for the config to the properties.
+					local row = properties:CreateRow(category, tostring(k))
+					row:Setup(form, v.data and v.data.data or {})
+					row:SetValue(value)
+					row:SetTooltip(v.desc)
+					row.DataChanged = function(this, newValue)
+						timer.Create("nutCfgSend" .. k, delay, 1, function()
+							if (not IsValid(row)) then
+								return
 							end
-						end
 
-						-- VectorColor currently only exists for DProperties.
-						if (form == "Generic" and type(value) == "table" and value.r and value.g and value.b) then
-							-- Convert the color to a vector.
-							value = Vector(value.r / 255, value.g / 255, value.b / 255)
-							form = "VectorColor"
-						end
+							if (form == "VectorColor") then
+								local vector = Vector(newValue)
 
-						local delay = 1
+								newValue = Color(math.floor(vector.x * 255), math.floor(vector.y * 255), math.floor(vector.z * 255))
+							elseif (form == "Int" or form == "Float") then
+								newValue = tonumber(newValue)
 
-						if (form == "Boolean") then
-							delay = 0
-						end
-
-						-- Add a new row for the config to the properties.
-						local row = properties:CreateRow(category, tostring(k))
-						row:Setup(form, v.data and v.data.data or {})
-						row:SetValue(value)
-						row:SetTooltip(v.desc)
-						row.DataChanged = function(this, value)
-							timer.Create("nutCfgSend"..k, delay, 1, function()
-								if (IsValid(row)) then
-									if (form == "VectorColor") then
-										local vector = Vector(value)
-
-										value = Color(math.floor(vector.x * 255), math.floor(vector.y * 255), math.floor(vector.z * 255))
-									elseif (form == "Int" or form == "Float") then
-										value = tonumber(value)
-
-										if (form == "Int") then
-											value = math.Round(value)
-										end
-									elseif (form == "Boolean") then
-										value = tobool(value)
-									end
-
-									netstream.Start("cfgSet", k, value)
+								if (form == "Int") then
+									newValue = math.Round(newValue)
 								end
-							end)
-						end
+							elseif (form == "Boolean") then
+								newValue = tobool(newValue)
+							end
+
+							netstream.Start("cfgSet", k, newValue)
+						end)
 					end
 				end
 			end
