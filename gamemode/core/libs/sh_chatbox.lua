@@ -9,7 +9,7 @@ end
 
 -- Returns a timestamp
 function nut.chat.timestamp(ooc)
-	return nut.config.get("chatShowTime") and (ooc and " " or "").."("..nut.date.getFormatted("%H:%M")..")"..(ooc and "" or " ") or ""
+	return nut.config.get("chatShowTime") and (ooc and " " or "") .. "(" .. nut.date.getFormatted("%H:%M") .. ")" .. (ooc and "" or " ") or ""
 end
 
 -- Registers a new chat type with the information provided.
@@ -58,7 +58,7 @@ function nut.chat.register(chatType, data)
 			end
 
 			local timestamp = nut.chat.timestamp(false)
-			local translated = L2(chatType.."Format", name, text)
+			local translated = L2(chatType .. "Format", name, text)
 
 			chat.AddText(timestamp, color, translated or string.format(data.format, name, text))
 		end
@@ -97,17 +97,17 @@ function nut.chat.parse(client, message, noSend)
 		if (type(v.prefix) == "table") then
 			for _, prefix in ipairs(v.prefix) do
 				-- Checking if the start of the message has the prefix.
-				if (message:sub(1, #prefix + (noSpaceAfter and 0 or 1)):lower() == prefix..(noSpaceAfter and "" or " "):lower()) then
+				if (message:sub(1, #prefix + (noSpaceAfter and 0 or 1)):lower() == prefix .. (noSpaceAfter and "" or " "):lower()) then
 					isChosen = true
-					chosenPrefix = prefix..(v.noSpaceAfter and "" or " ")
+					chosenPrefix = prefix .. (v.noSpaceAfter and "" or " ")
 
 					break
 				end
 			end
 		-- Otherwise the prefix itself is checked.
 		elseif (type(v.prefix) == "string") then
-			isChosen = message:sub(1, #v.prefix + (noSpaceAfter and 1 or 0)):lower() == v.prefix..(noSpaceAfter and "" or " "):lower()
-			chosenPrefix = v.prefix..(v.noSpaceAfter and "" or " ")
+			isChosen = message:sub(1, #v.prefix + (noSpaceAfter and 1 or 0)):lower() == v.prefix .. (noSpaceAfter and "" or " "):lower()
+			chosenPrefix = v.prefix .. (v.noSpaceAfter and "" or " ")
 		end
 
 		-- If the checks say we have the proper chat type, then the chat type is the chosen one!
@@ -219,7 +219,7 @@ do
 		-- Actions and such.
 		nut.chat.register("it", {
 			onChatAdd = function(speaker, text)
-				chat.AddText(nut.chat.timestamp(false), nut.config.get("chatColor"), "**"..text)
+				chat.AddText(nut.chat.timestamp(false), nut.config.get("chatColor"), "**" .. text)
 			end,
 			onCanHear = nut.config.get("chatRange", 280),
 			prefix = {"/it"},
@@ -259,7 +259,7 @@ do
 			onCanSay =  function(speaker, text)
 			if (!nut.config.get("allowGlobalOOC")) then
 				speaker:notifyLocalized("Global OOC is disabled on this server.")
-				return false		
+				return false
 			else
 				local delay = nut.config.get("oocDelay", 10)
 
@@ -309,7 +309,7 @@ do
 
 				icon = Material(hook.Run("GetPlayerIcon", speaker) or icon)
 
-				chat.AddText(icon, nut.chat.timestamp(true), Color(255, 50, 50), " [OOC] ", speaker, color_white, ": "..text)
+				chat.AddText(icon, nut.chat.timestamp(true), Color(255, 50, 50), " [OOC] ", speaker, color_white, ": " .. text)
 			end,
 			prefix = {"//", "/ooc"},
 			noSpaceAfter = true,
@@ -342,7 +342,7 @@ do
 				speaker.nutLastLOOC = CurTime()
 			end,
 			onChatAdd = function(speaker, text)
-				chat.AddText(nut.chat.timestamp(false), Color(255, 50, 50), "[LOOC] ", nut.config.get("chatColor"), speaker:Name()..": "..text)
+				chat.AddText(nut.chat.timestamp(false), Color(255, 50, 50), "[LOOC] ", nut.config.get("chatColor"), speaker:Name() .. ": " .. text)
 			end,
 			onCanHear = nut.config.get("chatRange", 280),
 			prefix = {".//", "[[", "/looc"},
