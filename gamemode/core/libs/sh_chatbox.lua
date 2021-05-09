@@ -323,8 +323,8 @@ do
 					local lastLOOC = CurTime() - speaker.nutLastLOOC
 
 					-- Use this method of checking time in case the oocDelay config changes (may not affect admins).
-					if (lastLOOC <= delay and (not speaker:IsAdmin() or speaker:IsAdmin() and nut.config.get("oocDelayAdmin", false))) then
-						speaker:notifyLocalized("oocDelay", delay - math.ceil(lastOOC))
+					if (lastLOOC <= delay and (not speaker:IsAdmin() or speaker:IsAdmin() and nut.config.get("loocDelayAdmin", false))) then
+						speaker:notifyLocalized("loocDelay", delay - math.ceil(lastLOOC))
 
 						return false
 					end
