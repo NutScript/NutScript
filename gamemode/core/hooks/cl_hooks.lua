@@ -286,7 +286,7 @@ end
 
 function GM:CharacterListLoaded()
 	local shouldPlayIntro = nut.config.get("alwaysPlayIntro", true) or not nut.localData.intro or nil
-	print("shouldPlayIntro", shouldPlayIntro)
+
 	timer.Create("nutWaitUntilPlayerValid", 0.5, 0, function()
 		if (not IsValid(LocalPlayer())) then return end
 		timer.Remove("nutWaitUntilPlayerValid")
