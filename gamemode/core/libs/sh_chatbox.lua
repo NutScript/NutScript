@@ -15,10 +15,21 @@ end
 -- Registers a new chat type with the information provided.
 function nut.chat.register(chatType, data)
 	if (not data.onCanHear) then
-		-- Have a substitute if the canHear property is not found.
-		data.onCanHear = function(speaker, listener)
-			-- The speaker will be heard by everyone.
-			return true
+		-- Let's see first if a dynamic radius has been set.
+		if (isfunction(data.radius)) then
+			-- If this is the case, then it gives the same situation where onCanHear property is a number.
+			-- But instead of entering a static number, the radius function will be called each time.
+			-- This can be useful if you want it to be linked to a variable that can be changed.
+			data.onCanHear = function(speaker, listener)
+				-- Squared distances will always perform better than standard distances.
+				return (speaker:GetPos() - listener:GetPos()):LengthSqr() <= (data.radius() ^ 2)
+			end
+		else
+			-- Have a substitute if the canHear and radius properties are not found.
+			data.onCanHear = function(speaker, listener)
+				-- The speaker will be heard by everyone.
+				return true
+			end
 		end
 	elseif (isnumber(data.onCanHear)) then
 		-- Use the value as a range and create a function to compare distances.
