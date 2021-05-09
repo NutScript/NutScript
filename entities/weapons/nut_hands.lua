@@ -77,7 +77,7 @@ PLAYER_PICKUP_RANGE = 200
 								with prop pushing.
 	CARRY_STRENGTH_GOD: 0 - You can push player with prop on this strength levle.
 							the grabbing never fails.
-							Try this if you're playing with very trustful community.				
+							Try this if you're playing with very trustful community.
 ]]--
 
 CARRY_FORCE_LIMIT = CARRY_FORCE_LEVEL[CARRY_STRENGTH_CHAD] -- default strength level is CHAD.
@@ -506,7 +506,7 @@ function SWEP:doPickup(throw, entity, trace)
 					-- increase refire to make rags easier to drag
 					--self.Weapon:SetNextSecondaryFire(CurTime() + 0.04)
 					end
-					
+
 					if (IsValid(phys)) then
 					self:dragObject(phys, pdir, 6000, is_ragdoll)
 					return
