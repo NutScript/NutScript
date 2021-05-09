@@ -1,7 +1,6 @@
 function GM:LoadNutFonts(font, genericFont)
 	local oldFont, oldGenericFont = font, genericFont
 	local scale = math.Round(nut.config.get("fontScale", 1), 2)
-	print(ScreenScale(14) * scale, ScreenScale(14))
 	surface.CreateFont("nut3D2DFont", {
 		font = font,
 		size = 2048,
@@ -428,7 +427,7 @@ function GM:ItemShowEntityMenu(entity)
 
 	local options = {}
 	local itemTable = entity:getItemTable()
-	if (!itemTable) then return end -- MARK: This is the where error came from.
+	if (not itemTable) then return end -- MARK: This is the where error came from.
 
 	local function callback(index)
 		if (IsValid(entity)) then
@@ -446,10 +445,8 @@ function GM:ItemShowEntityMenu(entity)
 	for k, v in SortedPairs(itemTable.functions) do
 		if (k == "combine") then continue end -- yeah, noob protection
 
-		if (isfunction(v.onCanRun)) then
-			if (not v.onCanRun(itemTable)) then
-				continue
-			end
+		if (isfunction(v.onCanRun)) and (not v.onCanRun(itemTable)) then
+			continue
 		end
 
 		options[L(v.name or k)] = function()
@@ -518,7 +515,7 @@ function GM:SetupQuickMenu(menu)
 			RunConsoleCommand("nut_language", k)
 		end, enabled)
 
-		if (enabled and !IsValid(current)) then
+		if (enabled and not IsValid(current)) then
 			current = button
 		end
 	end
