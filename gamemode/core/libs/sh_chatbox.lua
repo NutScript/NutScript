@@ -3,7 +3,7 @@ nut.chat.classes = nut.char.classes or {}
 
 local DUMMY_COMMAND = {syntax = "<string text>", onRun = function() end}
 
-if (!nut.command) then
+if (not nut.command) then
 	include("sh_command.lua")
 end
 
@@ -14,7 +14,7 @@ end
 
 -- Registers a new chat type with the information provided.
 function nut.chat.register(chatType, data)
-	if (!data.onCanHear) then
+	if (not data.onCanHear) then
 		-- Have a substitute if the canHear property is not found.
 		data.onCanHear = function(speaker, listener)
 			-- The speaker will be heard by everyone.
@@ -31,9 +31,9 @@ function nut.chat.register(chatType, data)
 	end
 
 	-- Allow players to use this chat type by default.
-	if (!data.onCanSay) then
+	if (not data.onCanSay) then
 		data.onCanSay = function(speaker, text)
-			if (!data.deadCanChat and !speaker:Alive()) then
+			if (not data.deadCanChat and not speaker:Alive()) then
 				speaker:notifyLocalized("noPerm")
 
 				return false
@@ -46,12 +46,12 @@ function nut.chat.register(chatType, data)
 	-- Chat text color.
 	data.color = data.color or Color(242, 230, 160)
 
-	if (!data.onChatAdd) then
+	if (not data.onChatAdd) then
 		data.format = data.format or "%s: \"%s\""
 
 		data.onChatAdd = function(speaker, text, anonymous)
 			local color = data.color
-			local name = anonymous and L"someone" or hook.Run("GetDisplayedName", speaker, chatType) or (IsValid(speaker) and speaker:Name() or "Console")
+			local name = anonymous and L("someone") or hook.Run("GetDisplayedName", speaker, chatType) or (IsValid(speaker) and speaker:Name() or "Console")
 
 			if (data.onGetColor) then
 				color = data.onGetColor(speaker, text)
@@ -66,7 +66,7 @@ function nut.chat.register(chatType, data)
 
 	if (CLIENT and data.prefix) then
 		if (type(data.prefix) == "table") then
-			for k, v in ipairs(data.prefix) do
+			for _, v in ipairs(data.prefix) do
 				if (v:sub(1, 1) == "/") then
 					nut.command.add(v:sub(2), DUMMY_COMMAND)
 				end
@@ -127,12 +127,12 @@ function nut.chat.parse(client, message, noSend)
 		end
 	end
 
-	if (!message:find("%S")) then
+	if (not message:find("%S")) then
 		return
 	end
 
 	-- Only send if needed.
-	if (SERVER and !noSend) then
+	if (SERVER and not noSend) then
 		-- Send the correct chat type out so other player see the message.
 		nut.chat.send(client, chatType, hook.Run("PlayerMessageSend", client, chatType, message, anonymous) or message, anonymous)
 	end
@@ -148,10 +148,10 @@ if (SERVER) then
 		local class = nut.chat.classes[chatType]
 
 		if (class and class.onCanSay(speaker, text) ~= false) then
-			if (class.onCanHear and !receivers) then
+			if (class.onCanHear and not receivers) then
 				receivers = {}
 
-				for k, v in ipairs(player.GetAll()) do
+				for _, v in ipairs(player.GetAll()) do
 					if (v:getChar() and class.onCanHear(speaker, v) ~= false) then
 						receivers[#receivers + 1] = v
 					end
@@ -257,30 +257,27 @@ do
 		-- Out of character.
 		nut.chat.register("ooc", {
 			onCanSay =  function(speaker, text)
-			if (!nut.config.get("allowGlobalOOC")) then
-				speaker:notifyLocalized("Global OOC is disabled on this server.")
-				return false
-			else
-				local delay = nut.config.get("oocDelay", 10)
+				if (not nut.config.get("allowGlobalOOC")) then
+					speaker:notifyLocalized("Global OOC is disabled on this server.")
+					return false
+				else
+					local delay = nut.config.get("oocDelay", 10)
 
-				-- Only need to check the time if they have spoken in OOC chat before.
-				if (delay > 0 and speaker.nutLastOOC) then
-					local lastOOC = CurTime() - speaker.nutLastOOC
+					-- Only need to check the time if they have spoken in OOC chat before.
+					if (delay > 0 and speaker.nutLastOOC) then
+						local lastOOC = CurTime() - speaker.nutLastOOC
 
-					-- Use this method of checking time in case the oocDelay config changes.
-					if (lastOOC <= delay) then
-						-- Admin delay bypass
-						if (!speaker:IsAdmin() or speaker:IsAdmin() and nut.config.get("oocDelayAdmin", false)) then
+						-- Use this method of checking time in case the oocDelay config changes (may not affect admins).
+						if (lastOOC <= delay and (not speaker:IsAdmin() or speaker:IsAdmin() and nut.config.get("oocDelayAdmin", false))) then
 							speaker:notifyLocalized("oocDelay", delay - math.ceil(lastOOC))
 
 							return false
 						end
 					end
-				end
 
-				-- Save the last time they spoke in OOC.
-				speaker.nutLastOOC = CurTime()
-			end
+					-- Save the last time they spoke in OOC.
+					speaker.nutLastOOC = CurTime()
+				end
 			end,
 			onChatAdd = function(speaker, text)
 				local icon = "icon16/user.png"
@@ -322,19 +319,14 @@ do
 				local delay = nut.config.get("loocDelay", 0)
 
 				-- Only need to check the time if they have spoken in LOOC chat before.
-				if (speaker:IsAdmin() and nut.config.get("loocDelayAdmin", false)) then
-					if (delay > 0 and speaker.nutLastLOOC) then
-						local lastLOOC = CurTime() - speaker.nutLastLOOC
+				if (speaker:IsAdmin() and nut.config.get("loocDelayAdmin", false) and delay > 0 and speaker.nutLastLOOC) then
+					local lastLOOC = CurTime() - speaker.nutLastLOOC
 
-						-- Use this method of checking time in case the oocDelay config changes.
-						if (lastLOOC <= delay) then
-							-- Admin delay bypass
-							if (!speaker:IsAdmin() or speaker:IsAdmin() and nut.config.get("oocDelayAdmin", false)) then
-								speaker:notifyLocalized("oocDelay", delay - math.ceil(lastOOC))
+					-- Use this method of checking time in case the oocDelay config changes (may not affect admins).
+					if (lastLOOC <= delay and (not speaker:IsAdmin() or speaker:IsAdmin() and nut.config.get("oocDelayAdmin", false))) then
+						speaker:notifyLocalized("oocDelay", delay - math.ceil(lastOOC))
 
-								return false
-							end
-						end
+						return false
 					end
 				end
 
