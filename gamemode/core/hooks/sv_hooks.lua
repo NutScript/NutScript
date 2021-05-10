@@ -728,7 +728,7 @@ function GM:CreateSalaryTimer(client)
 	local class = nut.class.list[character:getClass()]
 
 	local pay = hook.Run("GetSalaryAmount", client, faction, class) or (class and class.pay) or (faction and faction.pay) or nil
-
+	local limit = hook.Run("GetSalaryLimit", client, faction, class) or (class and class.payLimit) or (faction and faction.playLimit) or nil
 	if (not pay) then return end
 
 	local timerID = "nutSalary"..client:SteamID()
@@ -740,7 +740,9 @@ function GM:CreateSalaryTimer(client)
 			timer.Remove(timerID)
 			return
 		end
-
+		if limit and character:getMoney() >= limit then
+			return
+		end
 		character:giveMoney(pay)
 		client:notifyLocalized("salary", nut.currency.get(pay))
 	end)
