@@ -214,7 +214,7 @@ end
 
 function GM:CalcMainActivity(client, velocity)
 	client.CalcIdeal = ACT_MP_STAND_IDLE
-	
+
 	oldCalcSeqOverride = client.CalcSeqOverride
 	client.CalcSeqOverride = -1
 
@@ -270,6 +270,15 @@ function GM:GetDefaultCharName(client, faction)
 	end
 end
 
+function GM:GetDefaultCharDesc(client, faction)
+	local info = nut.faction.indices[faction]
+
+	if (info and info.onGetDefaultDesc) then
+		return info:onGetDefaultDesc(client)
+	end
+end
+
+
 function GM:CanPlayerUseChar(client, char)
 	local banned = char:getData("banned")
 
@@ -301,7 +310,7 @@ function GM:CheckFactionLimitReached(faction, character, client)
 
 	-- By default, the limit is the number of players allowed in that faction.
 	local maxPlayers = faction.limit
-	
+
 	-- If some number less than 1, treat it as a percentage of the player count.
 	if (faction.limit < 1) then
 		maxPlayers = math.Round(#player.GetAll() * faction.limit)
@@ -326,7 +335,7 @@ function GM:PhysgunPickup(client, entity)
 	if (client:IsSuperAdmin()) then
 		return true
 	end
-	
+
 	if (client:IsAdmin() and !(entity:IsPlayer() and entity:IsSuperAdmin())) then
 		return true
 	end
@@ -364,8 +373,8 @@ function GM:Move(client, moveData)
 				ms = ratio
 			end
 
-			moveData:SetForwardSpeed(mf * speed) 
-			moveData:SetSideSpeed(ms * speed) 
+			moveData:SetForwardSpeed(mf * speed)
+			moveData:SetSideSpeed(ms * speed)
 		end
 	end
 end
@@ -373,7 +382,7 @@ end
 function GM:CanItemBeTransfered(itemObject, curInv, inventory)
 	if (itemObject.onCanBeTransfered) then
 		local itemHook = itemObject:onCanBeTransfered(curInv, inventory)
-		
+
 		return (itemHook ~= false)
 	end
 end

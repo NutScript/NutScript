@@ -30,6 +30,16 @@ nut.config.add("genericFont", "Segoe UI", "The font used to display generic text
 	end
 end, {category = "appearance"})
 
+nut.config.add("fontScale", 1.0, "The scale for the font.", function(oldValue, newValue)
+	if (CLIENT) then
+		hook.Run("LoadNutFonts", nut.config.get("font"), nut.config.get("genericFont"))
+	end
+end, {
+	form = "Float",
+	data = {min = 0.1, max = 2.0},
+	category = "appearance"
+})
+
 nut.config.add("chatRange", 280, "The maximum distance a person's IC chat message goes to.", nil, {
 	form = "Float",
 	data = {min = 10, max = 5000},

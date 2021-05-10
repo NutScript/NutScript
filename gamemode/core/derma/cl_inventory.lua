@@ -34,6 +34,8 @@ function PANEL:setItemType(itemTypeOrID)
 	if (isnumber(itemTypeOrID)) then
 		item = nut.item.instances[itemTypeOrID]
 		self.itemID = itemTypeOrID
+	else
+		self.itemType = itemTypeOrID
 	end
 	assert(item, "invalid item type or ID "..tostring(item))
 
@@ -97,9 +99,13 @@ function PANEL:Init()
 	self:SetSize(NS_ICON_SIZE, NS_ICON_SIZE)
 end
 
+--[[ function PANEL:Think()
+	self.itemTable = nut.item.instances[self.itemID]
+	self:updateTooltip()
+end ]]
+
 function PANEL:PaintOver(w, h)
 	local itemTable = nut.item.instances[self.itemID]
-
 	if (itemTable and itemTable.paintOver) then
 		local w, h = self:GetSize()
 
@@ -310,20 +316,20 @@ hook.Add("CreateMenuButtons", "nutInventory", function(tabs)
 						local childPanels = inventory:show(mainPanel)
 						nut.gui["inv"..inventory:getID()] = childPanels
 						table.insert(sortPanels, childPanels)
-						
+
 						totalSize.x = totalSize.x + childPanels:GetWide() + margin
 						totalSize.y = math.max(totalSize.y, childPanels:GetTall())
 					end
 				end
-				
+
 				local px, py, pw, ph = mainPanel:GetBounds()
-				local x, y = px + pw/2 - totalSize.x / 2, py + ph/2 
+				local x, y = px + pw/2 - totalSize.x / 2, py + ph/2
 				for _, panel in pairs(sortPanels) do
 					panel:ShowCloseButton(true)
 					panel:SetPos(x, y - panel:GetTall()/2)
 					x = x + panel:GetWide() + margin
 				end
-				
+
 				hook.Add("PostRenderVGUI", mainPanel, function()
 					hook.Run("PostDrawInventory", mainPanel)
 				end)
