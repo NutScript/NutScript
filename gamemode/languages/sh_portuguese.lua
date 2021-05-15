@@ -1,4 +1,4 @@
-NAME = "Portuguese" ---//Contact DasBarata#2411 if you have any translation change suggestion\\----
+NAME = "Portuguese" ---//Contact Barata#2411 if you have any translation change suggestion\\----
 
 
 LANGUAGE = {
