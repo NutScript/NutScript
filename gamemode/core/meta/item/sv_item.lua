@@ -101,6 +101,21 @@ function ITEM:spawn(position, angles)
 	end
 end
 
+function ITEM:transfer(newInventory,bBypass)
+	if (!bBypass and !newInventory:canAccess("transfer")) then
+		return false
+	end
+
+	local inventory = nut.inventory.instances[self.invID]
+
+	inventory:removeItem(self.id, true)
+		:next(function()
+			newInventory:add(self)
+		end)
+	
+	return true
+end
+
 -- Called when an instance of this item has been created.
 function ITEM:onInstanced(id)
 end
