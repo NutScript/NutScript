@@ -24,6 +24,14 @@ function nut.chat.register(chatType, data)
 				-- Squared distances will always perform better than standard distances.
 				return (speaker:GetPos() - listener:GetPos()):LengthSqr() <= (data.radius() ^ 2)
 			end
+		elseif (isnumber(data.radius)) then
+			-- To avoid confusion, the radius can be a static number.
+			-- In this case, we use the same method as the one used for the "onCanHear" property.
+			local range = data.radius ^ 2
+
+			data.onCanHear = function(speaker, listener)
+				return (speaker:GetPos() - listener:GetPos()):LengthSqr() <= range
+			end
 		else
 			-- Have a substitute if the canHear and radius properties are not found.
 			data.onCanHear = function(speaker, listener)
