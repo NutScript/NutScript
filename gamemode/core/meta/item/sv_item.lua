@@ -101,6 +101,7 @@ function ITEM:spawn(position, angles)
 	end
 end
 
+--[[
 function ITEM:transfer(newInventory,bBypass)
 	if (!bBypass and !newInventory:canAccess("transfer")) then
 		return false
@@ -115,6 +116,7 @@ function ITEM:transfer(newInventory,bBypass)
 	
 	return true
 end
+]]----
 
 -- Called when an instance of this item has been created.
 function ITEM:onInstanced(id)
