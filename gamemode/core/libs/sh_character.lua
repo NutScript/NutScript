@@ -265,10 +265,16 @@ do
 					newData.data.skin = model[2] or 0
 
 					local groups = {}
-					local i = 0
-					for value in model[3]:gmatch("%d") do
-						groups[i] = tonumber(value)
-						i = i + 1
+					if isstring(model[3]) then
+						local i = 0
+						for value in model[3]:gmatch("%d") do
+							groups[i] = tonumber(value)
+							i = i + 1
+						end
+					elseif istable(model[3]) then
+						for k, v in pairs(model[3]) do
+							groups[tonumber(k)] = tonumber(v)
+						end
 					end
 					newData.data.groups = groups
 				end
@@ -422,7 +428,7 @@ do
 
 	function playerMeta:Name()
 		local character = self.getChar(self)
-		
+
 		return character
 			and character.getName(character)
 			or self.steamName(self)
