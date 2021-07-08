@@ -41,7 +41,7 @@ function PANEL:setItemType(itemTypeOrID)
 
 	self.nutToolTip = true
 	self.itemTable = item
-	self:SetModel(item.model, item.skin)
+	self:SetModel(item:getModel(), item:getSkin())
 	self:updateTooltip()
 
 	if (item.exRender) then
@@ -111,7 +111,7 @@ function PANEL:PaintOver(w, h)
 
 		itemTable.paintOver(self, itemTable, w, h)
 	end
-	
+
 	hook.Run("ItemPaintOver", self, itemTable, w, h)
 end
 

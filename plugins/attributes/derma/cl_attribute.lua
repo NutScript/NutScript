@@ -88,10 +88,8 @@ local PANEL = {}
 	end
 
 	function PANEL:Think()
-		if (self.pressing) then
-			if ((self.nextPress or 0) < CurTime()) then
-				self:doChange()
-			end
+		if self.pressing and ((self.nextPress or 0) < CurTime()) then
+			self:doChange()
 		end
 
 		self.deltaValue = math.Approach(self.deltaValue, self.value, FrameTime() * 15)
@@ -101,9 +99,9 @@ local PANEL = {}
 		if ((self.value == 0 and self.pressing == -1) or (self.value == self.max and self.pressing == 1)) then
 			return
 		end
-		
+
 		self.nextPress = CurTime() + 0.2
-		
+
 		if (self:onChanged(self.pressing) ~= false) then
 			self.value = math.Clamp(self.value + self.pressing, 0, self.max)
 		end
@@ -136,7 +134,7 @@ local PANEL = {}
 		self.sub:Remove()
 		self.add:Remove()
 	end
-	
+
 	function PANEL:Paint(w, h)
 		surface.SetDrawColor(0, 0, 0, 200)
 		surface.DrawRect(0, 0, w, h)

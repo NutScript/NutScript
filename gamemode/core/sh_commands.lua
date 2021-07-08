@@ -66,12 +66,12 @@ nut.command.add("flaggive", {
 		if (IsValid(target) and target:getChar()) then
 			local flags = arguments[2]
 
-			if (!flags) then
+			if (not flags) then
 				local available = ""
 
 				-- Aesthetics~~
 				for k in SortedPairs(nut.flag.list) do
-					if (!target:getChar():hasFlags(k)) then
+					if (not target:getChar():hasFlags(k)) then
 						available = available..k
 					end
 				end
@@ -97,7 +97,7 @@ nut.command.add("flagtake", {
 		if (IsValid(target) and target:getChar()) then
 			local flags = arguments[2]
 
-			if (!flags) then
+			if (not flags) then
 				return client:requestString("@flagTakeTitle", "@flagTakeDesc", function(text)
 					nut.command.run(client, "flagtake", {target:Name(), text})
 				end, target:getChar():getFlags())
@@ -114,7 +114,7 @@ nut.command.add("charsetmodel", {
 	adminOnly = true,
 	syntax = "<string name> <string model>",
 	onRun = function(client, arguments)
-		if (!arguments[2]) then
+		if (not arguments[2]) then
 			return L("invalidArg", client, 2)
 		end
 
@@ -179,7 +179,7 @@ nut.command.add("charsetname", {
 	onRun = function(client, arguments)
 		local target = nut.command.findPlayer(client, arguments[1])
 
-		if (IsValid(target) and !arguments[2]) then
+		if (IsValid(target) and not arguments[2]) then
 			return client:requestString("@chgName", "@chgNameDesc", function(text)
 				nut.command.run(client, "charsetname", {target:Name(), text})
 			end, target:Name())
@@ -201,7 +201,7 @@ nut.command.add("chargiveitem", {
 	adminOnly = true,
 	syntax = "<string name> <string item> <integer amount>",
 	onRun = function(client, arguments)
-		if (!arguments[2]) then
+		if (not arguments[2]) then
 			return L("invalidArg", client, 2)
 		end
 
@@ -211,7 +211,7 @@ nut.command.add("chargiveitem", {
 			local uniqueID = arguments[2]:lower()
 			local amount = tonumber(arguments[3])
 
-			if (!nut.item.list[uniqueID]) then
+			if (not nut.item.list[uniqueID]) then
 				for k, v in SortedPairs(nut.item.list) do
 					if (nut.util.stringMatches(v.name, uniqueID)) then
 						uniqueID = k
@@ -221,7 +221,7 @@ nut.command.add("chargiveitem", {
 				end
 			end
 
-			if (arguments[3] and arguments[3] ~= "") and (!amount) then
+			if (arguments[3] and arguments[3] ~= "") and (not amount) then
 				return L("invalidArg", client, 3)
 			end
 
@@ -312,14 +312,14 @@ nut.command.add("charunban", {
 
 				client.nutNextSearch = 0
 
-				if (!data.banned) then
+				if (not data.banned) then
 					return client:notifyLocalized("charNotBanned")
 				end
 
 				data.banned = nil
 
 				nut.db.updateTable({_data = data}, nil, nil, "_id = "..charID)
-				nut.util.notifyLocalized("charUnBan", nil, client:Name(), v:getName())
+				nut.util.notifyLocalized("charUnBan", nil, client:Name(), nut.char.loaded[charID]:getName())
 			end
 		end)
 	end
@@ -332,7 +332,7 @@ nut.command.add("givemoney", {
 		number = number or 0
 		local amount = math.floor(number)
 
-		if (!amount or !isnumber(amount) or amount <= 0) then
+		if (not amount or not isnumber(amount) or amount <= 0) then
 			return L("invalidArg", client, 1)
 		end
 
@@ -345,7 +345,7 @@ nut.command.add("givemoney", {
 		if (IsValid(target) and target:IsPlayer() and target:getChar()) then
 			amount = math.Round(amount)
 
-			if (!client:getChar():hasMoney(amount)) then
+			if (not client:getChar():hasMoney(amount)) then
 				return
 			end
 
@@ -366,7 +366,7 @@ nut.command.add("charsetmoney", {
 	onRun = function(client, arguments)
 		local amount = tonumber(arguments[2])
 
-		if (!amount or !isnumber(amount) or amount < 0) then
+		if (not amount or not isnumber(amount) or amount < 0) then
 			return "@invalidArg", 2
 		end
 
@@ -374,7 +374,7 @@ nut.command.add("charsetmoney", {
 
 		if (IsValid(target)) then
 			local char = target:getChar()
-			
+
 			if (char and amount) then
 				amount = math.Round(amount)
 				char:setMoney(amount)
@@ -389,13 +389,13 @@ nut.command.add("dropmoney", {
 	onRun = function(client, arguments)
 		local amount = tonumber(arguments[1])
 
-		if (!amount or !isnumber(amount) or amount < 1) then
+		if (not amount or not isnumber(amount) or amount < 1) then
 			return "@invalidArg", 1
 		end
 
 		amount = math.Round(amount)
-		
-		if (!client:getChar():hasMoney(amount)) then
+
+		if (not client:getChar():hasMoney(amount)) then
 			return
 		end
 
@@ -403,7 +403,7 @@ nut.command.add("dropmoney", {
 		local money = nut.currency.spawn(client:getItemDropPos(), amount)
 		money.client = client
 		money.charID = client:getChar():getID()
-		
+
 		client:doGesture(GESTURE_SLOT_ATTACK_AND_RELOAD, ACT_GMOD_GESTURE_ITEM_PLACE, true)
 	end
 })
@@ -432,11 +432,11 @@ nut.command.add("chargetup", {
 	onRun = function(client, arguments)
 		local entity = client.nutRagdoll
 
-		if (IsValid(entity) and entity.nutGrace and entity.nutGrace < CurTime() and entity:GetVelocity():Length2D() < 8 and !entity.nutWakingUp) then
+		if (IsValid(entity) and entity.nutGrace and entity.nutGrace < CurTime() and entity:GetVelocity():Length2D() < 8 and not entity.nutWakingUp) then
 			entity.nutWakingUp = true
 
 			client:setAction("@gettingUp", 5, function()
-				if (!IsValid(entity)) then
+				if (not IsValid(entity)) then
 					return
 				end
 
@@ -451,7 +451,7 @@ nut.command.add("plyunwhitelist", {
 	syntax = "<string name> <string faction>",
 	onRun = function(client, arguments)
 		local target = nut.command.findPlayer(client, arguments[1])
-		
+
 		if (IsValid(target)) then
 			local faction = nut.command.findFaction(client,table.concat(arguments, " ", 2))
 
@@ -471,7 +471,7 @@ nut.command.add("fallover", {
 	onRun = function(client, arguments)
 		local time = tonumber(arguments[1])
 
-		if (!isnumber(time)) then
+		if (not isnumber(time)) then
 			time = 5
 		end
 
@@ -481,7 +481,7 @@ nut.command.add("fallover", {
 			time = nil
 		end
 
-		if (!IsValid(client.nutRagdoll)) then
+		if (not IsValid(client.nutRagdoll)) then
 			client:setRagdolled(true, time)
 		end
 	end
@@ -495,7 +495,7 @@ nut.command.add("beclass", {
 
 		if (IsValid(client) and char) then
 			local num = isnumber(tonumber(class)) and tonumber(class) or -1
-			
+
 			if (nut.class.list[num]) then
 				local v = nut.class.list[num]
 
@@ -523,7 +523,7 @@ nut.command.add("beclass", {
 					end
 				end
 			end
-			
+
 			client:notifyLocalized("invalid", L("class", client))
 		else
 			client:notifyLocalized("illegalAccess")
@@ -536,7 +536,7 @@ nut.command.add("chardesc", {
 	onRun = function(client, arguments)
 		arguments = table.concat(arguments, " ")
 
-		if (!arguments:find("%S")) then
+		if (not arguments:find("%S")) then
 			return client:requestString("@chgDesc", "@chgDescDesc", function(text)
 				nut.command.run(client, "chardesc", {text})
 			end, client:getChar():getDesc())
@@ -584,7 +584,8 @@ nut.command.add("plytransfer", {
 				v, client:Name(), target:Name(), L(faction.name, v)
 			)
 		end
-	end
+	end,
+	alias = "charsetfaction"
 })
 
 -- Credit goes to SmithyStanley
@@ -593,7 +594,7 @@ nut.command.add("clearinv", {
 	syntax = "<string name>",
 	onRun = function (client, arguments)
 		local target = nut.command.findPlayer(client, arguments[1])
-		
+
 		if (IsValid(target) and target:getChar()) then
 			for k, v in pairs(target:getChar():getInv():getItems()) do
 				v:remove()

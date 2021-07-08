@@ -2,7 +2,7 @@ nut.attribs = nut.attribs or {}
 nut.attribs.list = nut.attribs.list or {}
 
 function nut.attribs.loadFromDir(directory)
-	for k, v in ipairs(file.Find(directory.."/*.lua", "LUA")) do
+	for _, v in ipairs(file.Find(directory.."/*.lua", "LUA")) do
 		local niceName = v:sub(4, -5)
 
 		ATTRIBUTE = nut.attribs.list[niceName] or {}
@@ -39,10 +39,10 @@ do
 	if (SERVER) then
 		function charMeta:updateAttrib(key, value)
 			local attribute = nut.attribs.list[key]
+			local client = self:getPlayer()
 
 			if (attribute) then
 				local attrib = self:getAttribs()
-				local client = self:getPlayer()
 
 				attrib[key] = math.min((attrib[key] or 0) + value, attribute.maxValue or nut.config.get("maxAttribs", 30))
 
@@ -125,10 +125,10 @@ do
 		local boosts = self:getBoosts()[key]
 
 		if (boosts) then
-			for k, v in pairs(boosts) do
+			for _, v in pairs(boosts) do
 				att = att + v
 			end
-		end 
+		end
 
 		return att
 	end

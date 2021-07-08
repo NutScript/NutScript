@@ -54,12 +54,14 @@ end
 function PANEL:onPointChange(key, delta)
 	if (not key) then return 0 end
 	local attribs = self:getContext("attribs", {})
+	local startingMax = nut.attribs.list[key].startingMax or nil
 	local quantity = attribs[key] or 0
 	local newQuantity = quantity + delta
 	local newPointsLeft = self.left - delta
 	if (
 		newPointsLeft < 0 or newPointsLeft > self.total or
-		newQuantity < 0 or newQuantity > self.total
+		newQuantity < 0 or newQuantity > self.total or
+		(startingMax and startingMax < newQuantity)
 	) then
 		return quantity
 	end
@@ -100,7 +102,7 @@ function PANEL:Init()
 	self.quantity:Dock(FILL)
 	self.quantity:SetText("0")
 	self.quantity:SetContentAlignment(5)
-	
+
 	self.name = self:Add("DLabel")
 	self.name:SetFont("nutCharSubTitleFont")
 	self.name:SetContentAlignment(4)
@@ -111,8 +113,9 @@ end
 
 function PANEL:setAttribute(key, attribute)
 	self.key = key
+	local startingMax = nut.attribs.list[key].startingMax or nil
 	self.name:SetText(L(attribute.name))
-	self:SetToolTip(L(attribute.desc or "noDesc"))
+	self:SetTooltip(L(attribute.desc or "noDesc").. (startingMax and " Max: "..startingMax or ""))
 end
 
 function PANEL:delta(delta)

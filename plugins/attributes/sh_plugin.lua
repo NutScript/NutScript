@@ -26,9 +26,10 @@ nut.char.registerVar("attribs", {
 				local count = 0
 
 				for k, v in pairs(value) do
+					local max = nut.attribs.list[k] and nut.attribs.list[k].startingMax or nil
+					if max and max < v then return false, nut.attribs.list[k].name .. " too high" end
 					count = count + v
 				end
-
 				local points = hook.Run("GetStartAttribPoints", client, count)
 					or nut.config.get("maxAttribs", 30)
 				if (count > points) then
