@@ -35,7 +35,6 @@ function PLUGIN:HandleItemTransferRequest(client, itemID, x, y, invID)
 	canTransfer, reason = inventory:canAccess(TRANSFER, context)
 
 	if (not canTransfer) then
-		print("FUUUUUUUUUUUUUU", reason)
 		if (isstring(reason)) then
 			client:notifyLocalized(reason)
 		end
