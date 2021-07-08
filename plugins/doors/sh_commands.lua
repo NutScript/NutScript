@@ -36,7 +36,7 @@ nut.command.add("doorsell", {
 		else
 			-- Tell the player the door isn't valid.
 			client:notifyLocalized("dNotValid")
-		end		
+		end
 	end
 })
 
@@ -70,7 +70,7 @@ nut.command.add("doorbuy", {
 				entity.nutAccess = {
 					[client] = DOOR_OWNER
 				}
-				
+
 				PLUGIN:callOnDoorChildren(entity, function(child)
 					child:SetDTEntity(0, client)
 				end)
@@ -356,7 +356,7 @@ nut.command.add("doorsetchild", {
 		else
 			-- Tell the player the door isn't valid.
 			client:notifyLocalized("dNotValid")
-		end		
+		end
 	end
 })
 
@@ -393,7 +393,7 @@ nut.command.add("doorremovechild", {
 		else
 			-- Tell the player the door isn't valid.
 			client:notifyLocalized("dNotValid")
-		end		
+		end
 	end
 })
 
