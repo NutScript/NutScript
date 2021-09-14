@@ -52,7 +52,7 @@ local PANEL = {}
 			list:SetTall(28)
 			list.Think = function(this)
 				for k2, v2 in ipairs(team.GetPlayers(k)) do
-					if (!IsValid(v2.nutScoreSlot) or v2.nutScoreSlot:GetParent() ~= this) then
+					if (not IsValid(v2.nutScoreSlot) or v2.nutScoreSlot:GetParent() ~= this) then
 						if (IsValid(v2.nutPlayerSlot)) then
 							v2.nutPlayerSlot:SetParent(this)
 						else
@@ -85,24 +85,22 @@ local PANEL = {}
 
 			local visible, amount
 
-			for k, v in ipairs(self.teams) do
-				visible, amount = v:IsVisible(), team.NumPlayers(k)
+			for faction, v in ipairs(self.teams) do
+				visible, amount = v:IsVisible(), team.NumPlayers(faction)
 
 				if (visible and amount == 0) then
 					v:SetVisible(false)
 					self.layout:InvalidateLayout()
-				elseif (!visible and amount > 0) then
+				elseif (not visible and amount > 0) then
 					v:SetVisible(true)
 				end
-				
-				local faction = nut.faction.indices[k]
-				
-				if (amount != 0) then
+
+				if (amount ~= 0) then
 					v:SetVisible(hook.Run("ShowFactionInScoreboard", faction) ~= false or LocalPlayer():IsAdmin())
 				end
 			end
 
-			for k, v in pairs(self.slots) do
+			for _, v in pairs(self.slots) do
 				if (IsValid(v)) then
 					v:update()
 				end
@@ -113,7 +111,7 @@ local PANEL = {}
 	end
 
 	function PANEL:addPlayer(client, parent)
-		if (!client:getChar() or !IsValid(parent)) then
+		if (not client:getChar() or not IsValid(parent)) then
 			return
 		end
 
@@ -146,7 +144,7 @@ local PANEL = {}
 		slot.model:SetTooltip(L("sbOptions", client:steamName()))
 
 		timer.Simple(0, function()
-			if (!IsValid(slot)) then
+			if (not IsValid(slot)) then
 				return
 			end
 
@@ -198,7 +196,7 @@ local PANEL = {}
 		local oldTeam = client:Team()
 
 		function slot:update()
-			if (!IsValid(client) or !client:getChar() or !self.character or self.character ~= client:getChar() or oldTeam ~= client:Team()) then
+			if (not IsValid(client) or not client:getChar() or not self.character or self.character ~= client:getChar() or oldTeam ~= client:Team()) then
 				self:Remove()
 
 				local i = 0
@@ -236,20 +234,20 @@ local PANEL = {}
 				self.lastDesc = desc
 			end
 
-			if (!IsValid(entity)) then
+			if (not IsValid(entity)) then
 				return
 			end
 
 			if (self.lastModel ~= model or self.lastSkin ~= skin) then
 				self.model:SetModel(client:GetModel(), client:GetSkin())
 				self.model:SetTooltip(L("sbOptions", client:steamName()))
-				
+
 				self.lastModel = model
 				self.lastSkin = skin
 			end
 
 			timer.Simple(0, function()
-				if (!IsValid(entity) or !IsValid(client)) then
+				if (not IsValid(entity) or not IsValid(client)) then
 					return
 				end
 

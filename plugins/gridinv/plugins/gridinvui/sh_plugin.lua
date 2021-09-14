@@ -13,7 +13,7 @@ if (CLIENT) then
 		local panel = vgui.Create("nutGridInventory", parent)
 		panel:setInventory(inventory)
 		panel:Center()
-		
+
 		return panel
 	end
 

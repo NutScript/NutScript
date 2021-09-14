@@ -38,7 +38,7 @@ end
 
 function PLUGIN:PlayerDeath(client)
 	local deathSound = hook.Run("GetPlayerDeathSound", client)
-		or table.Random(DEATH_SOUNDS)
+		or DEATH_SOUNDS[math.random(#DEATH_SOUNDS)]
 	if (client:isFemale() and !deathSound:find("female")) then
 		deathSound = deathSound:gsub("male", "female")
 	end
@@ -48,14 +48,14 @@ end
 
 function PLUGIN:GetPlayerPainSound(client)
 	if (client:WaterLevel() >= 3) then
-		return table.Random(DROWN_SOUNDS)
+		return DROWN_SOUNDS[math.random(#DROWN_SOUNDS)]
 	end
 end
 
 function PLUGIN:PlayerHurt(client, attacker, health, damage)
 	if ((client.nutNextPain or 0) < CurTime() and health > 0) then
 		local painSound = hook.Run("GetPlayerPainSound", client)
-			or table.Random(PAIN_SOUNDS)
+			or PAIN_SOUNDS[math.random(#PAIN_SOUNDS)]
 		if (client:isFemale() and !painSound:find("female")) then
 			painSound = painSound:gsub("male", "female")
 		end

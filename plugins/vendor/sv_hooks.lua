@@ -118,7 +118,7 @@ function PLUGIN:VendorTradeAttempt(
 				return
 			end
 
-			local canTransferItem, reason = hook.Run("CanItemBeTransfered", item, inventory, VENDOR_INVENTORY_MEASURE)
+			local canTransferItem, reason = hook.Run("CanItemBeTransfered", item, inventory, VENDOR_INVENTORY_MEASURE, client)
 			if (canTransferItem == false) then
 				client:notifyLocalized(reason or "vendorError")
 			
@@ -147,7 +147,8 @@ function PLUGIN:VendorTradeAttempt(
 
 		local position = client:getItemDropPos()
 		local result = character:getInv():add(itemType)
-			:next(function()
+			:next(function(item)
+				hook.Run("OnCharTradeVendor", client, vendor, item, isSellingToVendor)
 				client.vendorTransaction = nil
 			end)
 			:catch(function(err)
@@ -161,8 +162,6 @@ function PLUGIN:VendorTradeAttempt(
 				client:notifyLocalized(err)
 				client.vendorTransaction = nil
 			end)
-			
-		hook.Run("OnCharTradeVendor", client, vendor, result.value, isSellingToVendor)
 
 		nut.log.add(client, "vendorBuy", itemType, vendor:getNetVar("name"))
 	end

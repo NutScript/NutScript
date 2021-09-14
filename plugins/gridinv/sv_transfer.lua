@@ -12,11 +12,9 @@ function PLUGIN:HandleItemTransferRequest(client, itemID, x, y, invID)
 		return
 	end
 	-- Make sure the item is permitted to move between the two inventories.
-	if (
-		hook.Run("CanItemBeTransfered", item, oldInventory, inventory) == false
-	) then
-		return
-	end
+	local status,reason = hook.Run("CanItemBeTransfered", item, oldInventory, inventory, client)
+
+	if (status == false) then client:notify(reason or "You can't do that right now.") return end
 
 	local context = {
 		client = client,
@@ -98,7 +96,7 @@ function PLUGIN:HandleItemTransferRequest(client, itemID, x, y, invID)
 		end)
 		:next(function(res)
 			client.invTransferTransaction = nil
-			
+
 			if (res and res.error) then
 				fail()
 			else

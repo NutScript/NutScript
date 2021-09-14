@@ -37,8 +37,8 @@ function nut.util.includeDir(directory, fromLua, recursive)
 		baseDir = SCHEMA.folder.."/schema/"
 	else
 		baseDir = baseDir.."/gamemode/"
-	end 
-	
+	end
+
 	if recursive then
 		local function AddRecursive(folder)
 			local files, folders = file.Find(folder.."/*", "LUA")

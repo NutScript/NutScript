@@ -56,10 +56,10 @@ function nut.command.add(command, data)
 
 		data._onRun = data.onRun -- for refactoring purpose.
 		data.onRun = function(client, arguments)
-			if (!onCheckAccess(client)) then
-				return "@noPerm"
-			else
+			if (hook.Run("CanPlayerUseCommand", client, command) or onCheckAccess(client)) then
 				return onRun(client, arguments)
+			else
+				return "@noPerm"
 			end
 		end
 	end

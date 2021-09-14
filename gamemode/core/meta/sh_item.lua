@@ -50,6 +50,14 @@ else
 	end
 end
 
+function ITEM:getModel()
+	return self.model
+end
+
+function ITEM:getSkin()
+	return self.skin
+end
+
 function ITEM:getPrice()
 	local price = self.price
 
