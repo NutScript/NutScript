@@ -50,12 +50,12 @@ ITEM.functions.EquipUn = { -- sorry, for name order.
 		local weapon = item.player.carryWeapons[item.weaponCategory]
 
 		if (!weapon or !IsValid(weapon)) then
-			weapon = item.player:GetWeapon(item.class)	
+			weapon = item.player:GetWeapon(item.class)
 		end
 
 		if (weapon and weapon:IsValid()) then
 			item:setData("ammo", weapon:Clip1())
-		
+
 			item.player:StripWeapon(item.class)
 		else
 			print(Format("[Nutscript] Weapon %s does not exist!", item.class))
@@ -101,7 +101,7 @@ ITEM.functions.Equip = {
 				end
 			end
 		end
-		
+
 		if (client:HasWeapon(item.class)) then
 			client:StripWeapon(item.class)
 		end

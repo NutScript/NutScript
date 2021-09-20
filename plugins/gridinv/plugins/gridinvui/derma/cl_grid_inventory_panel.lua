@@ -153,7 +153,7 @@ function PANEL:drawHeldItemRectangle()
 	local trimX, trimY
 	local maxOffsetY = (item.height or 1) - 1
 	local maxOffsetX = (item.width or 1) - 1
-	local drawTarget = nil 
+	local drawTarget = nil
 	for itemID, invItem in pairs(self.inventory.items) do
 		if (item:getID() == itemID) then continue end
 
@@ -162,7 +162,7 @@ function PANEL:drawHeldItemRectangle()
 
 		if (
 			x + (item.width - 1) >= targetX and x <= targetX + targetW and
-			y + (item.height - 1) >= targetY and y <= targetY + targetH and 
+			y + (item.height - 1) >= targetY and y <= targetY + targetH and
 			(invItem.onCombine or item.onCombineTo)
 		) then
 			drawTarget = {
@@ -221,7 +221,7 @@ end
 function PANEL:Center()
 	local parent = self:GetParent()
 	local centerX, centerY = ScrW() * 0.5, ScrH() * 0.5
-	
+
 	self:SetPos(
 		centerX - (self:GetWide() * 0.5),
 		centerY - (self:GetTall() * 0.5)

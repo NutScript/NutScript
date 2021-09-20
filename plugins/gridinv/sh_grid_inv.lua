@@ -5,7 +5,7 @@ local GridInv = nut.Inventory:extend("GridInv")
 
 -- Useful access rules:
 local function CanAccessInventoryIfCharacterIsOwner(inventory, action, context)
-	if (inventory.virtual) then return (action == "transfer") end 
+	if (inventory.virtual) then return (action == "transfer") end
 
 	local ownerID = inventory:getData("char")
 	local client = context.client
@@ -19,7 +19,7 @@ local function CanNotAddItemIfNoSpace(inventory, action, context)
 		return
 	end
 
-	if (inventory.virtual) then return true end 
+	if (inventory.virtual) then return true end
 
 	local x, y = context.x, context.y
 	if (not x or not y) then return false, "noFit" end
@@ -195,7 +195,7 @@ if (SERVER) then
 		if (not item) then
 			return d:reject("invalid item type")
 		end
-		
+
 		local targetInventory = self
 		if (not x or not y) then
 			x, y = self:findFreePosition(item)
@@ -210,7 +210,7 @@ if (SERVER) then
 							break
 						end
 					end
-				end				
+				end
 			end
 		end
 
@@ -223,23 +223,23 @@ if (SERVER) then
 
 		if (isStackCommand) then
 			local items = targetInventory:getItemsOfType(itemTypeOrItem)
-			
+
 			if (items) then
 				for _, targetItem in pairs(items) do
-					if (remainingQuantity == 0) then -- nothing to fill. 
-						break 
+					if (remainingQuantity == 0) then -- nothing to fill.
+						break
 					end
 
 					local freeSpace = targetItem.maxQuantity - targetItem:getQuantity()
-					
+
 					if (freeSpace > 0) then
 						local filler = freeSpace - remainingQuantity
 
 						if (filler > 0) then
-							targetAssignments[targetItem] = remainingQuantity	
+							targetAssignments[targetItem] = remainingQuantity
 							remainingQuantity = 0
 						else
-							targetAssignments[targetItem] = freeSpace		
+							targetAssignments[targetItem] = freeSpace
 							remainingQuantity = math.abs(filler)
 						end
 					end
@@ -304,7 +304,7 @@ if (SERVER) then
 				for targetItem, assignedQuantity in pairs(targetAssignments) do
 					targetItem:addQuantity(assignedQuantity)
 				end
-				
+
 				local overStacks = math.ceil(remainingQuantity/item.maxQuantity) - 1
 
 				if (overStacks > 0) then
@@ -318,7 +318,7 @@ if (SERVER) then
 
 					item:setQuantity(remainingQuantity - (item.maxQuantity * overStacks))
 					targetInventory:addItem(item)
-					
+
 					return d:resolve(items)
 				else
 					item:setQuantity(remainingQuantity)
@@ -367,7 +367,7 @@ else
 		) then
 			destinationID = nil
 		end
-		
+
 		net.Start("nutTransferItem")
 			net.WriteUInt(itemID, 32)
 			net.WriteUInt(x, 32)

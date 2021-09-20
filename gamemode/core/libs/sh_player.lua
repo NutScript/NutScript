@@ -42,7 +42,7 @@ do
 end
 
 -- Whitelist networking information here.
-do	
+do
 	function playerMeta:hasWhitelist(faction)
 		local data = nut.faction.indices[faction]
 

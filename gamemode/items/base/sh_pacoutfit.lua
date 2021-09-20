@@ -50,7 +50,7 @@ end
 
 function ITEM:removePart(client)
 	local char = client:getChar()
-	
+
 	self:setData("equip", false)
 
 	if (client.removePart) then
@@ -116,7 +116,7 @@ ITEM.functions.Equip = {
 				char:addBoost(item.uniqueID, attribute, boost)
 			end
 		end
-		
+
 		return false
 	end,
 	onCanRun = function(item)

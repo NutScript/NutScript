@@ -112,7 +112,7 @@ function ITEM:transfer(newInventory,bBypass)
 		:next(function()
 			newInventory:add(self)
 		end)
-	
+
 	return true
 end
 
