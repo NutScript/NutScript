@@ -47,15 +47,17 @@ if (SERVER) then
 
 		local model = itemTable.onGetDropModel
 			and itemTable:onGetDropModel(self)
-			or itemTable.model
+			or itemTable:getModel() or itemTable.model
 		if (itemTable.worldModel) then
 			model = itemTable.worldModel == true
 				and "models/props_junk/cardboard_box004a.mdl"
 				or itemTable.worldModel
 		end
 
-		self:SetSkin(itemTable.skin or 0)
 		self:SetModel(model)
+		self:SetSkin(itemTable.skin or 0)
+		self:SetMaterial(itemTable.material or "")
+		self:SetColor(itemTable.color or Color(255,255,255))
 		self:PhysicsInit(SOLID_VPHYSICS)
 		self:SetSolid(SOLID_VPHYSICS)
 		self:setNetVar("id", itemTable.uniqueID)

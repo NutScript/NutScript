@@ -6,6 +6,15 @@ function PANEL:configureSteps()
 	self:addStep(vgui.Create("nutCharacterModel"))
 	self:addStep(vgui.Create("nutCharacterBiography"))
 	hook.Run("ConfigureCharacterCreationSteps", self)
+
+	local stepKeys = table.GetKeys(self.steps)
+	table.sort(stepKeys, function(a, b) return a < b end)
+	local stepsCopy = table.Copy(self.steps)
+	self.steps = {}
+
+	for newKey, oldKey in pairs(stepKeys) do
+		self.steps[newKey] = stepsCopy[oldKey]
+	end
 end
 
 -- If the faction and model character data has been set, updates the
@@ -176,7 +185,7 @@ function PANEL:addStep(step, priority)
 	assert(IsValid(step), "Invalid panel for step")
 	assert(step.isCharCreateStep, "Panel must inherit nutCharacterCreateStep")
 	if (isnumber(priority)) then
-		table.insert(self.steps, math.min(priority, #self.steps + 1), step)
+		table.insert(self.steps, priority, step)
 	else
 		self.steps[#self.steps + 1] = step
 	end
@@ -343,14 +352,14 @@ function PANEL:Init()
 	self.prev = self.buttons:Add("nutCharButton")
 	self.prev:SetText(L("back"):upper())
 	self.prev:Dock(LEFT)
-	self.prev:SetWide(96)
+	self.prev:SizeToContents()
 	self.prev.DoClick = function(prev) self:previousStep() end
 	self.prev:SetAlpha(0)
 
 	self.next = self.buttons:Add("nutCharButton")
 	self.next:SetText(L("next"):upper())
 	self.next:Dock(RIGHT)
-	self.next:SetWide(96)
+	self.next:SizeToContents()
 	self.next.DoClick = function(next) self:nextStep() end
 
 	self.cancel = self.buttons:Add("nutCharButton")
