@@ -30,6 +30,8 @@ if (SERVER) then
 	end
 
 	function ENT:OnTakeDamage(dmginfo)
+		if (hook.Run("ItemShouldTakeDamage", self, dmginfo) == false) then return end
+			
 		local damage = dmginfo:GetDamage()
 		self:setHealth(self.health - damage)
 
