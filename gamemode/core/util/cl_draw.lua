@@ -26,7 +26,7 @@ function nut.util.wrapText(text, width, font)
 	local maxW = 0
 
 	if (w <= width) then
-		return {(text:gsub("%s", " "))}, w
+		return {text:gsub("%s", " ")}, w
 	end
 
 	for i = 1, #exploded do
