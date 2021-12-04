@@ -13,7 +13,7 @@ if (CLIENT) then
 		local panel = parent:Add("nutListInventory")
 		panel:setInventory(inventory)
 		panel:Center()
-		
+
 		return panel
 	end
 

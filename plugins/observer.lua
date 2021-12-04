@@ -14,7 +14,7 @@ if (CLIENT) then
 		client = LocalPlayer()
 
 		if (client:IsAdmin() and client:GetMoveType() == MOVETYPE_NOCLIP and !client:InVehicle() and NUT_CVAR_ADMINESP:GetBool()) then
-			sx, sy = surface.ScreenWidth(), surface.ScreenHeight()
+			sx, sy = ScrW(), ScrH()
 
 			for k, v in ipairs(player.GetAll()) do
 				if (v == client) then continue end

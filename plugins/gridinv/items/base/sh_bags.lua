@@ -6,6 +6,8 @@ ITEM.model = "models/props_c17/suitcase001a.mdl"
 ITEM.category = "Storage"
 ITEM.isBag = true
 
+local SOUND_BAG_RESPONSE = {"physics/cardboard/cardboard_box_impact_soft2.wav", 50}
+
 -- The size of the inventory held by this item.
 ITEM.invWidth = 2
 ITEM.invHeight = 2

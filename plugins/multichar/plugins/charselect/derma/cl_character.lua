@@ -187,7 +187,7 @@ function PANEL:Init()
 	self.tabs:DockMargin(64, 32, 64, 0)
 	self.tabs:SetTall(48)
 	self.tabs:SetPaintBackground(false)
-	
+
 	self.content = self:Add("DPanel")
 	self.content:Dock(FILL)
 	self.content:DockMargin(64, 0, 64, 64)

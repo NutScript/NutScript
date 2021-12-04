@@ -55,6 +55,11 @@ nut.config.add("oocDelay", 10, "The delay before a player can use OOC chat again
 	category = "chat"
 })
 
+nut.config.add("oocLimit", 0, "Character limit per OOC message. 0 means no limit", nil, {
+	data = {min = 0, max = 1000},
+	category = "chat"
+})
+
 nut.config.add("oocDelayAdmin", false, "Whether or not OOC chat delay is enabled for admins.", nil, {
 	category = "chat"
 })

@@ -23,7 +23,7 @@ function PANEL:Init()
 	self.weightBar:Dock(FILL)
 	self.weightBar:DockMargin(PADDING, PADDING, PADDING, PADDING)
 	self.weightBar.Paint = function(this, w, h) self:paintWeightBar(w, h) end
-	
+
 	self.weightLabel = self.weight:Add("DLabel")
 	self.weightLabel:SetText("WEIGHT: 0/10KG")
 	self.weightLabel:SetFont("nutChatFont")
@@ -122,7 +122,7 @@ end
 function PANEL:Center()
 	local parent = self:GetParent()
 	local centerX, centerY = ScrW() * 0.5, ScrH() * 0.5
-	
+
 	self:SetPos(
 		centerX - (self:GetWide() * 0.5),
 		centerY - (self:GetTall() * 0.5)

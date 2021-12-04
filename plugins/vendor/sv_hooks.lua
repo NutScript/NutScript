@@ -96,14 +96,14 @@ function PLUGIN:VendorTradeAttempt(
 		return
 	end
 
-	client.vendorTransaction = true 
+	client.vendorTransaction = true
 	client.vendorTimeout = RealTime() + .1
 
 	-- Then, transfer the money and item.
 	if (isSellingToVendor) then
 		local inventory = character:getInv()
 		local item = inventory:getFirstItemOfType(itemType)
-		
+
 		if (item) then
 			local context = {
 				client = client,
@@ -121,7 +121,7 @@ function PLUGIN:VendorTradeAttempt(
 			local canTransferItem, reason = hook.Run("CanItemBeTransfered", item, inventory, VENDOR_INVENTORY_MEASURE, client)
 			if (canTransferItem == false) then
 				client:notifyLocalized(reason or "vendorError")
-			
+
 				return
 			end
 

@@ -52,7 +52,7 @@ if (CLIENT) then
 				if (fraction >= 1) then
 					self.startTime = curTime
 					self.finishTime = curTime + 30
-					
+
 					if (ordered) then
 						self.orderedIndex = self.orderedIndex + 1
 
@@ -92,13 +92,13 @@ if (CLIENT) then
 
 	local HIDE_WEAPON = Vector(0, 0, -100000)
 	local HIDE_ANGLE = Angle(0, 0, 0)
-	
+
 	function PLUGIN:CalcViewModelView(weapon, viewModel, oldEyePos, oldEyeAngles, eyePos, eyeAngles)
 		local scenes = self.scenes
 
 		if (IsValid(nut.gui.character)) then
 			return HIDE_WEAPON, HIDE_ANGLE
-		end		
+		end
 	end
 
 	local PLUGIN = PLUGIN

@@ -301,7 +301,6 @@ do
 							return false
 						end
 					end
-
 					-- Save the last time they spoke in OOC.
 					speaker.nutLastOOC = CurTime()
 				end
@@ -331,6 +330,9 @@ do
 					icon = "icon16/heart.png"
 				end
 
+				if (nut.config.get("oocLimit", 0) ~= 0) and (#text > nut.config.get("oocLimit", 0)) then
+					text = string.sub(text, 1, nut.config.get("oocLimit", 0)) .. "..."
+				end
 				icon = Material(hook.Run("GetPlayerIcon", speaker) or icon)
 
 				chat.AddText(icon, nut.chat.timestamp(true), Color(255, 50, 50), " [OOC] ", speaker, color_white, ": " .. text)
@@ -361,6 +363,9 @@ do
 				speaker.nutLastLOOC = CurTime()
 			end,
 			onChatAdd = function(speaker, text)
+				if (nut.config.get("oocLimit", 0) ~= 0) and (#text > nut.config.get("oocLimit", 0)) then
+					text = string.sub(text, 1, nut.config.get("oocLimit", 0)) .. "..."
+				end
 				chat.AddText(nut.chat.timestamp(false), Color(255, 50, 50), "[LOOC] ", nut.config.get("chatColor"), speaker:Name() .. ": " .. text)
 			end,
 			radius = function()
