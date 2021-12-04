@@ -60,11 +60,13 @@ function ITEM:removeOutfit(client)
 		client:SetSkin(character:getData("oldSkin", character:getData("skin", 0)))
 		character:setData("oldSkin", nil)
 
+
+		local oldGroups = character:getData("oldGroups", {})
 		for k, v in pairs(self.bodyGroups or {}) do
 			local index = client:FindBodygroupByName(k)
 
 			if (index > -1) then
-				client:SetBodygroup(index, 0)
+				client:SetBodygroup(index, oldGroups[index] or 0)
 
 				local groups = character:getData("groups", {})
 
@@ -74,6 +76,7 @@ function ITEM:removeOutfit(client)
 				end
 			end
 		end
+		character:setData("oldGroups", nil)
 	end
 
 	-- Then, remove PAC parts from this outfit.
@@ -185,18 +188,21 @@ ITEM.functions.Equip = {
 
 			-- Then set appropriate body groups for the model.
 			if (istable(item.bodyGroups)) then
+				local oldGroups = {}
 				local groups = {}
 
 				for k, value in pairs(item.bodyGroups) do
 					local index = item.player:FindBodygroupByName(k)
 
 					if (index > -1) then
+						oldGroups[index] = item.player:GetBodygroup(index)
 						groups[index] = value
 					end
 				end
 
-				local newGroups = char:getData("groups", {})
+				char:setData("oldGroups", oldGroups)
 
+				local newGroups = char:getData("groups", {})
 				for index, value in pairs(groups) do
 					newGroups[index] = value
 					item.player:SetBodygroup(index, value)
