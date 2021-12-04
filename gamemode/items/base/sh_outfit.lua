@@ -77,6 +77,7 @@ function ITEM:removeOutfit(client)
 				end
 			end
 		end
+    
 		character:setData("oldGroups", oldGroups)
 	end
 

@@ -8,7 +8,7 @@ ENT.Spawnable = false
 if (SERVER) then
 	function ENT:Initialize()
 		self:SetModel(
-			nut.config.get("moneyModel", "models/props_lab/box01a.mdl")
+			hook.Run("GetMoneyModel", self:getAmount()) or nut.config.get("moneyModel", "models/props_lab/box01a.mdl")
 		)
 		self:SetSolid(SOLID_VPHYSICS)
 		self:PhysicsInit(SOLID_VPHYSICS)
