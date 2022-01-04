@@ -43,6 +43,7 @@ function PANEL:Init()
 
     self.name = self:Add("DLabel")
     self.name:SetFont("nutBigCredits")
+    self.name:SetText("Loading...")
 
     self.desc = self:Add("DLabel")
     self.desc:SetFont("nutSmallCredits")

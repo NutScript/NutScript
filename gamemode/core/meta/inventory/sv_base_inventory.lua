@@ -312,12 +312,10 @@ function Inventory:delete()
 end
 
 function Inventory:destroy()
-	local id = self:getID()
-
 	for _, item in pairs(self:getItems()) do
 		item:destroy()
 	end
-	nut.inventory.instances[id] = nil
+	nut.inventory.instances[self:getID()] = nil
 	net.Start("nutInventoryDelete")
 		net.WriteType(id)
 	net.Broadcast()

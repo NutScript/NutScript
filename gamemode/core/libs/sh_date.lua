@@ -59,7 +59,7 @@ nut.config.add("yearAppendix", "", "Add a custom appendix to your date, if you u
 }
 )
 
--- function returns a number that represents the custom time. the year is always the current year for 
+-- function returns a number that represents the custom time. the year is always the current year for
 -- compatibility, though it can be editted with nut.date.getFormatted
 
 function nut.date.get()
@@ -81,7 +81,7 @@ end
 
 if SERVER then
 
-	-- This is internal, though you can use it you probably shouldn't. 
+	-- This is internal, though you can use it you probably shouldn't.
 	-- Checks the time difference between the old time values and current time, and updates month and day to advance in the time difference
 	-- creates a timer that updates the month and day values, in case the server runs continuously without restarts.
 	function nut.date.initialize()
@@ -113,17 +113,22 @@ if SERVER then
 		-- the reason for this complication instead of just upvaluing day/month by 1 is that some months have 28, 30 or 31 days.
 		-- and its simpler for the server to decide what the next month should be rather than manually computing that
 		local function updateDateConfigs()
-			local curDateTable = os.date("*t") -- get the current date table
-			local remainingSeconds = (curDateTable.hour * -3600 - curDateTable.min * 60 - curDateTable.sec) % 86400 -- get the remaining seconds until the new day
+			local dateTable = os.date("*t") -- get the current date table
+			local curSeconds = os.time(dateTable)
+			dateTable.day = dateTable.day + 1
+			dateTable.hour = 0
+			dateTable.min = 0
+			dateTable.sec = 0
+			local remainingSeconds = os.time(dateTable) - curSeconds -- get the remaining seconds until the new day
 
 			timer.Simple(remainingSeconds, function() -- run this code only once the day changes
 				local newTime = os.time({
 					year = tonumber(os.date("%Y")),
 					month = tonumber(nut.config.get("month")),
 					day = tonumber(nut.config.get("day")),
-					hour = tonumber(os.date("%H")),
-					min = os.date("%M"),
-					sec = os.date("%S")
+					hour = 0,
+					min = 0,
+					sec = 0
 				}) + 86400 -- 24 hours.
 
 				nut.config.set("month", tonumber(os.date("%m", newTime)))

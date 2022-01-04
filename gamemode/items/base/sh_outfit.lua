@@ -67,7 +67,6 @@ function ITEM:removeOutfit(client)
 
 			if (index > -1) then
 				client:SetBodygroup(index, oldGroups[index] or 0)
-		 		oldGroups[index] = nil
 
 				local groups = character:getData("groups", {})
 
@@ -77,8 +76,7 @@ function ITEM:removeOutfit(client)
 				end
 			end
 		end
-    
-		character:setData("oldGroups", oldGroups)
+		character:setData("oldGroups", nil)
 	end
 
 	-- Then, remove PAC parts from this outfit.
@@ -190,7 +188,7 @@ ITEM.functions.Equip = {
 
 			-- Then set appropriate body groups for the model.
 			if (istable(item.bodyGroups)) then
-				local oldGroups = char:getData("oldGroups", {})
+				local oldGroups = {}
 				local groups = {}
 
 				for k, value in pairs(item.bodyGroups) do
