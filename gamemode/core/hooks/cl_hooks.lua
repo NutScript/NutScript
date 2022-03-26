@@ -312,6 +312,7 @@ end
 
 function GM:InitPostEntity()
 	nut.joinTime = RealTime() - 0.9716
+	nut.faction.formatModelData()
 end
 
 function GM:CalcView(client, origin, angles, fov)

@@ -1,9 +1,9 @@
 -- Define gamemode information.
-GM.Name = "NutScript 2.0"
-GM.Author = "Chessnut and Black Tea"
+GM.Name = "NutScript 1.2"
+GM.Author = "Chessnut, Black Tea and the NutScript team"
 GM.Website = "http://nutscript.net/"
 
-nut.version = "2.0"
+nut.version = "1.2.2"
 
 -- Fix for client:SteamID64() returning nil when in single-player.
 do
@@ -94,6 +94,8 @@ function GM:OnReloaded()
 
 		NUT_PLUGINS_ALREADY_LOADED = true
 	end
+
+	nut.faction.formatModelData()
 end
 
 -- Include default NutScript chat commands.
@@ -103,6 +105,6 @@ if (SERVER and game.IsDedicated()) then
 	concommand.Remove("gm_save")
 
 	concommand.Add("gm_save", function(client, command, arguments)
-		
+
 	end)
 end
