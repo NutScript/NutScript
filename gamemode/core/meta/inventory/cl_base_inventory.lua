@@ -18,39 +18,48 @@ net.Receive("nutInventoryData", function()
 end)
 
 net.Receive("nutInventoryInit", function()
-	local id = net.ReadType()
-	local typeID = net.ReadString()
-	local data = net.ReadTable()
-	local instance = nut.inventory.new(typeID)
-	instance.id = id
-	instance.data = data
-	instance.items = {}
+    local id = net.ReadType()
+    local typeID = net.ReadString()
+    local data = net.ReadTable()
+    local instance = nut.inventory.new(typeID)
+    instance.id = id
+    instance.data = data
+    instance.items = {}
+    local length = net.ReadUInt(32)
+    local data2 = net.ReadData(length)
+    local uncompressed_data = util.Decompress(data2)
+    print("=====HELLO====")
+    print(uncompressed_data)
+    local items = util.JSONToTable(uncompressed_data)
 
-	local expectedItems = net.ReadUInt(32)
-	local function readItem()
-		return net.ReadUInt(32), net.ReadString(), net.ReadTable(), net.ReadUInt(32)
-	end
+    local function readItem(I)
+        local c = items[I] -- i
+        return c.i, c.u, c.d, c.q
+    end
 
-	for i = 1, expectedItems do
-		local itemID, itemType, data, quantity = readItem()
-		local item = nut.item.new(itemType, itemID)
-		item.data = table.Merge(item.data, data)
-		item.invID = instance.id
-		item.quantity = quantity
-		instance.items[itemID] = item
-		hook.Run("ItemInitialized", item)
-	end
+    local datatable = items
+    local expectedItems = #datatable
 
-	nut.inventory.instances[instance.id] = instance
-	hook.Run("InventoryInitialized", instance)
+    for i = 1, expectedItems do
+        local itemID, itemType, data, quantity = readItem(i)
+        local item = nut.item.new(itemType, itemID)
+        item.data = table.Merge(item.data, data)
+        item.invID = instance.id
+        item.quantity = quantity
+        instance.items[itemID] = item
+        hook.Run("ItemInitialized", item)
+    end
 
-	for _, character in pairs(nut.char.loaded) do
-		for index, inventory in pairs(character.vars.inv) do
-			if (inventory:getID() == id) then
-				character.vars.inv[index] = instance
-			end
-		end
-	end
+    nut.inventory.instances[instance.id] = instance
+    hook.Run("InventoryInitialized", instance)
+
+    for _, character in pairs(nut.char.loaded) do
+        for index, inventory in pairs(character.vars.inv) do
+            if inventory:getID() == id then
+                character.vars.inv[index] = instance
+            end
+        end
+    end
 end)
 
 net.Receive("nutInventoryAdd", function()
