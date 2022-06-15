@@ -167,7 +167,7 @@ end
 function Inventory:getItemCount(itemType)
 	local count = 0
 	for _, item in pairs(self:getItems()) do
-		if (itemType and item.uniqueID == itemType or true) then
+		if (itemType == nil and true or item.uniqueID == itemType) then
 			count = count + item:getQuantity()
 		end
 	end
