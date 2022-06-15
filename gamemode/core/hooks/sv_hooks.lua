@@ -487,6 +487,8 @@ function GM:InitPostEntity()
 		end
 	end
 
+	nut.faction.formatModelData()
+
 	timer.Simple(2, function()
 		nut.entityDataLoaded = true
 	end)

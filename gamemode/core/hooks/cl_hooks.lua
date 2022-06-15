@@ -296,8 +296,7 @@ function GM:CharacterListLoaded()
 		end
 		RunConsoleCommand("stopsound")
 		-- Show the intro if needed, then show the character menu.
-		local intro =
-			shouldPlayIntro and hook.Run("CreateIntroduction") or nil
+		local intro = shouldPlayIntro and hook.Run("CreateIntroduction") or nil
 		if (IsValid(intro)) then
 			intro.nutLoadOldRemove = intro.OnRemove
 			intro.OnRemove = function(panel)
@@ -313,6 +312,7 @@ end
 
 function GM:InitPostEntity()
 	nut.joinTime = RealTime() - 0.9716
+	nut.faction.formatModelData()
 end
 
 function GM:CalcView(client, origin, angles, fov)

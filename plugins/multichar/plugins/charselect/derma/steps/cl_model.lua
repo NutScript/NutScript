@@ -38,11 +38,23 @@ function PANEL:onDisplay()
 			icon.model = v
 			icon.skin = 0
 			icon.bodyGroups = {}
-		else
-			icon:SetModel(v[1], v[2] or 0, v[3])
+		elseif istable(v) then
+			local groups = "" -- SpawnIcon:SetBodyGroup starts with 0 for some reason
+			for i = 0, 9 do
+				groups = groups .. (v[3][i] or 0)
+			end
+			if #groups < 9 then
+				for i = 1, 9-#groups do
+					groups = groups .. "0"
+				end
+			elseif #groups > 9 then
+				groups = groups:sub(1, 9)
+			end
+
+			icon:SetModel(v[1], v[2] or 0, groups)
 			icon.model = v[1]
 			icon.skin = v[2] or 0
-			icon.bodyGroups = v[3]
+			icon.bodyGroups = groups
 		end
 		icon.index = k
 

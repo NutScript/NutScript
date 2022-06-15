@@ -280,31 +280,38 @@ function Inventory:syncData(key, recipients)
 end
 
 function Inventory:sync(recipients)
-	net.Start("nutInventoryInit")
-		-- ID is not always a number.
-		net.WriteType(self.id)
-		net.WriteString(self.typeID)
-		net.WriteTable(self.data)
-		net.WriteUInt(table.Count(self.items), 32)
-		local function writeItem(item)
-			net.WriteUInt(item:getID(), 32)
-			net.WriteString(item.uniqueID)
-			net.WriteTable(item.data)
-			net.WriteUInt(item:getQuantity(), 32)
-		end
+    net.Start("nutInventoryInit")
+    -- ID is not always a number.
+    net.WriteType(self.id)
+    net.WriteString(self.typeID)
+    net.WriteTable(self.data)
+    local items = {}
+    
+	local function writeItem(item)
+        items[#items + 1] = {
+            i = item:getID(),
+            u = item.uniqueID,
+            d = item.data,
+            q = item:getQuantity()
+        }
+    end
 
-		-- TODO:
-		-- Roughly 150 bytes per item * n items - 325 bytes < 64000 bytes
-		-- => n is roughly less than 428 items before net message limit reached.
-		-- Is this safe to assume inventories have at most 400 items?
-		for _, item in pairs(self.items) do
-			writeItem(item)
-		end
-	local res = net.Send(recipients or self:getRecipients())
+    for _, item in pairs(self.items) do
+        writeItem(item)
+    end
 
-	for _, item in pairs(self.items) do
-		item:onSync(recipients)
-	end
+    local compressedTable = util.Compress(util.TableToJSON(items))
+    net.WriteUInt(#compressedTable, 32)
+    net.WriteData(compressedTable, #compressedTable)
+    --local currentBytes, currentBits = net.BytesWritten()
+    --print("Current net message size: " .. currentBytes .. " bytes (" .. currentBits .. " bits)")
+
+	
+    local res = net.Send(recipients or self:getRecipients())
+
+    for _, item in pairs(self.items) do
+        item:onSync(recipients)
+    end
 end
 
 function Inventory:delete()

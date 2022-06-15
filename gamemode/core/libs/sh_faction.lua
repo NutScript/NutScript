@@ -28,7 +28,7 @@ local CITIZEN_MODELS = {
 }
 
 function nut.faction.loadFromDir(directory)
-	for k, v in ipairs(file.Find(directory.."/*.lua", "LUA")) do
+	for _, v in ipairs(file.Find(directory.."/*.lua", "LUA")) do
 		local niceName = v:sub(4, -5)
 
 		FACTION = nut.faction.teams[niceName] or {index = table.Count(nut.faction.teams) + 1, isDefault = true}
@@ -58,14 +58,13 @@ function nut.faction.loadFromDir(directory)
 			FACTION.models = FACTION.models or CITIZEN_MODELS
 			FACTION.uniqueID = FACTION.uniqueID or niceName
 
-			for k, v in pairs(FACTION.models) do
-				if (isstring(v)) then
-					util.PrecacheModel(v)
-				elseif (istable(v)) then
-					util.PrecacheModel(v[1])
+			for _, modelData in pairs(FACTION.models) do
+				if (isstring(modelData)) then
+					util.PrecacheModel(modelData)
+				elseif (istable(modelData)) then
+					util.PrecacheModel(modelData[1])
 				end
 			end
-
 			nut.faction.indices[FACTION.index] = FACTION
 			nut.faction.teams[niceName] = FACTION
 		FACTION = nil
@@ -78,6 +77,54 @@ end
 
 function nut.faction.getIndex(uniqueID)
 	return nut.faction.teams[uniqueID] and nut.faction.teams[uniqueID].index
+end
+
+
+--[[
+	Purpose: Formats the bodygroup data into a uniform style.
+	This allows bodygroup data per model to be submitted in 3 ways:
+	1. as a string ("0121200")
+	2. as a table with the bodygroup ID as the key {[1] = 2, [2] = 1, [3] = 2, [4] = 0}
+	3. as a table with the bodygroup name as the key {head = 2, shoulders = 1, knees = 2, toes = 0}
+]]
+function nut.faction.formatModelData()
+	for name, faction in pairs(nut.faction.teams) do
+		if (faction.models) then
+			for modelIndex, modelData in pairs(faction.models) do
+				local newGroups
+				if (istable(modelData)) and modelData[3] then
+					local groups = {}
+					if istable(modelData[3]) then
+						local dummy
+						if SERVER then
+							dummy = ents.Create("prop_physics")
+							dummy:SetModel(modelData[1])
+						else
+							dummy = ClientsideModel(modelData[1])
+						end
+						local groupData = dummy:GetBodyGroups()
+						for _, group in ipairs(groupData) do
+							if group.id > 0 then
+								if modelData[3][group.id] then
+									groups[group.id] = modelData[3][group.id]
+								elseif modelData[3][group.name] then
+									groups[group.id] = modelData[3][group.name]
+								end
+							end
+						end
+						dummy:Remove()
+						newGroups = groups
+					elseif isstring(modelData[3]) then
+						newGroups = string.Explode("", modelData[3])
+					end
+				end
+				if newGroups then
+					nut.faction.teams[name].models[modelIndex][3] = newGroups
+					nut.faction.indices[faction.index].models[modelIndex][3] = newGroups
+				end
+			end
+		end
+	end
 end
 
 if (CLIENT) then
