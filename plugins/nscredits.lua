@@ -63,7 +63,7 @@ function PANEL:setAvatarImage(id)
 end
 
 function PANEL:setName(name, isID, color)
-    if not self.name then return end
+    if not IsValid(self.name) then return end
     if isID then
         steamworks.RequestPlayerInfo(name, function(steamName)
             self.name:SetText(steamName or "Loading...")
