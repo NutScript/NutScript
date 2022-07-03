@@ -49,7 +49,7 @@ function PANEL:Init()
 
 	function self.model:LayoutEntity()
 	end
-	
+
 	self:AdjustSize(ICON_INFO.w, ICON_INFO.h)
 end
 
@@ -81,7 +81,7 @@ function PANEL:Init()
 		surface.SetDrawColor(255, 255, 255)
 		surface.DrawOutlinedRect(0, 0, w, h)
 	end
-	
+
 	self.model.Icon:SetVisible(false)
 	self.model.Paint = function(self, x, y)
 		local exIcon = ikon:getIcon("iconEditor")
@@ -114,7 +114,7 @@ local function buildActionText(self, setModel)
 
 	local p = self.prev2
 	local icon = p.model
-	
+
 	local iconModel = p1.model
 	if (not iconModel) then return end
 
@@ -255,7 +255,7 @@ function PANEL:Init()
 
 	local cfg = self.list:Add("DNumSlider")
 	cfg:Dock(TOP)
-	cfg:SetText("W") 
+	cfg:SetText("W")
 	cfg:SetMin(0)
 	cfg:SetMax(10)
 	cfg:SetDecimals(0)
@@ -269,7 +269,7 @@ function PANEL:Init()
 
 	local cfg = self.list:Add("DNumSlider")
 	cfg:Dock(TOP)
-	cfg:SetText("H") 
+	cfg:SetText("H")
 	cfg:SetMin(0)
 	cfg:SetMax(10)
 	cfg:SetDecimals(0)
@@ -285,7 +285,7 @@ function PANEL:Init()
 
 	self.camFOV = self.list:Add("DNumSlider")
 	self.camFOV:Dock(TOP)
-	self.camFOV:SetText("CAMFOV") 
+	self.camFOV:SetText("CAMFOV")
 	self.camFOV:SetMin(0)
 	self.camFOV:SetMax(180)
 	self.camFOV:SetDecimals(3)
@@ -361,7 +361,7 @@ function PANEL:Init()
 	end
 
 	local aaoa = self.list:Add("DPanel")
-	aaoa:Dock(TOP)	 
+	aaoa:Dock(TOP)
 	aaoa:DockMargin(10, 0, 0, 5)
 	aaoa:SetHeight(250)
 
