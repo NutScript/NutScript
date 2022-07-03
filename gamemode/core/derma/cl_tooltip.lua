@@ -64,16 +64,16 @@ end
 function PANEL:PerformLayout()
 	local override = hook.Run("TooltipLayout", self)
 
-	if (not override) then
-		if (self.Contents) then
-			self:SetWide(self.Contents:GetWide() + 8)
-			self:SetTall(self.Contents:GetTall() + 8)
-			self.Contents:SetPos(4, 4)
-		else
-			local w, h = self:GetContentSize()
-			self:SetSize(w + 8, h + 6)
-			self:SetContentAlignment(5)
-		end
+	if (override) then return end
+
+	if (self.Contents) then
+		self:SetWide(self.Contents:GetWide() + 8)
+		self:SetTall(self.Contents:GetTall() + 8)
+		self.Contents:SetPos(4, 4)
+	else
+		local w, h = self:GetContentSize()
+		self:SetSize(w + 8, h + 6)
+		self:SetContentAlignment(5)
 	end
 end
 
@@ -88,7 +88,7 @@ function PANEL:PositionTooltip()
 	local x, y = input.GetCursorPos()
 	local w, h = self:GetSize()
 
-	local lx, ly = self.TargetPanel:LocalToScreen(0, 0)
+	local _, ly = self.TargetPanel:LocalToScreen(0, 0)
 
 	y = y - 50
 
@@ -103,10 +103,9 @@ function PANEL:Paint( w, h )
 	self:PositionTooltip()
 
 	local override = hook.Run("TooltipPaint", self, w, h)
+	if (override) then return end
 
-	if (not override) then
-		derma.SkinHook("Paint", "Tooltip", self, w, h)
-	end
+	derma.SkinHook("Paint", "Tooltip", self, w, h)
 end
 
 function PANEL:OpenForPanel(panel)

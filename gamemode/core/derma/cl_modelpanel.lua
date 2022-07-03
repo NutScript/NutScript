@@ -31,6 +31,7 @@ function PANEL:Init()
 			if not (seqNameLower:find("idle") or seqNameLower:find("fly")) then continue end
 
 			entity:ResetSequence(seqName)
+			return
 		end
 
 		entity:ResetSequence(4)
