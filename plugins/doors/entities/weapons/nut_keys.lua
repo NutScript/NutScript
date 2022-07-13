@@ -162,13 +162,13 @@ function SWEP:toggleLock(door, state)
 		if (state) then
 			door:Fire("lock")
 			if (door.IsSimfphyscar) then
-				door.IsLocked = true
+				door:Lock()
 			end
 			self.Owner:EmitSound("doors/door_latch3.wav")
 		else
 			door:Fire("unlock")
 			if (door.IsSimfphyscar) then
-				door.IsLocked = nil
+				door:UnLock()
 			end
 			self.Owner:EmitSound("doors/door_latch1.wav")
 		end
