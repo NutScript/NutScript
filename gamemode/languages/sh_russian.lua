@@ -290,4 +290,9 @@ LANGUAGE = {
 	cantDropBagHasEquipped = "Запрещено бросать сумку с экипированным предметом.",
 	lookToUseAt = "Необходимо смотреть на игрока для использования '@'",
 	mustProvideString = "Необходимо предьявить строковую для этой функции",
+	
+	--Attributes
+	Endurance = "Скорость бега",
+	Stamina = "Выносливость",
+	Strength = "Сила",
 }
