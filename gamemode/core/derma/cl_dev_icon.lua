@@ -22,7 +22,14 @@ local bTxt = {
 	"reset angles"
 }
 local PANEL = {}
-local iconSize = 64
+
+
+local function adjustSize(pnl, x, y)
+	x = x or 1
+	y = y or 1
+	pnl:SetSize(10 + x*64, 27 + y*64)
+	pnl.model:SetSize(x*64, y*64)
+end
 
 --[[-------------------------------------------------------------------------
 3D ICON PREVIEW WINDOW
@@ -42,7 +49,7 @@ function PANEL:Init()
 
 	function self.model:LayoutEntity()
 	end
-	
+
 	self:AdjustSize(ICON_INFO.w, ICON_INFO.h)
 end
 
@@ -51,10 +58,8 @@ function PANEL:Paint(w, h)
 	surface.DrawOutlinedRect(0, 0, w, h)
 end
 
-function PANEL:AdjustSize(x, y)
-	self:SetSize(10 + (x or 1)*64, 27 + (y or 1)*64)
-	self.model:SetSize((x or 1)*64, (y or 1)*64)
-end
+PANEL.AdjustSize = adjustSize
+
 vgui.Register("iconPreview", PANEL, "DFrame")
 
 --[[-------------------------------------------------------------------------
@@ -76,7 +81,7 @@ function PANEL:Init()
 		surface.SetDrawColor(255, 255, 255)
 		surface.DrawOutlinedRect(0, 0, w, h)
 	end
-	
+
 	self.model.Icon:SetVisible(false)
 	self.model.Paint = function(self, x, y)
 		local exIcon = ikon:getIcon("iconEditor")
@@ -95,103 +100,88 @@ function PANEL:Paint(w, h)
 	surface.DrawOutlinedRect(0, 0, w, h)
 end
 
-function PANEL:AdjustSize(x, y)
-	self:SetSize(10 + (x or 1)*64, 27 + (y or 1)*64)
-	self.model:SetSize((x or 1)*64, (y or 1)*64)
-end
+PANEL.AdjustSize = adjustSize
+
 vgui.Register("iconRenderPreview", PANEL, "DFrame")
 
 --[[-------------------------------------------------------------------------
 EDITOR FUNCTION
 ---------------------------------------------------------------------------]]
+
+local function buildActionText(self, setModel)
+
+	local p1 = self.prev
+
+	local p = self.prev2
+	local icon = p.model
+
+	local iconModel = p1.model
+	if (not iconModel) then return end
+
+	local ent = iconModel:GetEntity()
+	local tab = {}
+	tab.ent		= ent
+	tab.cam_pos = iconModel:GetCamPos()
+	tab.cam_ang = iconModel:GetLookAng()
+	tab.cam_fov = iconModel:GetFOV()
+
+	if (setModel and icon) then
+		icon:SetModel(ent:GetModel())
+	end
+
+	local text =
+	"ITEM.model = \""..ICON_INFO.modelName:gsub("\\", "/"):lower().."\"" .. "\n"..
+	"ITEM.width = "..ICON_INFO.w .."\n"..
+	"ITEM.height = "..ICON_INFO.h .."\n"..
+	"ITEM.iconCam = {" .."\n"..
+	"\tpos = Vector("..tab.cam_pos.x..", "..tab.cam_pos.y..", "..tab.cam_pos.z.."),\n"..
+	"\tang = Angle("..tab.cam_ang.p..", "..tab.cam_ang.y..", "..tab.cam_ang.r.."),\n"..
+	"\tfov = "..tab.cam_fov .. "," .."\n"
+	if (ICON_INFO.outline) then
+		text = text .. "\toutline = true," .. "\n" ..
+		"\toutlineColor = Color("..
+		ICON_INFO.outlineColor.r .. ", " ..
+		ICON_INFO.outlineColor.g .. ", " ..
+		ICON_INFO.outlineColor.b .. ")," .. "\n"
+	end
+	text = text .. "}"
+
+	return text
+end
+
+
+
 local function action(self)
-		local p1 = self.prev
-		local p = self.prev2
-		local icon = p.model
-		local iconModel = p1.model
+	local text = buildActionText(self)
 
-		local ent = iconModel:GetEntity()
-		local tab = {}
-		tab.ent		= ent
-		tab.cam_pos = iconModel:GetCamPos()
-		tab.cam_ang = iconModel:GetLookAng()
-		tab.cam_fov = iconModel:GetFOV()
+	if not text then return end
 
-		local text =
-		"ITEM.model = \""..ICON_INFO.modelName:gsub("\\", "/"):lower().."\"" .. "\n"..
-		"ITEM.width = "..ICON_INFO.w .."\n"..
-		"ITEM.height = "..ICON_INFO.h .."\n"..
-		"ITEM.iconCam = {" .."\n"..
-		"\tpos = Vector("..tab.cam_pos.x..", "..tab.cam_pos.y..", "..tab.cam_pos.z.."),\n"..
-		"\tang = Angle("..tab.cam_ang.p..", "..tab.cam_ang.y..", "..tab.cam_ang.r.."),\n"..
-		"\tfov = "..tab.cam_fov .. "," .."\n"
-		if (ICON_INFO.outline) then
-			text = text .. "\toutline = true," .. "\n" ..
-			"\toutlineColor = Color("..
-			ICON_INFO.outlineColor.r .. ", " ..
-			ICON_INFO.outlineColor.g .. ", " ..
-			ICON_INFO.outlineColor.b .. ")," .. "\n"
-		end
-		text = text .. "}"
-
-		SetClipboardText(text)
+	SetClipboardText(text)
 end
 
 local function renderAction(self)
-	local p1 = self.prev
-	local p = self.prev2
-	local icon = p.model
-	local iconModel = p1.model
 
-	if (icon and iconModel) then
-		local ent = iconModel:GetEntity()
-		local tab = {}
-		tab.ent		= ent
-		tab.cam_pos = iconModel:GetCamPos()
-		tab.cam_ang = iconModel:GetLookAng()
-		tab.cam_fov = iconModel:GetFOV()
+	local text = buildActionText(self, true)
 
-		icon:SetModel(ent:GetModel())
+	if (not text) then return end
 
-		ikon:renderIcon(
-			"iconEditor",
-			ICON_INFO.w,
-			ICON_INFO.h,
-			ICON_INFO.modelName,
-			{
-				pos = ICON_INFO.camPos,
-				ang = ICON_INFO.camAng,
-				fov = ICON_INFO.FOV,
-				outline = ICON_INFO.outline,
-				outlineColor = ICON_INFO.outlineColor,
-				drawHook = ICON_INFO.drawHook,
-				entAng = ICON_INFO.entAng,
-				drawPostHook = ICON_INFO.drawPostHook,
-			},
-			true
-		)
-
-		local text =
-		"ITEM.model = \""..ICON_INFO.modelName:gsub("\\", "/"):lower().."\"" .. "\n"..
-		"ITEM.width = "..ICON_INFO.w .."\n"..
-		"ITEM.height = "..ICON_INFO.h .."\n"..
-		"ITEM.exRender = true\n"..
-		"ITEM.iconCam = {" .."\n"..
-		"\tpos = Vector("..tab.cam_pos.x..", "..tab.cam_pos.y..", "..tab.cam_pos.z..")," .."\n"..
-		"\tang = Angle("..tab.cam_ang.p..", "..tab.cam_ang.y..", "..tab.cam_ang.r..")," .."\n"..
-		"\tentAng = Angle("..ICON_INFO.entAng.p..", "..ICON_INFO.entAng.y..", "..ICON_INFO.entAng.r..")," .."\n"..
-		"\tfov = "..tab.cam_fov .. "," .."\n"
-		if (ICON_INFO.outline) then
-			text = text .. "\toutline = true," .. "\n" ..
-			"\toutlineColor = Color("..
-			ICON_INFO.outlineColor.r .. ", " ..
-			ICON_INFO.outlineColor.g .. ", " ..
-			ICON_INFO.outlineColor.b .. ")" .. "\n"
-		end
-		text = text .. "}"
-
-		print(text)
-	end
+	ikon:renderIcon(
+		"iconEditor",
+		ICON_INFO.w,
+		ICON_INFO.h,
+		ICON_INFO.modelName,
+		{
+			pos = ICON_INFO.camPos,
+			ang = ICON_INFO.camAng,
+			fov = ICON_INFO.FOV,
+			outline = ICON_INFO.outline,
+			outlineColor = ICON_INFO.outlineColor,
+			drawHook = ICON_INFO.drawHook,
+			entAng = ICON_INFO.entAng,
+			drawPostHook = ICON_INFO.drawPostHook,
+		},
+		true
+	)
 end
 
 PANEL = {}
@@ -265,7 +255,7 @@ function PANEL:Init()
 
 	local cfg = self.list:Add("DNumSlider")
 	cfg:Dock(TOP)
-	cfg:SetText("W") 
+	cfg:SetText("W")
 	cfg:SetMin(0)
 	cfg:SetMax(10)
 	cfg:SetDecimals(0)
@@ -279,7 +269,7 @@ function PANEL:Init()
 
 	local cfg = self.list:Add("DNumSlider")
 	cfg:Dock(TOP)
-	cfg:SetText("H") 
+	cfg:SetText("H")
 	cfg:SetMin(0)
 	cfg:SetMax(10)
 	cfg:SetDecimals(0)
@@ -295,14 +285,14 @@ function PANEL:Init()
 
 	self.camFOV = self.list:Add("DNumSlider")
 	self.camFOV:Dock(TOP)
-	self.camFOV:SetText("CAMFOV") 
+	self.camFOV:SetText("CAMFOV")
 	self.camFOV:SetMin(0)
 	self.camFOV:SetMax(180)
 	self.camFOV:SetDecimals(3)
 	self.camFOV:SetValue(ICON_INFO.FOV)
 	self.camFOV:DockMargin(10, 0, 0, 5)
 	self.camFOV.OnValueChanged = function(cfg, value)
-		if (!fagLord) then
+		if (!isIconUpdating) then
 			ICON_INFO.FOV = value
 
 			local p = self.prev
@@ -324,8 +314,8 @@ function PANEL:Init()
 		self.camPos[i]:SetDecimals(3)
 		self.camPos[i]:SetValue(ICON_INFO.camPos[i])
 		self.camPos[i]:DockMargin(10, 0, 0, 5)
-		self.camPos[i].OnValueChanged = function(cfg, value)
-			if (!fagLord) then
+		self.camPos[i].OnValueChanged = function(_, value)
+			if (!isIconUpdating) then
 				ICON_INFO.camPos[i] = value
 			end
 		end
@@ -343,8 +333,8 @@ function PANEL:Init()
 		self.camAng[i]:SetDecimals(3)
 		self.camAng[i]:SetValue(ICON_INFO.camAng[i])
 		self.camAng[i]:DockMargin(10, 0, 0, 5)
-		self.camAng[i].OnValueChanged = function(cfg, value)
-			if (!fagLord) then
+		self.camAng[i].OnValueChanged = function(_, value)
+			if (!isIconUpdating) then
 				ICON_INFO.camAng[i] = value
 			end
 		end
@@ -362,8 +352,8 @@ function PANEL:Init()
 		self.entAng[i]:SetDecimals(3)
 		self.entAng[i]:SetValue(ICON_INFO.entAng[i])
 		self.entAng[i]:DockMargin(10, 0, 0, 5)
-		self.entAng[i].OnValueChanged = function(cfg, value)
-			if (!fagLord) then
+		self.entAng[i].OnValueChanged = function(_, value)
+			if (!isIconUpdating) then
 				ICON_INFO.entAng[i] = value
 				self.prev.model.Entity:SetAngles(ICON_INFO.entAng)
 			end
@@ -371,7 +361,7 @@ function PANEL:Init()
 	end
 
 	local aaoa = self.list:Add("DPanel")
-	aaoa:Dock(TOP)	 
+	aaoa:Dock(TOP)
 	aaoa:DockMargin(10, 0, 0, 5)
 	aaoa:SetHeight(250)
 
@@ -385,11 +375,11 @@ function PANEL:Init()
 	end
 
 	self.colormixer = aaoa:Add("DColorMixer")
-	self.colormixer:Dock(FILL)							-- Make self.colormixer fill place of Frame
-	self.colormixer:SetPalette(true) 					-- Show/hide the palette (true by default)
-	self.colormixer:SetAlphaBar(false) 					-- Show/hide the alpha bar (true by default)
-	self.colormixer:SetWangs(true)						-- Show/hide the R G B A indicators (true by default)
-	self.colormixer:SetColor(ICON_INFO.outlineColor )	-- Set the default color
+	self.colormixer:Dock(FILL)
+	self.colormixer:SetPalette(true)
+	self.colormixer:SetAlphaBar(false)
+	self.colormixer:SetWangs(true)
+	self.colormixer:SetColor(ICON_INFO.outlineColor )
 	self.colormixer:DockMargin(10, 5, 0, 5)
 	function self.colormixer:ValueChanged(value)
 		 ICON_INFO.outlineColor = value
@@ -400,54 +390,53 @@ function PANEL:Init()
 end
 
 function PANEL:UpdateIcon()
-	fagLord = true
+	isIconUpdating = true
 		self.camFOV:SetValue(ICON_INFO.FOV)
-		local p = self.prev
 
 		for i = 1, 3 do
 			self.camPos[i]:SetValue(ICON_INFO.camPos[i])
 			self.camAng[i]:SetValue(ICON_INFO.camAng[i])
 			self.entAng[i]:SetValue(ICON_INFO.entAng[i])
 		end
-	fagLord = false
+	isIconUpdating = false
 end
 
 function PANEL:SetupEditor(update, mode)
 	local p = self.prev
 	local p2 = self.prev2
 
-	if (p and p:IsVisible() and p2 and p2:IsVisible()) then
-		p.model:SetModel(ICON_INFO.modelName)
-		p2.model:SetModel(ICON_INFO.modelName)
-		if (!update) then
-			self.mdl:SetText(ICON_INFO.modelName)
-		end
+	if not (p and p:IsVisible() and p2 and p2:IsVisible()) then return end
 
-		if (mode) then
-			if (mode == 1) then
-				self:BestGuessLayout()
-			elseif (mode == 2) then
-				self:FullFrontalLayout()
-			elseif (mode == 3) then
-				self:AboveLayout()
-			elseif (mode == 4) then
-				self:RightLayout()
-			elseif (mode == 5) then
-				self:OriginLayout()
-			elseif (mode == 6) then
-				ICON_INFO.entAng = Angle()
-			end
-		else
-			self:BestGuessLayout()
-		end
+	p.model:SetModel(ICON_INFO.modelName)
+	p2.model:SetModel(ICON_INFO.modelName)
+	if (not update) then
+		self.mdl:SetText(ICON_INFO.modelName)
+	end
 
-		p.model:SetCamPos(ICON_INFO.camPos)
-		p.model:SetFOV(ICON_INFO.FOV)
-		p.model:SetLookAng(ICON_INFO.camAng)
+	if (not mode) then
+		mode = 1
+	end
 
-		if (IsValid(p.model.Entity)) then
-			p.model.Entity:SetAngles(ICON_INFO.entAng)
-		end
+	if (mode == 1) then
+		self:BestGuessLayout()
+	elseif (mode == 2) then
+		self:FullFrontalLayout()
+	elseif (mode == 3) then
+		self:AboveLayout()
+	elseif (mode == 4) then
+		self:RightLayout()
+	elseif (mode == 5) then
+		self:OriginLayout()
+	elseif (mode == 6) then
+		ICON_INFO.entAng = Angle()
+	end
+
+	p.model:SetCamPos(ICON_INFO.camPos)
+	p.model:SetFOV(ICON_INFO.FOV)
+	p.model:SetLookAng(ICON_INFO.camAng)
+
+	if (IsValid(p.model.Entity)) then
+		p.model.Entity:SetAngles(ICON_INFO.entAng)
 	end
 end
 
@@ -461,7 +450,6 @@ function PANEL:BestGuessLayout()
 		ICON_INFO.camPos = tab.origin
 		ICON_INFO.FOV = tab.fov
 		ICON_INFO.camAng = tab.angles
-		--ICON_INFO.entAng = Angle() 
 	end
 end
 

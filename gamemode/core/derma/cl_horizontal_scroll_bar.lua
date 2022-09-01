@@ -31,7 +31,7 @@ function PANEL:SetScroll(offset)
 	end
 end
 
-function PANEL:OnCursorMoved(x, y)
+function PANEL:OnCursorMoved()
 	if (not self.Enabled or not self.Dragging) then return end
 	local x = self:ScreenToLocal(gui.MouseX(), 0)
 	x = x - self.btnLeft:GetWide() - self.HoldPos
@@ -49,13 +49,14 @@ end
 
 function PANEL:PerformLayout()
 	local tall = self:GetTall()
+	local wide = self:GetWide()
 	local btnHeight = self:GetHideButtons() and 0 or tall
 	local scroll = self:GetScroll() / self.CanvasSize
 	local barSize = math.max(
-		self:BarScale() * (self:GetWide() - btnHeight * 2),
+		self:BarScale() * (wide - btnHeight * 2),
 		10
 	)
-	local track = (self:GetWide() - (btnHeight * 2) - barSize) + 1
+	local track = (wide - (btnHeight * 2) - barSize) + 1
 	scroll = scroll * track
 
 	self.btnGrip:SetPos(btnHeight + scroll, 0)
@@ -66,7 +67,7 @@ function PANEL:PerformLayout()
 		self.btnLeft:SetSize(btnHeight, tall)
 		self.btnLeft:SetVisible(true)
 
-		self.btnRight:SetPos(self:GetWide() - btnHeight, 0)
+		self.btnRight:SetPos(wide - btnHeight, 0)
 		self.btnRight:SetSize(btnHeight, tall)
 		self.btnRight:SetVisible(true)
 	else
