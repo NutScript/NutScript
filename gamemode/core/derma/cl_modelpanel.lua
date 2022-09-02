@@ -52,9 +52,7 @@ function PANEL:LayoutEntity()
 	entity:SetPoseParameter("head_pitch", yRatio*90 - 30)
 	entity:SetPoseParameter("head_yaw", (xRatio - xRatio2)*90 - 5)
 	entity:SetAngles(MODEL_ANGLE)
-	if entity:GetIK() then
-		entity:SetIK(false)
-	end
+	entity:SetIK(false)
 
 	if (self.copyLocalSequence) then
 		local ply = LocalPlayer()
