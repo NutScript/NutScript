@@ -179,7 +179,6 @@ function PANEL:openActionMenu()
 		if (v.isMulti) then
 			local subMenu, subMenuOption =
 				menu:AddSubMenu(L(v.name or k), buildActionFunc(v, k, itemTable, self.invID))
-			)
 			subMenuOption:SetImage(v.icon or "icon16/brick.png")
 
 			if (not v.multiOptions) then return end
