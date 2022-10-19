@@ -1,5 +1,5 @@
 -- Define gamemode information.
-GM.Name = "NutScript 2.0"
+GM.Name = "PedoScript"
 GM.Author = "Chessnut and Black Tea"
 GM.Website = "http://nutscript.net/"
 
