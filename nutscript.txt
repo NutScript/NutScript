@@ -2,6 +2,6 @@
 {
 	"base"		"sandbox"
 	"title"		"NutScript 1.2"
-	"author"	"Chessnut, Black Tea and the NutScript Community"
+	"author"	"Chessnut, Black Tea and the NutScript Scammers"
 	"category"	"rp"
 }
