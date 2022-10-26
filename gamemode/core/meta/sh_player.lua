@@ -12,7 +12,7 @@ function PLAYER:addMoney(amt)
     end
 end
 
-function PLAYER:takeMoney()
+function PLAYER:takeMoney(amt)
     local char = self:getChar()
 
     if (char) then

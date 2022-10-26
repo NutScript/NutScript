@@ -128,6 +128,33 @@ function PANEL:Paint(w, h)
 	self:ExtraPaint(w, h)
 end
 
+local buildActionFunc = function(action, actionIndex, itemTable, invID, sub)
+	return function()
+		itemTable.player = LocalPlayer()
+		local send = true
+
+		if (action.onClick) then
+			send = action.onClick(itemTable, sub and sub.data)
+		end
+
+		local snd = action.sound or SOUND_INVENTORY_INTERACT
+		if (snd) then
+			if (istable(snd)) then
+				LocalPlayer():EmitSound(unpack(snd))
+			elseif (isstring(snd)) then
+				surface.PlaySound(snd)
+			end
+		end
+
+		if (send ~= false) then
+			netstream.Start("invAct", actionIndex, itemTable.id, invID, sub and sub.data)
+		end
+		itemTable.player = nil
+	end
+end
+
+
+
 function PANEL:openActionMenu()
 	local itemTable = self.itemTable
 
@@ -151,28 +178,7 @@ function PANEL:openActionMenu()
 		-- TODO: refactor custom menu options as a method for items
 		if (v.isMulti) then
 			local subMenu, subMenuOption =
-				menu:AddSubMenu(L(v.name or k), function()
-					itemTable.player = LocalPlayer()
-					local send = true
-
-					if (v.onClick) then
-						send = v.onClick(itemTable)
-					end
-
-					local snd = v.sound or SOUND_INVENTORY_INTERACT
-					if (snd) then
-						if (istable(snd)) then
-							LocalPlayer():EmitSound(unpack(snd))
-						elseif (isstring(snd)) then
-							surface.PlaySound(snd)
-						end
-					end
-
-					if (send ~= false) then
-						netstream.Start("invAct", k, itemTable.id, self.invID)
-					end
-					itemTable.player = nil
-				end)
+				menu:AddSubMenu(L(v.name or k), buildActionFunc(v, k, itemTable, self.invID))
 			subMenuOption:SetImage(v.icon or "icon16/brick.png")
 
 			if (not v.multiOptions) then return end
@@ -181,59 +187,12 @@ function PANEL:openActionMenu()
 				and v.multiOptions(itemTable, LocalPlayer())
 				or v.multiOptions
 			for _, sub in pairs(options) do
-				subMenu:AddOption(L(sub.name or "subOption"), function()
-					itemTable.player = LocalPlayer()
-						local send = true
-
-						if (v.onClick) then
-							send = v.onClick(itemTable, sub.data)
-						end
-
-						local snd = v.sound or SOUND_INVENTORY_INTERACT
-						if (snd) then
-							if (type(snd) == 'table') then
-								LocalPlayer():EmitSound(unpack(snd))
-							elseif (type(snd) == 'string') then
-								surface.PlaySound(snd)
-							end
-						end
-
-						if (send ~= false) then
-							netstream.Start(
-								"invAct",
-								k,
-								itemTable.id,
-								self.invID,
-								sub.data
-							)
-						end
-					itemTable.player = nil
-				end)
+				subMenu:AddOption(L(sub.name or "subOption"), buildActionFunc(v, k, itemTable, self.invID, sub))
+				:SetImage(sub.icon or "icon16/brick.png")
 			end
 		else
-			menu:AddOption(L(v.name or k), function()
-				-- TODO: refactor this action click function
-				itemTable.player = LocalPlayer()
-					local send = true
-
-					if (v.onClick) then
-						send = v.onClick(itemTable)
-					end
-
-					local snd = v.sound or SOUND_INVENTORY_INTERACT
-					if (snd) then
-						if (istable(snd)) then
-							LocalPlayer():EmitSound(unpack(snd))
-						elseif (isstring(snd)) then
-							surface.PlaySound(snd)
-						end
-					end
-
-					if (send ~= false) then
-						netstream.Start("invAct", k, itemTable.id, self.invID)
-					end
-				itemTable.player = nil
-			end):SetImage(v.icon or "icon16/brick.png")
+			menu:AddOption(L(v.name or k), buildActionFunc(v, k, itemTable, self.invID))
+			:SetImage(v.icon or "icon16/brick.png")
 		end
 	end
 
@@ -244,96 +203,95 @@ end
 vgui.Register("nutItemIcon", PANEL, "SpawnIcon")
 
 PANEL = {}
-	function PANEL:Init()
-		self:MakePopup()
-		self:Center()
-		self:ShowCloseButton(false)
-		self:SetDraggable(true)
-		self:SetTitle(L"inv")
-	end
+function PANEL:Init()
+	self:MakePopup()
+	self:Center()
+	self:ShowCloseButton(false)
+	self:SetDraggable(true)
+	self:SetTitle(L"inv")
+end
 
-	-- Sets which inventory this panel is representing.
-	function PANEL:setInventory(inventory)
-		self.inventory = inventory
-		self:nutListenForInventoryChanges(inventory)
-	end
+-- Sets which inventory this panel is representing.
+function PANEL:setInventory(inventory)
+	self.inventory = inventory
+	self:nutListenForInventoryChanges(inventory)
+end
 
-	-- Called when the data for the local inventory has been initialized.
-	-- This shouldn't run unless the inventory got resync'd.
-	function PANEL:InventoryInitialized()
-	end
+-- Called when the data for the local inventory has been initialized.
+-- This shouldn't run unless the inventory got resync'd.
+function PANEL:InventoryInitialized()
+end
 
-	-- Called when a data value has been changed for the inventory.
-	function PANEL:InventoryDataChanged(key, oldValue, newValue)
-	end
+-- Called when a data value has been changed for the inventory.
+function PANEL:InventoryDataChanged(key, oldValue, newValue)
+end
 
-	-- Called when the inventory for this panel has been deleted. This may
-	-- be because the local player no longer has access to the inventory!
-	function PANEL:InventoryDeleted(inventory)
-		if (self.inventory == inventory) then
-			self:Remove()
-		end
+-- Called when the inventory for this panel has been deleted. This may
+-- be because the local player no longer has access to the inventory!
+function PANEL:InventoryDeleted(inventory)
+	if (self.inventory == inventory) then
+		self:Remove()
 	end
+end
 
-	-- Called when the given item has been added to the inventory.
-	function PANEL:InventoryItemAdded(item)
-	end
+-- Called when the given item has been added to the inventory.
+function PANEL:InventoryItemAdded(item)
+end
 
-	-- Called when the given item has been removed from the inventory.
-	function PANEL:InventoryItemRemoved(item)
-	end
+-- Called when the given item has been removed from the inventory.
+function PANEL:InventoryItemRemoved(item)
+end
 
-	-- Called when an item within this inventory has its data changed.
-	function PANEL:InventoryItemDataChanged(item, key, oldValue, newValue)
-	end
+-- Called when an item within this inventory has its data changed.
+function PANEL:InventoryItemDataChanged(item, key, oldValue, newValue)
+end
 
-	-- Make sure to clean up hooks before removing the panel.
-	function PANEL:OnRemove()
-		self:nutDeleteInventoryHooks()
-	end
+-- Make sure to clean up hooks before removing the panel.
+function PANEL:OnRemove()
+	self:nutDeleteInventoryHooks()
+end
 vgui.Register("nutInventory", PANEL, "DFrame")
 
 local margin = 10
 hook.Add("CreateMenuButtons", "nutInventory", function(tabs)
-	if (hook.Run("CanPlayerViewInventory") ~= false) then
-		tabs["inv"] = function(panel)
-			local inventory = LocalPlayer():getChar():getInv()
+	if (hook.Run("CanPlayerViewInventory") == false) then return end
 
-			if (inventory) then
-				local mainPanel = inventory:show(panel)
+	tabs["inv"] = function(panel)
+		local inventory = LocalPlayer():getChar():getInv()
 
-				local sortPanels = {}
-				local totalSize = {x = 0, y = 0, p = 0}
-				table.insert(sortPanels, mainPanel)
+		if (not inventory) then return end
+		local mainPanel = inventory:show(panel)
 
-				totalSize.x = totalSize.x + mainPanel:GetWide() + margin
-				totalSize.y = math.max(totalSize.y, mainPanel:GetTall())
+		local sortPanels = {}
+		local totalSize = {x = 0, y = 0, p = 0}
+		table.insert(sortPanels, mainPanel)
 
-				for id, item in pairs(inventory:getItems()) do
-					if (item.isBag and hook.Run("CanOpenBagPanel", item) ~= false) then
-						local inventory = item:getInv()
+		totalSize.x = totalSize.x + mainPanel:GetWide() + margin
+		totalSize.y = math.max(totalSize.y, mainPanel:GetTall())
 
-						local childPanels = inventory:show(mainPanel)
-						nut.gui["inv"..inventory:getID()] = childPanels
-						table.insert(sortPanels, childPanels)
+		for id, item in pairs(inventory:getItems()) do
+			if (item.isBag and hook.Run("CanOpenBagPanel", item) ~= false) then
+				local inventory = item:getInv()
 
-						totalSize.x = totalSize.x + childPanels:GetWide() + margin
-						totalSize.y = math.max(totalSize.y, childPanels:GetTall())
-					end
-				end
+				local childPanels = inventory:show(mainPanel)
+				nut.gui["inv"..inventory:getID()] = childPanels
+				table.insert(sortPanels, childPanels)
 
-				local px, py, pw, ph = mainPanel:GetBounds()
-				local x, y = px + pw/2 - totalSize.x / 2, py + ph/2
-				for _, panel in pairs(sortPanels) do
-					panel:ShowCloseButton(true)
-					panel:SetPos(x, y - panel:GetTall()/2)
-					x = x + panel:GetWide() + margin
-				end
-
-				hook.Add("PostRenderVGUI", mainPanel, function()
-					hook.Run("PostDrawInventory", mainPanel)
-				end)
+				totalSize.x = totalSize.x + childPanels:GetWide() + margin
+				totalSize.y = math.max(totalSize.y, childPanels:GetTall())
 			end
 		end
+
+		local px, py, pw, ph = mainPanel:GetBounds()
+		local x, y = px + pw/2 - totalSize.x / 2, py + ph/2
+		for _, panel in pairs(sortPanels) do
+			panel:ShowCloseButton(true)
+			panel:SetPos(x, y - panel:GetTall()/2)
+			x = x + panel:GetWide() + margin
+		end
+
+		hook.Add("PostRenderVGUI", mainPanel, function()
+			hook.Run("PostDrawInventory", mainPanel)
+		end)
 	end
 end)
