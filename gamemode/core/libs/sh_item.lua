@@ -1,3 +1,8 @@
+--[[--
+Item manipulation and helper functions.
+]]
+-- @module nut.item
+
 nut.item = nut.item or {}
 nut.item.list = nut.item.list or {}
 nut.item.base = nut.item.base or {}
@@ -9,6 +14,12 @@ nut.item.inventoryTypes = nut.item.inventoryTypes or {}
 
 nut.util.include("nutscript/gamemode/core/meta/sh_item.lua")
 
+--- Retrieves an item table.
+-- @realm shared
+-- @string identifier Unique ID of the item
+-- @treturn item Item table
+-- @usage print(nut.item.get("example"))
+-- > "item[example][0]"
 function nut.item.get(identifier)
 	return nut.item.base[identifier] or nut.item.list[identifier]
 end
