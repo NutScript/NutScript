@@ -1,3 +1,8 @@
+-- @module nut.item
+-- @moduleCommentStart
+-- Library functions for items.
+-- @moduleCommentEnd
+
 nut.item = nut.item or {}
 nut.item.list = nut.item.list or {}
 nut.item.base = nut.item.base or {}
