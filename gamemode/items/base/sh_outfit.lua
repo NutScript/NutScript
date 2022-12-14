@@ -6,6 +6,7 @@ ITEM.width = 1
 ITEM.height = 1
 ITEM.outfitCategory = "model"
 ITEM.pacData = {}
+ITEM.isOutfit = true
 
 -- ITEM.armor = 25 -- How much armor to add/remove upon wearing/removing.
 
@@ -50,6 +51,15 @@ if (CLIENT) then
 	end
 end
 
+--Utility for remembering all models/skins/bodygroups
+if SERVER then
+	ITEM.visualData = {
+		model = {},
+		skin = {},
+		bodygroups = {}
+	}
+end
+
 function ITEM:removeOutfit(client)
 	local character = client:getChar()
 
@@ -57,11 +67,17 @@ function ITEM:removeOutfit(client)
 
 	-- Revert the model, skin, and bodygroups.
 	if (hook.Run("CanOutfitChangeModel", self) ~= false) then
-		character:setModel(character:getData("oldMdl", character:getModel()))
+		--[[ character:setModel(character:getData("oldMdl", character:getModel()))
 		character:setData("oldMdl", nil)
 
 		client:SetSkin(character:getData("oldSkin", character:getData("skin", 0)))
-		character:setData("oldSkin", nil)
+		character:setData("oldSkin", nil) ]]
+
+		character:setModel(self:getData("oldMdl", character:getModel()))
+		self:setData("oldMdl", nil)
+
+		client:SetSkin(self:getData("oldSkin", character:getData("skin", 0)))
+		self:setData("oldSkin", nil)
 
 
 		local oldGroups = character:getData("oldGroups", {})
@@ -156,14 +172,15 @@ ITEM.functions.Equip = {
 		item:setData("equip", true)
 
 		if (hook.Run("CanOutfitChangeModel", item) ~= false) then
-			char:setData(
+			--[[ char:setData(
 				"oldMdl",
 				char:getData("oldMdl", item.player:GetModel())
-			)
+			) ]]
 
 			-- Do model substitutions.
 			if (isfunction(item.onGetReplacement)) then
 				char:setModel(item:onGetReplacement())
+				item:setData("oldMdl", item.player:GetModel())
 			elseif (item.replacement or item.replacements) then
 				if (istable(item.replacements)) then
 					if (
@@ -182,11 +199,13 @@ ITEM.functions.Equip = {
 				else
 					char:setModel(tostring(item.replacement or item.replacements))
 				end
+				item:setData("oldMdl", item.player:GetModel())
 			end
 
 			-- Then apply the new skin for the model.
 			if (isnumber(item.newSkin)) then
-				char:setData("oldSkin", item.player:GetSkin())
+				--char:setData("oldSkin", item.player:GetSkin())
+				item:setData("oldSkin", item.player:GetSkin())
 				char:setData("skin", item.newSkin)
 				item.player:SetSkin(item.newSkin)
 			end
@@ -206,6 +225,7 @@ ITEM.functions.Equip = {
 				end
 
 				char:setData("oldGroups", oldGroups)
+				item:setData("oldGroups", oldGroups)
 
 				local newGroups = char:getData("groups", {})
 				for index, value in pairs(groups) do
