@@ -1,3 +1,8 @@
+-- @module character
+-- @moduleCommentStart
+-- Metamethods for character
+-- @moduleCommentEnd
+
 -- Create the character metatable.
 local CHAR = nut.meta.character or {}
 CHAR.__index = CHAR
@@ -21,7 +26,12 @@ function CHAR:getID()
 end
 
 if (SERVER) then
+	-- @type function character:save(callback)
+	-- @typeCommentStart
 	-- Saves the character to the database and calls the callback if provided.
+	-- @typeCommentEnd
+	-- @realm server
+	-- @function callback Callback when character saved on database
 	function CHAR:save(callback)
 		-- Do not save if the character is for a bot.
 		if (self.isBot) then
@@ -53,7 +63,12 @@ if (SERVER) then
 		end
 	end
 
+	-- @type function character:sync(receiver)
+	-- @typeCommentStart
 	-- Sends character information to the receiver.
+	-- @typeCommentEnd
+	-- @realm server
+	-- @player receiver who will receive synchronization, nil - so that all players receive.
 	function CHAR:sync(receiver)
 		-- Broadcast the character information if receiver is not set.
 		if (receiver == nil) then
@@ -97,7 +112,12 @@ if (SERVER) then
 		end
 	end
 
+	-- @type function character:setup(noNetworked)
+	-- @typeCommentStart
 	-- Sets up the "appearance" related information for the character.
+	-- @typeCommentEnd
+	-- @realm server
+	-- @bool noNetworking responsible for character synchronization
 	function CHAR:setup(noNetworking)
 		local client = self:getPlayer()
 
@@ -130,7 +150,11 @@ if (SERVER) then
 		end
 	end
 
+	-- @type function character:kick()
+	-- @typeCommentStart
 	-- Forces the player to choose a character.
+	-- @typeCommentEnd
+	-- @realm server
 	function CHAR:kick()
 		-- Kill the player so they are not standing anywhere.
 		local client = self:getPlayer()
@@ -151,7 +175,15 @@ if (SERVER) then
 		end
 	end
 
+	-- @type function character:ban(time)
+	-- @typeCommentStart
 	-- Prevents the use of this character permanently or for a certain amount of time.
+	-- @typeCommentEnd
+	-- @realm server
+	-- @int time Сharacter ban time
+	-- @usageStart
+	-- Entity(1):getChar():ban(3600) -- will send a character owned by a player with index 1 to a ban
+	-- @usageEnd
 	function CHAR:ban(time)
 		time = tonumber(time)
 
@@ -168,12 +200,21 @@ if (SERVER) then
 		hook.Run("OnCharPermakilled",self,time or nil)
 	end
 
+	-- @type function character:delete()
+	-- @typeCommentStart
 	-- Deletes this character from existence along with its associated data.
+	-- @typeCommentEnd
+	-- @realm server
 	function CHAR:delete()
 		nut.char.delete(self:getID(), self:getPlayer())
 	end
 
+	-- @type function character:destroy()
+	-- @typeCommentStart
 	-- Deletes this character from memory.
+	-- @typeCommentEnd
+	-- @realm server
+	-- @internal
 	function CHAR:destroy()
 		local id = self:getID()
 		nut.char.loaded[id] = nil
@@ -181,7 +222,16 @@ if (SERVER) then
 	end
 end
 
+-- @type function character:getPlayer()
+-- @typeCommentStart
 -- Returns which player owns this character.
+-- @typeCommentEnd
+-- @realm shared
+-- @treturn player The player who owns need character
+-- @usageStart
+-- local charOwner = Entity(1):getChar():getPlayer()
+-- charOwner:notify('test')
+-- @usageEnd
 function CHAR:getPlayer()
 	-- Return the player from cache.
 	if (IsValid(self.player)) then
@@ -209,7 +259,16 @@ function CHAR:getPlayer()
 	end
 end
 
+-- @module nut.char
+-- @moduleCommentStart
+-- Library functions for character
+-- @moduleCommentEnd
+
+-- @type function nut.char.registerVar()
+-- @typeCommentStart
 -- Sets up a new character variable.
+-- @typeCommentEnd
+-- @realm shared
 function nut.char.registerVar(key, data)
 	-- Store information for the variable.
 	nut.char.vars[key] = data

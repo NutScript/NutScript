@@ -10,11 +10,7 @@ function nut.currency.set(symbol, singular, plural)
 end
 
 function nut.currency.get(amount)
-	if (amount == 1) then
-		return nut.currency.symbol.."1 "..nut.currency.singular
-	else
-		return nut.currency.symbol..amount.." "..nut.currency.plural
-	end
+	return nut.currency.symbol .. (amount == 1 and ("1 " .. nut.currency.singular) or (amount .. " " ..nut.currency.plural))
 end
 
 function nut.currency.spawn(pos, amount, angle)
