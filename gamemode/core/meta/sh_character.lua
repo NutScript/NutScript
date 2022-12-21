@@ -1,4 +1,4 @@
--- @module character
+-- @module nut.char
 -- @moduleCommentStart
 -- Metamethods for character
 -- @moduleCommentEnd
@@ -26,7 +26,8 @@ function CHAR:getID()
 end
 
 if (SERVER) then
-	-- @type function character:save(callback)
+	-- @type method Character:save(callback)
+	-- @classmod Character
 	-- @typeCommentStart
 	-- Saves the character to the database and calls the callback if provided.
 	-- @typeCommentEnd
@@ -63,7 +64,8 @@ if (SERVER) then
 		end
 	end
 
-	-- @type function character:sync(receiver)
+	-- @type method Character:sync(receiver)
+	-- @classmod Character
 	-- @typeCommentStart
 	-- Sends character information to the receiver.
 	-- @typeCommentEnd
@@ -112,7 +114,8 @@ if (SERVER) then
 		end
 	end
 
-	-- @type function character:setup(noNetworked)
+	-- @type method Character:setup(noNetworked)
+	-- @classmod Character
 	-- @typeCommentStart
 	-- Sets up the "appearance" related information for the character.
 	-- @typeCommentEnd
@@ -150,7 +153,8 @@ if (SERVER) then
 		end
 	end
 
-	-- @type function character:kick()
+	-- @type method Character:kick()
+	-- @classmod Character
 	-- @typeCommentStart
 	-- Forces the player to choose a character.
 	-- @typeCommentEnd
@@ -175,7 +179,8 @@ if (SERVER) then
 		end
 	end
 
-	-- @type function character:ban(time)
+	-- @type method Character:ban(time)
+	-- @classmod Character
 	-- @typeCommentStart
 	-- Prevents the use of this character permanently or for a certain amount of time.
 	-- @typeCommentEnd
@@ -200,7 +205,8 @@ if (SERVER) then
 		hook.Run("OnCharPermakilled",self,time or nil)
 	end
 
-	-- @type function character:delete()
+	-- @type method Character:delete()
+	-- @classmod Character
 	-- @typeCommentStart
 	-- Deletes this character from existence along with its associated data.
 	-- @typeCommentEnd
@@ -209,7 +215,8 @@ if (SERVER) then
 		nut.char.delete(self:getID(), self:getPlayer())
 	end
 
-	-- @type function character:destroy()
+	-- @type method Character:destroy()
+	-- @classmod Character
 	-- @typeCommentStart
 	-- Deletes this character from memory.
 	-- @typeCommentEnd
@@ -222,7 +229,8 @@ if (SERVER) then
 	end
 end
 
--- @type function character:getPlayer()
+-- @type method Character:getPlayer()
+-- @classmod Character
 -- @typeCommentStart
 -- Returns which player owns this character.
 -- @typeCommentEnd
@@ -259,10 +267,6 @@ function CHAR:getPlayer()
 	end
 end
 
--- @module nut.char
--- @moduleCommentStart
--- Library functions for character
--- @moduleCommentEnd
 
 -- @type function nut.char.registerVar()
 -- @typeCommentStart
