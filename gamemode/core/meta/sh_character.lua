@@ -1,6 +1,6 @@
 -- @module nut.char
 -- @moduleCommentStart
--- Metamethods for character
+-- Library functions for character
 -- @moduleCommentEnd
 
 -- Create the character metatable.
@@ -27,10 +27,10 @@ end
 
 if (SERVER) then
 	-- @type method Character:save(callback)
-	-- @classmod Character
 	-- @typeCommentStart
 	-- Saves the character to the database and calls the callback if provided.
 	-- @typeCommentEnd
+	-- @classmod Character
 	-- @realm server
 	-- @function callback Callback when character saved on database
 	function CHAR:save(callback)
@@ -65,10 +65,10 @@ if (SERVER) then
 	end
 
 	-- @type method Character:sync(receiver)
-	-- @classmod Character
 	-- @typeCommentStart
 	-- Sends character information to the receiver.
 	-- @typeCommentEnd
+	-- @classmod Character
 	-- @realm server
 	-- @player receiver who will receive synchronization, nil - so that all players receive.
 	function CHAR:sync(receiver)
@@ -114,11 +114,11 @@ if (SERVER) then
 		end
 	end
 
-	-- @type method Character:setup(noNetworked)
-	-- @classmod Character
+	-- @type method Character:setup(noNetworking)
 	-- @typeCommentStart
 	-- Sets up the "appearance" related information for the character.
 	-- @typeCommentEnd
+	-- @classmod Character
 	-- @realm server
 	-- @bool noNetworking responsible for character synchronization
 	function CHAR:setup(noNetworking)
@@ -154,10 +154,10 @@ if (SERVER) then
 	end
 
 	-- @type method Character:kick()
-	-- @classmod Character
 	-- @typeCommentStart
 	-- Forces the player to choose a character.
 	-- @typeCommentEnd
+	-- @classmod Character
 	-- @realm server
 	function CHAR:kick()
 		-- Kill the player so they are not standing anywhere.
@@ -180,10 +180,10 @@ if (SERVER) then
 	end
 
 	-- @type method Character:ban(time)
-	-- @classmod Character
 	-- @typeCommentStart
 	-- Prevents the use of this character permanently or for a certain amount of time.
 	-- @typeCommentEnd
+	-- @classmod Character
 	-- @realm server
 	-- @int time Сharacter ban time
 	-- @usageStart
@@ -206,20 +206,20 @@ if (SERVER) then
 	end
 
 	-- @type method Character:delete()
-	-- @classmod Character
 	-- @typeCommentStart
 	-- Deletes this character from existence along with its associated data.
 	-- @typeCommentEnd
+	-- @classmod Character
 	-- @realm server
 	function CHAR:delete()
 		nut.char.delete(self:getID(), self:getPlayer())
 	end
 
 	-- @type method Character:destroy()
-	-- @classmod Character
 	-- @typeCommentStart
 	-- Deletes this character from memory.
 	-- @typeCommentEnd
+	-- @classmod Character
 	-- @realm server
 	-- @internal
 	function CHAR:destroy()
@@ -230,10 +230,10 @@ if (SERVER) then
 end
 
 -- @type method Character:getPlayer()
--- @classmod Character
 -- @typeCommentStart
 -- Returns which player owns this character.
 -- @typeCommentEnd
+-- @classmod Character
 -- @realm shared
 -- @treturn player The player who owns need character
 -- @usageStart
@@ -266,7 +266,6 @@ function CHAR:getPlayer()
 		end
 	end
 end
-
 
 -- @type function nut.char.registerVar()
 -- @typeCommentStart
