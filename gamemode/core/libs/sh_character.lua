@@ -16,7 +16,7 @@ if (SERVER) then
 	-- them into a table so they only have to be fetched once
 	if (#nut.char.names < 1) then
 		nut.db.query("SELECT _id, _name FROM nut_characters", function(data)
-			if (#data > 0) then
+			if (data and #data > 0) then
 				for k, v in pairs(data) do
 					nut.char.names[v._id] = v._name
 				end
