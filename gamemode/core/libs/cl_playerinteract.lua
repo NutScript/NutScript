@@ -1,3 +1,8 @@
+-- @module nut.playerInteract
+-- @moduleCommentStart
+-- player interaction menu library
+-- @moduleCommentEnd
+
 nut.playerInteract = nut.playerInteract or {}
 nut.playerInteract.funcs = {}
 
@@ -11,10 +16,39 @@ local isInteracting = false
 local interfaceScale = 0
 local selectedFunction = nil
 
+-- @type function nut.playerInteract.addFunc(name, data)
+-- @typeCommentStart
+-- adding a player interaction button
+-- @typeCommentEnd
+-- @realm client
+-- @string name Name of interact function
+-- @table data Data for interaction button callback
+-- @usageStart
+-- nut.playerInteract.addFunc("recognize", {
+--		nameLocalized = "recognize",
+--		callback = function(target)
+--			netstream.Start("rgnDirect", target)
+--		end,
+--		canSee = function(target)
+--			return true
+--		end
+--	})
+-- @usageEnd
 function nut.playerInteract.addFunc(name, data)
     nut.playerInteract.funcs[name] = data
 end
 
+-- @type function nut.playerInteract.interact(entity, time)
+-- @typeCommentStart
+-- reproduce the interaction with the player
+-- @typeCommentEnd
+-- @realm client
+-- @entity entity Entity to interact with
+-- @number time The time it takes to open the menu
+-- @internal
+-- @usageStart
+-- nut.playerInteract.interact(entity, nut.config.get("playerInteractSpeed", 1))
+-- @usageEnd
 function nut.playerInteract.interact(entity, time)
     nut.playerInteract.currentEnt = entity
 
@@ -23,6 +57,19 @@ function nut.playerInteract.interact(entity, time)
     isInteracting = true
 end
 
+-- @type function nut.playerInteract.clear()
+-- @typeCommentStart
+-- remove player interaction menu
+-- @typeCommentEnd
+-- @realm client
+-- @internal
+-- @usageStart
+-- hook.Add("KeyRelease", "nut.playerInteract", function(client, key)
+--    if (key == IN_USE and isInteracting) then
+--        nut.playerInteract.clear()
+--    end
+-- end)
+-- @usageEnd
 function nut.playerInteract.clear()
     isInteracting = false
     cachedPitch = 0
