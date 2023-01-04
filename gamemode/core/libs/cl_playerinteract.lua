@@ -16,24 +16,26 @@ local isInteracting = false
 local interfaceScale = 0
 local selectedFunction = nil
 
--- @type function nut.playerInteract.addFunc(name, data)
--- @typeCommentStart
--- adding a player interaction button
--- @typeCommentEnd
--- @realm client
--- @string name Name of interact function
--- @table data Data for interaction button callback
--- @usageStart
--- nut.playerInteract.addFunc("recognize", {
---		nameLocalized = "recognize",
---		callback = function(target)
---			netstream.Start("rgnDirect", target)
---		end,
---		canSee = function(target)
---			return true
---		end
---	})
--- @usageEnd
+--[[
+@type function nut.playerInteract.addFunc(name, data)
+@typeCommentStart
+Adding a player interaction button
+@typeCommentEnd
+@realm client
+@string name Name of interact function
+@table data Data for interaction button callback
+@usageStart
+nut.playerInteract.addFunc("recognize", {
+	nameLocalized = "recognize",
+	callback = function(target)
+		netstream.Start("rgnDirect", target)
+	end,
+	canSee = function(target)
+		return true
+	end
+})
+@usageEnd
+]]
 function nut.playerInteract.addFunc(name, data)
     nut.playerInteract.funcs[name] = data
 end
