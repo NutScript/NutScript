@@ -25,14 +25,14 @@ local selectedFunction = nil
 -- @table data Data for interaction button callback
 -- @usageStart
 -- nut.playerInteract.addFunc("recognize", {
---		nameLocalized = "recognize",
---		callback = function(target)
---			netstream.Start("rgnDirect", target)
---		end,
---		canSee = function(target)
---			return true
---		end
---	})
+-- 		nameLocalized = "recognize",
+-- 		callback = function(target)
+-- 			netstream.Start("rgnDirect", target)
+-- 		end,
+-- 		canSee = function(target)
+-- 			return true
+-- 		end
+-- 	})
 -- @usageEnd
 function nut.playerInteract.addFunc(name, data)
     nut.playerInteract.funcs[name] = data
