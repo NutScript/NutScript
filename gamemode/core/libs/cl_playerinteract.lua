@@ -16,24 +16,27 @@ local isInteracting = false
 local interfaceScale = 0
 local selectedFunction = nil
 
--- @type function nut.playerInteract.addFunc(name, data)
--- @typeCommentStart
--- adding a player interaction button
--- @typeCommentEnd
--- @realm client
--- @string name Name of interact function
--- @table data Data for interaction button callback
--- @usageStart
--- nut.playerInteract.addFunc("recognize", {
--- 		nameLocalized = "recognize",
--- 		callback = function(target)
--- 			netstream.Start("rgnDirect", target)
--- 		end,
--- 		canSee = function(target)
--- 			return true
--- 		end
--- 	})
--- @usageEnd
+--[[
+@type function nut.playerInteract.addFunc(name, data)
+@typeCommentStart
+Adding a player interaction button
+@typeCommentEnd
+@realm client
+@string name Name of interact function
+@table data Data for interaction button callback
+@usageStart
+nut.playerInteract.addFunc("recognize", {
+	nameLocalized = "recognize",
+	callback = function(target)
+		netstream.Start("rgnDirect", target)
+	end,
+	canSee = function(target)
+		return true
+	end
+})
+@usageEnd
+]]
+
 function nut.playerInteract.addFunc(name, data)
     nut.playerInteract.funcs[name] = data
 end
@@ -130,7 +133,7 @@ hook.Add("HUDPaint", "nut.playerInteract", function()
         surface.DrawOutlinedRect(loadingCentreX - (loadingMaxW / 2) + 1, loadingCentreY + 1, loadingMaxW - 2, loadingH - 2)
 
         surface.SetDrawColor(color_white)
-        surface.DrawRect(loadingCentreX - (curLoadingW / 2) + 2, loadingCentreY + 2, ( loadingMaxW - 4 ) * progress, loadingH - 4, 1)      
+        surface.DrawRect(loadingCentreX - (curLoadingW / 2) + 2, loadingCentreY + 2, ( loadingMaxW - 4 ) * progress, loadingH - 4, 1)
     end
 
     if (interfaceScale < 0) then return end
