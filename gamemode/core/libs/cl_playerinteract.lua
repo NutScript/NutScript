@@ -36,7 +36,6 @@ nut.playerInteract.addFunc("recognize", {
 })
 @usageEnd
 ]]
-
 function nut.playerInteract.addFunc(name, data)
     nut.playerInteract.funcs[name] = data
 end
