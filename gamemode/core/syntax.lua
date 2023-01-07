@@ -3,14 +3,16 @@
 -- Syntax for Nutscript documentation.
 -- @moduleCommentEnd
 
--- @type command module
--- @typeCommentStart
--- The !@module rule is used to declare the module name. This should be placed at the top of a file.
--- @typeCommentEnd
--- @string Title Required. Module title.
--- @usageStart
--- !@module Syntax
--- @usageEnd
+--[[
+@type command module
+@typeCommentStart
+The !@module rule is used to declare the module name. This should be placed at the top of a file.
+@typeCommentEnd
+@string Title Required. Module title.
+@usageStart
+!@module Syntax
+@usageEnd
+]]
 module (string Title) 
 
 --[[
