@@ -1,3 +1,5 @@
+local PLUGIN = PLUGIN or {}
+
 PLUGIN.name = "Ammo Saver"
 PLUGIN.author = "Black Tea"
 PLUGIN.desc = "Saves the ammo of a character."
