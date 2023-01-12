@@ -67,7 +67,7 @@ ITEM.functions.EquipUn = { -- sorry, for name order.
 		item:setData("equip", nil)
 
 		if (item.onUnequipWeapon) then
-			item:onUnequipWeapon(client, weapon)
+			item:onUnequipWeapon(item.player, weapon)
 		end
 
 		return false
