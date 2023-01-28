@@ -124,7 +124,7 @@ function nut.bar.drawAll()
 		return
 	end
 
-	local w, h = surface.ScreenWidth() * 0.35, BAR_HEIGHT
+	local w, h = ScrW() * 0.35, BAR_HEIGHT
 	local x, y = 4, 4
 	local deltas = nut.bar.delta
 	local frameTime = FrameTime()
