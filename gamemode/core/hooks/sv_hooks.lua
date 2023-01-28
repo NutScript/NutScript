@@ -295,6 +295,14 @@ function GM:PlayerSpawnProp(client)
 	return false
 end
 
+function GM:PlayerSpawnObject(client, model, skin) // Avoids people using "gm_spawn (prop.mdl)" to bypass the PET flags system.
+    if not client:getChar():hasFlags("e") then
+        client:notify("Don't try to be a smartass :)")
+
+        return false
+    end
+end
+
 function GM:PlayerSpawnRagdoll(client)
 	if (client:getChar() and client:getChar():hasFlags("r")) then
 		return true
