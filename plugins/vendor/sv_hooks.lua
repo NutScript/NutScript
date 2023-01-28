@@ -154,6 +154,7 @@ function PLUGIN:VendorTradeAttempt(
             if IsValid(client) then
                 client:notifyLocalized("Cannot add to inventory! Giving money back!")
             end
+			vendor:addStock(itemType)
 
             client.vendorTransaction = nil
 
