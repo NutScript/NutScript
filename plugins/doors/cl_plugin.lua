@@ -35,7 +35,7 @@ function PLUGIN:DrawEntityInfo(entity, alpha)
 		local classData
 		if (class) then
 			classData = nut.class.list[class]
-
+			
 			if (classData) then
 				color = classData.color
 			else
@@ -45,15 +45,26 @@ function PLUGIN:DrawEntityInfo(entity, alpha)
 			color = configGet("color")
 		end
 
-		drawText(name, x, y, colorAlpha(color, alpha), 1, 1)
 
 		if (IsValid(owner)) then
 			drawText(L("dOwnedBy", owner.Name(owner)), x, y + 16, colorAlpha(color_white, alpha), 1, 1)
 		elseif (faction) then
-			local info = nut.faction.indices[faction]
-
-			if (info) then
-				drawText(L("dOwnedBy", L2(info.name) or info.name), x, y + 16, colorAlpha(color_white, alpha), 1, 1)
+			if(istable(faction)) then
+				--local infoTable = {}
+				local infoText = ""
+				
+				local space = 2
+				for k, v in pairs(faction) do
+					infoText = L("dOwnedBy", L2(nut.faction.indices[v].name) or nut.faction.indices[v].name) .. "\n"
+					drawText(infoText, x, y + (16 * space), colorAlpha(color_white, alpha), 1, 1)
+					space = space + 1
+				end
+			else
+				local info = nut.faction.indices[faction]
+				
+				if (info) then
+					drawText(L("dOwnedBy", L2(info.name) or info.name), x, y + 16, colorAlpha(color_white, alpha), 1, 1)
+				end
 			end
 		elseif (class) then
 			if (classData) then

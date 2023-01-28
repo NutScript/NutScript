@@ -38,21 +38,6 @@ function PLUGIN:callOnDoorChildren(entity, callback)
 	end
 end
 
-
-local kekDarkRP = {
-	["DarkRPNonOwnable"] = function(ent, val) ent:setNetVar("noSell", true) end,
-	["DarkRPTitle"]      = function(ent, val) ent:setNetVar("name", val) end,
-	--["DarkRPDoorGroup"]  = function(ent, val) if RPExtraTeamDoors[val] then ent:setDoorGroup(val) end end,
-	["DarkRPCanLockpick"] = function(ent, val) ent.noPick = tobool(val) end
-}
-function PLUGIN:EntityKeyValue(ent, key, value)
-	if (!ent:isDoor()) then return end
-
-	if kekDarkRP[key] then
-		kekDarkRP[key](ent, value)
-	end
-end
-
 function PLUGIN:copyParentDoor(child)
 	local parent = child.nutParent
 
@@ -95,7 +80,7 @@ function PLUGIN:LoadData()
 							door.nutParent = entity
 						end
 					end
-				elseif (k2 == "faction") then
+				elseif (k2 == "faction" && !istable(v2)) then
 					for k3, v3 in pairs(nut.faction.teams) do
 						if (k3 == v2) then
 							entity.nutFactionID = k3
@@ -148,7 +133,7 @@ function PLUGIN:SaveDoorData()
 				doorData.class = v.nutClassID
 			end
 
-			if (v.nutFactionID) then
+			if (v.nutFactionID && (!v:getNetVar("faction") || !istable(v:getNetVar("faction")))) then
 				doorData.faction = v.nutFactionID
 			end
 
@@ -158,7 +143,7 @@ function PLUGIN:SaveDoorData()
 			end
 		end
 	-- Save all of the door information.
-	self:setData(data)
+	self:setData(data)	
 end
 
 function PLUGIN:CanPlayerUseDoor(client, entity)
@@ -172,7 +157,13 @@ function PLUGIN:CanPlayerAccessDoor(client, door, access)
 	local faction = door:getNetVar("faction")
 
 	-- If the door has a faction set which the client is a member of, allow access.
-	if (faction and client:Team() == faction) then
+	if(istable(faction)) then
+		for k, v in pairs(faction) do
+			if(client:Team() == v) then
+				return true
+			end
+		end
+	elseif (faction and client:Team() == faction) then
 		return true
 	end
 
@@ -217,7 +208,9 @@ function PLUGIN:ShowTeam(client)
 			if (IsValid(door.nutParent)) then
 				door = door.nutParent
 			end
-
+			
+			
+			
 			netstream.Start(client, "doorMenu", door, door.nutAccess, entity)
 		elseif (!IsValid(entity:GetDTEntity(0))) then
 			nut.command.run(client, "doorbuy")
