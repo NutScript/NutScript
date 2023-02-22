@@ -71,13 +71,23 @@ if (CLIENT) then
 		end
 	end
 
-	function PLUGIN:ShouldAllowScoreboardOverride(client)
-		if (nut.config.get("sbRecog")) then
-			return true
+	local sbVars = {
+		["name"] = true,
+		["model"] = true,
+		["desc"] = true
+	}
+
+	function PLUGIN:ShouldAllowScoreboardOverride(client, var)
+		if (nut.config.get("sbRecog")) and sbVars[var] ~= nil and (client ~= LocalPlayer()) then
+			local character = client:getChar()
+			local ourCharacter = LocalPlayer():getChar()
+			if (ourCharacter and character and !ourCharacter:doesRecognize(character) and !hook.Run("IsPlayerRecognized", client)) then
+				return true
+			end
 		end
 	end
 
-	function PLUGIN:GetDisplayedName(client, chatType)
+	function PLUGIN:GetDisplayedName(client, chatType, location)
 		if (client ~= LocalPlayer()) then
 			local character = client:getChar()
 			local ourCharacter = LocalPlayer():getChar()
@@ -91,6 +101,8 @@ if (CLIENT) then
 					end
 
 					return "["..description.."]"
+				elseif location == "hud" then
+					return character:getDesc()
 				elseif (!chatType) then
 					return L"unknown"
 				end

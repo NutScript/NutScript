@@ -19,6 +19,15 @@ local surface = surface
 local hookRun = hook.Run
 local toScreen = FindMetaTable("Vector").ToScreen
 
+local NUT_CVAR_NSHUD_DESCWIDTH = CreateClientConVar("nut_hud_descwidth", 0.5, true, false)
+
+function PLUGIN:SetupQuickMenu(menu)
+	menu:addSlider("HUD Desc Width Modifier", function(panel, value)
+		NUT_CVAR_NSHUD_DESCWIDTH:SetFloat(value)
+	end, NUT_CVAR_NSHUD_DESCWIDTH:GetFloat(), 0.1, 1, 2)
+	menu:addSpacer()
+end
+
 function PLUGIN:CanDrawAmmoHUD(weapon)
 	return IsValid(weapon) and weapon.DrawAmmo ~= false
 end
@@ -111,12 +120,34 @@ function PLUGIN:DrawEntityInfo(entity, alpha, position)
 	local ty = 0
 
 	charInfo = {}
-	charInfo[1] = {
-		hookRun("GetDisplayedName", entity) or character.getName(character),
-		teamGetColor(entity.Team(entity))
-	}
 
-	local description = hookRun("GetDisplayedDescription", entity) or character.getDesc(character)
+	if entity.widthCache ~= NUT_CVAR_NSHUD_DESCWIDTH:GetFloat() then
+		entity.widthCache = NUT_CVAR_NSHUD_DESCWIDTH:GetFloat()
+		entity.nutNameCache = nil
+		entity.nutDescCache = nil
+	end
+
+	local name = hookRun("GetDisplayedName", entity, nil, "hud") or character.getName(character)
+
+	if (name ~= entity.nutNameCache) then
+		entity.nutNameCache = name
+
+		if (name:len() > 250) then
+			name = name:sub(1, 250).."..."
+		end
+
+		entity.nutNameLines = nut.util.wrapText(
+			name,
+			ScrW() * entity.widthCache,
+			"nutSmallFont"
+		)
+	end
+
+	for i = 1, #entity.nutNameLines do
+		charInfo[#charInfo + 1] = {entity.nutNameLines[i], teamGetColor(entity.Team(entity))}
+	end
+
+	local description = hookRun("GetDisplayedDescription", entity, "hud") or character.getDesc(character)
 	if (description ~= entity.nutDescCache) then
 		entity.nutDescCache = description
 
@@ -126,7 +157,7 @@ function PLUGIN:DrawEntityInfo(entity, alpha, position)
 
 		entity.nutDescLines = nut.util.wrapText(
 			description,
-			ScrW() * 0.5,
+			ScrW() * entity.widthCache,
 			"nutSmallFont"
 		)
 	end
@@ -166,7 +197,7 @@ end
 function PLUGIN:HUDPaintBackground()
 	local localPlayer = LocalPlayer()
 
-	if (!localPlayer.getChar(localPlayer)) then
+	if (not localPlayer.getChar(localPlayer)) then
 		return
 	end
 
@@ -235,7 +266,7 @@ function PLUGIN:HUDPaintBackground()
 	if (hook.Run("CanDrawAmmoHUD", weapon) ~= false) then
 		hook.Run("DrawAmmoHUD", weapon)
 	end
-	
+
 	if (
 		localPlayer.getLocalVar(localPlayer, "restricted") and
 		not localPlayer.getLocalVar(localPlayer, "restrictNoMsg")

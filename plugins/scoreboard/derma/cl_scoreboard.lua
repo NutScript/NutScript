@@ -211,16 +211,16 @@ local PANEL = {}
 				return
 			end
 
-			local overrideName = hook.Run("ShouldAllowScoreboardOverride", client, "name") and hook.Run("GetDisplayedName", client)
+			local overrideName = hook.Run("ShouldAllowScoreboardOverride", client, "name") and hook.Run("GetDisplayedName", client, nil, "sb")
 			local name = overrideName or client:Name()
 			name = name:gsub("#", "\226\128\139#")
 
 			local model = client:GetModel()
 			local skin = client:GetSkin()
-			local desc = hook.Run("ShouldAllowScoreboardOverride", client, "desc") and hook.Run("GetDisplayedDescription", client) or (client:getChar() and client:getChar():getDesc()) or ""
+			local desc = hook.Run("ShouldAllowScoreboardOverride", client, "desc") and hook.Run("GetDisplayedDescription", client, "sb") or (client:getChar() and client:getChar():getDesc()) or ""
 			desc = desc:gsub("#", "\226\128\139#")
 
-			self.model:setHidden(overrideName)
+			self.model:setHidden(hook.Run("ShouldAllowScoreboardOverride", client, "model"))
 
 			if (self.lastName ~= name) then
 				self.name:SetText(name)
