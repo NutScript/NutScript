@@ -120,6 +120,38 @@ function PANEL:addSpacer()
 	return panel
 end
 
+function PANEL:addSlider(text, callback, value, min, max, decimal)
+	local slider = self.scroll:Add("DNumSlider")
+	slider:SetText(text)
+	slider:SetTall(36)
+	slider:Dock(TOP)
+	slider:DockMargin(0, 1, 0, 0)
+	slider:SetExpensiveShadow(1, Color(0, 0, 0, 150))
+	slider:SetMin(min or 0)
+	slider:SetMax(max or 100)
+	slider:SetDecimals(decimal or 0)
+	slider:SetValue(value or 0)
+
+	slider.Label:SetFont("nutMediumLightFont")
+	slider.Label:SetTextColor(color_white)
+
+	local textEntry = slider:GetTextArea()
+	textEntry:SetFont("nutMediumLightFont")
+	textEntry:SetTextColor(color_white)
+
+	if (callback) then
+		slider.OnValueChanged = function(this, value)
+			value = math.Round(value, decimal)
+			callback(this, value)
+		end
+	end
+
+	self.items[#self.items + 1] = slider
+
+	return slider
+
+end
+
 local color_dark = Color(255, 255, 255, 5)
 
 function PANEL:addCheck(text, callback, checked)
