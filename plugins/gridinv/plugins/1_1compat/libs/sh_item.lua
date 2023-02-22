@@ -66,7 +66,7 @@ function nut.item.createInv(w, h, id)
 	local instance = GridInv:new()
 	instance.id = id
 	instance.data = {w = w, h = h}
-	
+
 	nut.inventory.instances[id] = instance
 	return instance
 end

@@ -55,7 +55,7 @@ end
 function ITEM:getEntity()
 	local id = self:getID()
 
-	for k, v in ipairs(ents.FindByClass("nut_item")) do
+	for _, v in ipairs(ents.FindByClass("nut_item")) do
 		if (v.nutItemID == id) then
 			return v
 		end
@@ -102,7 +102,7 @@ function ITEM:spawn(position, angles)
 end
 
 function ITEM:transfer(newInventory,bBypass)
-	if (!bBypass and !newInventory:canAccess("transfer")) then
+	if (not bBypass and not newInventory:canAccess("transfer")) then
 		return false
 	end
 
