@@ -1,7 +1,15 @@
 nut.menu = nut.menu or {}
 nut.menu.list = nut.menu.list or {}
 
+-- @type function nut.menu.add(options, positions, onRemove)
+-- @typeCommentStart
 -- Adds a new menu to the list of drawn menus.
+-- @typeCommentEnd
+-- @realm client
+-- @table options A table of button text as keys and their callbacks as values.
+-- @vector position The position of the menu or an entity to follow.
+-- @function onRemove A function to call after the menu has faded out.
+-- @treturn number The index of the menu in the list.
 function nut.menu.add(options, position, onRemove)
 	-- Set up the width of the menu.
 	local width = 0
@@ -43,7 +51,11 @@ end
 -- Gradient for subtle effects.
 local gradient = Material("vgui/gradient-u")
 
+-- @type function nut.menu.drawAll()
+-- @typeCommentStart
 -- A function to draw all of the active menus or hide them when needed.
+-- @typeCommentEnd
+-- @realm client
 function nut.menu.drawAll()
 	local frameTime = FrameTime() * 30
 	local mX, mY = ScrW() * 0.5, ScrH() * 0.5
@@ -151,7 +163,13 @@ function nut.menu.drawAll()
 	end
 end
 
--- Determines which menu is being looked at
+-- @type function nut.menu.getActiveMenu()
+-- @typeCommentStart
+-- Determines which menu is being looked at.
+-- @typeCommentEnd
+-- @realm client
+-- @treturn table The active menu.
+-- @treturn function The currently hovered option callback.
 function nut.menu.getActiveMenu()
 	local mX, mY = ScrW() * 0.5, ScrH() * 0.5
 	local position2 = LocalPlayer():GetPos()
@@ -209,7 +227,14 @@ function nut.menu.getActiveMenu()
 	end
 end
 
+-- @type function nut.menu.onButtonPressed(menu, callback)
+-- @typeCommentStart
 -- Handles whenever a button has been pressed.
+-- @typeCommentEnd
+-- @realm client
+-- @int menu The menu index.
+-- @func callback The callback that checks whether the button can be pressed.
+-- @treturn bool Whether or not the button can be pressed.
 function nut.menu.onButtonPressed(menu, callback)
 	table.remove(nut.menu.list, menu)
 

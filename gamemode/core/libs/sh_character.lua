@@ -55,6 +55,16 @@ if (CLIENT) then
 	end
 end
 
+-- @type function nut.char.new(data, id, client, steamID)
+-- @typeCommentStart
+-- Creates a new character object with the given data and metadata.
+-- @typeCommentEnd
+-- @realm shared
+-- @table data A table containing the character data.
+-- @int[default=0] id The ID of the character.
+-- @Player client The player associated with the character.
+-- @string[opt] steamID The SteamID of the player associated with the character.
+-- @treturn table The newly created character object.
 function nut.char.new(data, id, client, steamID)
 	local character = setmetatable({vars = {}}, nut.meta.character)
 		for k, v in pairs(nut.char.vars) do
@@ -419,13 +429,38 @@ end
 -- Additions to the player metatable here.
 do
 	local playerMeta = FindMetaTable("Player")
+    -- @type method Player:steamName()
+    -- @typeCommentStart
+    -- Returns the players Steam name.
+    -- @typeCommentEnd
+    -- @realm shared
+    -- @treturn string The player's Steam name.
 	playerMeta.steamName = playerMeta.steamName or playerMeta.Name
+    
+    -- @type method Player:SteamName()
+    -- @typeCommentStart
+    -- Returns the players Steam name. Alias to Player:steamName().
+    -- @typeCommentEnd
+    -- @realm shared
+    -- @treturn string The player's Steam name.
 	playerMeta.SteamName = playerMeta.steamName
 
+    -- @type method Player:getChar()
+    -- @typeCommentStart
+    -- Returns the character associated with the player.
+    -- @typeCommentEnd
+    -- @realm shared
+    -- @treturn table The character object associated with the player, or nil if no character is associated.
 	function playerMeta:getChar()
 		return nut.char.loaded[self.getNetVar(self, "char")]
 	end
 
+    -- @type method Player:Name()
+    -- @typeCommentStart
+    -- Returns the name of the player's character, or the player's Steam name if the character is not available.
+    -- @typeCommentEnd
+    -- @realm shared
+    -- @treturn string The name of the player's character or the player's Steam name if no character is available.
 	function playerMeta:Name()
 		local character = self.getChar(self)
 
@@ -434,6 +469,19 @@ do
 			or self.steamName(self)
 	end
 
+    -- @type method Player:Nick()
+    -- @typeCommentStart
+    -- Returns the name of the player's character, or the player's Steam name if the character is not available. Alias to Player:Name().
+    -- @typeCommentEnd
+    -- @realm shared
+    -- @treturn string The name of the player's character or the player's Steam name if no character is available.
 	playerMeta.Nick = playerMeta.Name
+
+    -- @type method Player:GetName()
+    -- @typeCommentStart
+    -- Returns the name of the player's character, or the player's Steam name if the character is not available. Alias to Player:Name().
+    -- @typeCommentEnd
+    -- @realm shared
+    -- @treturn string The name of the player's character or the player's Steam name if no character is available.
 	playerMeta.GetName = playerMeta.Name
 end

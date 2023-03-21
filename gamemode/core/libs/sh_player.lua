@@ -1,3 +1,8 @@
+-- @module Player
+-- @moduleCommentStart
+-- Player meta functions.
+-- @moduleCommentEnd
+
 local playerMeta = FindMetaTable("Player")
 
 nut.util.include("nutscript/gamemode/core/meta/sh_player.lua")
