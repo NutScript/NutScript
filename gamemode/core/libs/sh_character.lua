@@ -60,6 +60,7 @@ end
 -- Creates a new character object with the given data and metadata.
 -- @typeCommentEnd
 -- @realm shared
+-- @classmod Character
 -- @table data A table containing the character data.
 -- @int[default=0] id The ID of the character.
 -- @Player client The player associated with the character.
@@ -434,6 +435,7 @@ do
     -- Returns the players Steam name.
     -- @typeCommentEnd
     -- @realm shared
+    -- @classmod Player
     -- @treturn string The player's Steam name.
 	playerMeta.steamName = playerMeta.steamName or playerMeta.Name
     
@@ -442,6 +444,7 @@ do
     -- Returns the players Steam name. Alias to Player:steamName().
     -- @typeCommentEnd
     -- @realm shared
+    -- @classmod Player
     -- @treturn string The player's Steam name.
 	playerMeta.SteamName = playerMeta.steamName
 
@@ -450,6 +453,7 @@ do
     -- Returns the character associated with the player.
     -- @typeCommentEnd
     -- @realm shared
+    -- @classmod Player
     -- @treturn table The character object associated with the player, or nil if no character is associated.
 	function playerMeta:getChar()
 		return nut.char.loaded[self.getNetVar(self, "char")]
@@ -460,6 +464,7 @@ do
     -- Returns the name of the player's character, or the player's Steam name if the character is not available.
     -- @typeCommentEnd
     -- @realm shared
+    -- @classmod Player
     -- @treturn string The name of the player's character or the player's Steam name if no character is available.
 	function playerMeta:Name()
 		local character = self.getChar(self)
@@ -474,6 +479,7 @@ do
     -- Returns the name of the player's character, or the player's Steam name if the character is not available. Alias to Player:Name().
     -- @typeCommentEnd
     -- @realm shared
+    -- @classmod Player
     -- @treturn string The name of the player's character or the player's Steam name if no character is available.
 	playerMeta.Nick = playerMeta.Name
 
@@ -482,6 +488,7 @@ do
     -- Returns the name of the player's character, or the player's Steam name if the character is not available. Alias to Player:Name().
     -- @typeCommentEnd
     -- @realm shared
+    -- @classmod Player
     -- @treturn string The name of the player's character or the player's Steam name if no character is available.
 	playerMeta.GetName = playerMeta.Name
 end

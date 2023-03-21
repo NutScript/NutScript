@@ -1,3 +1,8 @@
+-- @module nut.menu
+-- @moduleCommentStart
+-- Library functions for nut.menu
+-- @moduleCommentEnd
+
 nut.menu = nut.menu or {}
 nut.menu.list = nut.menu.list or {}
 

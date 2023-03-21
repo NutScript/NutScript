@@ -1,3 +1,8 @@
+-- @module nut.anim
+-- @moduleCommentStart
+-- Library functions for nut.anim
+-- @moduleCommentEnd
+
 nut.anim = nut.anim or {}
 
 nut.anim.citizen_male = {
