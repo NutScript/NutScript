@@ -374,7 +374,6 @@ function nut.anim.getModelClass(model)
 		class = "citizen_male"
 	end
 
-	nut.anim.setModelClass(model, class)
 	return class
 end
 
