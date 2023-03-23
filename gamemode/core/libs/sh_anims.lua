@@ -385,7 +385,6 @@ nut.anim.setModelClass("models/vortigaunt.mdl", "vort")
 nut.anim.setModelClass("models/vortigaunt_blue.mdl", "vort")
 nut.anim.setModelClass("models/vortigaunt_doctor.mdl", "vort")
 nut.anim.setModelClass("models/vortigaunt_slave.mdl", "vort")
-nut.anim.setModelClass("models/vortigaunt_slave.mdl", "vort")
 nut.anim.setModelClass("models/alyx.mdl", "citizen_female")
 nut.anim.setModelClass("models/mossman.mdl", "citizen_female")
 
