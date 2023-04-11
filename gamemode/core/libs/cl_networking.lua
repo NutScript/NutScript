@@ -1,3 +1,10 @@
+-- @module Entity
+-- @moduleCommentStart
+-- Entity meta functions.
+-- @moduleCommentEnd
+
+-- there isnt an entity meta file so its just gonna be here for now
+
 local entityMeta = FindMetaTable("Entity")
 local playerMeta = FindMetaTable("Player")
 
@@ -28,6 +35,15 @@ function getNetVar(key, default)
 	return value ~= nil and value or default
 end
 
+-- @type method Entity:getNetVar(key, default)
+-- @typeCommentStart
+-- Returns the networked variable of the entity.
+-- @typeCommentEnd
+-- @realm client
+-- @classmod Entity
+-- @string key The key of the networked variable.
+-- @string default The default value to return if the networked variable is not set.
+-- @treturn any The networked variable.
 function entityMeta:getNetVar(key, default)
 	local index = self:EntIndex()
 
@@ -38,4 +54,13 @@ function entityMeta:getNetVar(key, default)
 	return default
 end
 
+-- @type method Entity:getLocalVar(key, value)
+-- @typeCommentStart
+-- Returns the networked variable of a player.
+-- @typeCommentEnd
+-- @realm client
+-- @classmod Player
+-- @string key The key of the networked variable.
+-- @string default The default value to return if the networked variable is not set.
+-- @treturn any The networked variable.
 playerMeta.getLocalVar = entityMeta.getNetVar

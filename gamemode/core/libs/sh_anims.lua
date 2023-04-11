@@ -1,3 +1,8 @@
+-- @module nut.anim
+-- @moduleCommentStart
+-- Library functions for nut.anim
+-- @moduleCommentEnd
+
 nut.anim = nut.anim or {}
 
 nut.anim.citizen_male = {
@@ -330,6 +335,13 @@ nut.anim.fastZombie = {
 
 local translations = {}
 
+-- @type function nut.anim.setModelClass(model, class)
+-- @typeCommentStart
+-- Sets the animation class for a specified model.
+-- @typeCommentEnd
+-- @realm shared
+-- @string model The model for which to set the animation class.
+-- @string class The animation class to set.
 function nut.anim.setModelClass(model, class)
 	if (!nut.anim[class]) then
 		error("'"..tostring(class).."' is not a valid animation class!")
@@ -342,6 +354,13 @@ end
 local stringLower = string.lower
 local stringFind = string.find
 
+-- @type function nut.anim.getModelClass(model)
+-- @typeCommentStart
+-- Gets the animation class for a specified model. If an animation class has not yet been set for the model, it sets a default animation class based on the model's name.
+-- @typeCommentEnd
+-- @realm shared
+-- @string model The model for which to get the animation class.
+-- @treturn string The animation class for the specified model.
 function nut.anim.getModelClass(model)
 	model = stringLower(model)
 	local class = translations[model]
@@ -355,7 +374,6 @@ function nut.anim.getModelClass(model)
 		class = "citizen_male"
 	end
 
-	nut.anim.setModelClass(model, class)
 	return class
 end
 
@@ -367,13 +385,23 @@ nut.anim.setModelClass("models/vortigaunt.mdl", "vort")
 nut.anim.setModelClass("models/vortigaunt_blue.mdl", "vort")
 nut.anim.setModelClass("models/vortigaunt_doctor.mdl", "vort")
 nut.anim.setModelClass("models/vortigaunt_slave.mdl", "vort")
-nut.anim.setModelClass("models/vortigaunt_slave.mdl", "vort")
 nut.anim.setModelClass("models/alyx.mdl", "citizen_female")
 nut.anim.setModelClass("models/mossman.mdl", "citizen_female")
 
 do
 	local playerMeta = FindMetaTable("Player")
 
+    -- @type method Player:forceSequence(sequence, callback, time, noFreeze)
+    -- @typeCommentStart
+    -- Forces the player to play a specific animation sequence.
+    -- @typeCommentEnd
+    -- @realm shared
+    -- @classmod Player
+    -- @string sequence The name of the sequence to play.
+    -- @func callback An optional function to call when the animation sequence is finished.
+    -- @int[opt] number time The time in seconds to play the animation sequence. If not set, it will use the default time for the sequence.
+    -- @bool[opt] noFreeze Whether to freeze the player during the animation sequence.
+    -- @treturn number The time in seconds for the animation sequence to complete, or false if the sequence is invalid.
 	function playerMeta:forceSequence(sequence, callback, time, noFreeze)
 		hook.Run("OnPlayerEnterSequence", self, sequence, callback, time, noFreeze)
 
@@ -409,6 +437,12 @@ do
 		return false
 	end
 
+    -- @type method Player:leaveSequence()
+    -- @typeCommentStart
+    -- Forces the player to leave the current animation sequence they are playing.
+    -- @typeCommentEnd
+    -- @realm shared
+    -- @classmod Player
 	function playerMeta:leaveSequence()
 		hook.Run("OnPlayerLeaveSequence", self)
 
