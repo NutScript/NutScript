@@ -146,26 +146,24 @@ function PLUGIN:VendorTradeAttempt(
 		vendor:takeStock(itemType)
 
 		local position = client:getItemDropPos()
-
-        local result = character:getInv():add(itemType):next(function(item)
-            hook.Run("OnCharTradeVendor", client, vendor, item, isSellingToVendor)
-            client.vendorTransaction = nil
-        end):catch(function(err)
-            if IsValid(client) then
-                client:notifyLocalized("Cannot add to inventory! Giving money back!")
-            end
-			vendor:addStock(itemType)
-
-            client.vendorTransaction = nil
-
-            return character:giveMoney(price)
-        end):catch(function(err)
-            client:notifyLocalized(err)
-            client.vendorTransaction = nil
-        end)
-
-
-
+		local result = character:getInv():add(itemType)
+			:next(function(item)
+				hook.Run("OnCharTradeVendor", client, vendor, item, isSellingToVendor)
+				client.vendorTransaction = nil
+			end)
+			:catch(function(err)
+				if (IsValid(client)) then
+					client:notifyLocalized("buyFailed")
+				end
+				vendor:addStock(itemType)
+            	client.vendorTransaction = nil
+            	character:giveMoney(price)
+			end)
+			:catch(function(err)
+				client:notifyLocalized(err)
+				client.vendorTransaction = nil
+			end)
+		
 		nut.log.add(client, "vendorBuy", itemType, vendor:getNetVar("name"))
 	end
 end
