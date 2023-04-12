@@ -153,16 +153,17 @@ function PLUGIN:VendorTradeAttempt(
 			end)
 			:catch(function(err)
 				if (IsValid(client)) then
-					client:notifyLocalized("itemOnGround")
+					client:notifyLocalized("buyFailed")
 				end
-				client.vendorTransaction = nil
-				return nut.item.spawn(itemType, position)
+				vendor:addStock(itemType)
+            	client.vendorTransaction = nil
+            	character:giveMoney(price)
 			end)
 			:catch(function(err)
 				client:notifyLocalized(err)
 				client.vendorTransaction = nil
 			end)
-
+		
 		nut.log.add(client, "vendorBuy", itemType, vendor:getNetVar("name"))
 	end
 end
