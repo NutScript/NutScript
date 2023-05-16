@@ -88,7 +88,7 @@ if (CLIENT) then
 
 		if (hands and hands.model) then
 			viewModel:SetModel(hands.model)
-			viewModel:SetSkin(hands.skin)
+			viewModel:SetSkin(tonumber(hands.skin) or 0)
 			viewModel:SetBodyGroups(hands.body)
 		end
 	end
