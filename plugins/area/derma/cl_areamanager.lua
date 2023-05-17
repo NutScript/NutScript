@@ -23,10 +23,10 @@ function PANEL:Init()
 	self.list:SetPadding(5)
 	self.list:EnableVerticalScrollbar()
 
-	self:loadBusinesses()
+	self:loadAreas()
 end
 
-function PANEL:loadBusinesses()
+function PANEL:loadAreas()
 	for class, data in pairs(PLUGIN.areaTable) do
 		local panel = self.list:Add("DButton")
 		panel:SetText(data.name)
