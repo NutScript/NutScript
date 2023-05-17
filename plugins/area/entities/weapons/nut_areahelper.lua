@@ -7,7 +7,7 @@ if (CLIENT) then
 	SWEP.CLMode = 0
 end
 
-SWEP.HoldType = "fist"
+SWEP.HoldType = "pistol"
 
 SWEP.Category = "Nutscript"
 SWEP.Spawnable			= true
@@ -47,8 +47,6 @@ end
 function SWEP:Think()
 end
 
-local gridsize = 1
-
 if (SERVER) then
 	function SWEP:PrimaryAttack()
 	end
@@ -87,7 +85,7 @@ else
 				self.ohWow = false
 				netstream.Start("areaAdd", text, areaPoint.startVector, areaPoint.endVector)
 			end, function()
-				self.ohWow = false 
+				self.ohWow = false
 			end)
 		end
 	end
@@ -95,7 +93,7 @@ else
 	function SWEP:SecondaryAttack()
 		if (IsFirstTimePredicted()) then
 			areaPoint = {}
-			
+
 			if (!self.rSnd) then
 				surface.PlaySound("buttons/button2.wav")
 				self.rSnd = true
@@ -127,9 +125,9 @@ else
 		local cury = h/4*3
 		local tx, ty = draw.SimpleText("Left Click: Set Area Point", "nutMediumFont", w/2, cury, color_white, 1, 1)
 		cury = cury + ty
-		local tx, ty = draw.SimpleText("Right Click: Reset Area Point", "nutMediumFont", w/2, cury, color_white, 1, 1)
+		tx, ty = draw.SimpleText("Right Click: Reset Area Point", "nutMediumFont", w/2, cury, color_white, 1, 1)
 		cury = cury + ty
-		local tx, ty = draw.SimpleText("Reload: Register Area", "nutMediumFont", w/2, cury, color_white, 1, 1)
+		tx, ty = draw.SimpleText("Reload: Register Area", "nutMediumFont", w/2, cury, color_white, 1, 1)
 
 		local trace = LocalPlayer():GetEyeTraceNoCursor()
 		local pos = trace.HitPos
@@ -142,9 +140,13 @@ else
 		end
 	end
 
-	hook.Add("PostDrawOpaqueRenderables", "helperDraw", function()
+	hook.Add("PostDrawOpaqueRenderables", "nutAreaHelperDraw", function()
+		-- do not draw if the player is not holding the area helper
 		if (areaPoint) then
-			local sPos, ePos 
+			if (IsValid(LocalPlayer()) and IsValid(LocalPlayer():GetActiveWeapon()) and LocalPlayer():GetActiveWeapon():GetClass() ~= "nut_areahelper") then
+				return
+			end
+			local sPos, ePos
 			if (areaPoint.startVector and areaPoint.endVector) then
 				sPos = areaPoint.startVector
 				ePos = areaPoint.endVector
