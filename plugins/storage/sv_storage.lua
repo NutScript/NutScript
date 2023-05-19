@@ -58,11 +58,20 @@ function PLUGIN:saveStorage()
 			continue
 		end
 		if (entity:getInv()) then
+			local groups = {}
+			for _, group in pairs(entity:GetBodyGroups()) do
+				groups[group.id] = entity:GetBodygroup(group.id)
+			end
+
 			data[#data + 1] = {
 				entity:GetPos(),
 				entity:GetAngles(),
 				entity:getNetVar("id"),
 				entity:GetModel():lower(),
+				entity:GetSkin() or 0,
+				groups,
+				entity:GetColor() or {r = 255, g = 255, b = 255, a = 255}, -- GetColor() doesn't return a color metatable, no need to create a colour object.
+				entity:GetMaterial(),
 				entity.password
 			}
 		end
@@ -74,12 +83,16 @@ function PLUGIN:StorageItemRemoved(entity, inventory)
 	self:saveStorage()
 end
 
+function PLUGIN:SaveData()
+	self:saveStorage()
+end
+
 function PLUGIN:LoadData()
 	local data = self:getData()
 	if (not data) then return end
 
 	for _, info in ipairs(data) do
-		local position, angles, invID, model, password = unpack(info)
+		local position, angles, invID, model, skin, groups, colour, material, password = unpack(info)
 		local storage = self.definitions[model]
 		if (not storage) then continue end
 
@@ -88,9 +101,15 @@ function PLUGIN:LoadData()
 		storage:SetAngles(angles)
 		storage:Spawn()
 		storage:SetModel(model)
+		storage:SetSkin(skin)
+		for id, group in pairs(groups) do
+			storage:SetBodygroup(id, group)
+		end
+		storage:SetColor(colour)
+		storage:SetMaterial(material)
 		storage:SetSolid(SOLID_VPHYSICS)
 		storage:PhysicsInit(SOLID_VPHYSICS)
-		
+
 		if (password) then
 			storage.password = password
 			storage:setNetVar("locked", true)
