@@ -53,7 +53,7 @@ function PLUGIN:GetPlayerPainSound(client)
 end
 
 function PLUGIN:EntityTakeDamage(client, dmg)
-	if ((client.nutNextPain or 0) < CurTime() and client:Health() > 0) then
+	if (client:IsPlayer() and (client.nutNextPain or 0) < CurTime() and client:Health() > 0) then
 		local painSound = hook.Run("GetPlayerPainSound", client, dmg)
 			or PAIN_SOUNDS[math.random(#PAIN_SOUNDS)]
 		if (client:isFemale() and !painSound:find("female")) then
