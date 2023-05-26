@@ -179,9 +179,10 @@ ITEM.functions.Equip = {
 
 			-- Do model substitutions.
 			if (isfunction(item.onGetReplacement)) then
-				char:setModel(item:onGetReplacement())
 				item:setData("oldMdl", item.player:GetModel())
+				char:setModel(item:onGetReplacement())
 			elseif (item.replacement or item.replacements) then
+				item:setData("oldMdl", item.player:GetModel())
 				if (istable(item.replacements)) then
 					if (
 						#item.replacements == 2 and isstring(item.replacements[1])
@@ -199,7 +200,6 @@ ITEM.functions.Equip = {
 				else
 					char:setModel(tostring(item.replacement or item.replacements))
 				end
-				item:setData("oldMdl", item.player:GetModel())
 			end
 
 			-- Then apply the new skin for the model.
