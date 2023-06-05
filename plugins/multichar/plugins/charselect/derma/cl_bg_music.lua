@@ -10,9 +10,10 @@ function PANEL:Init()
 		timer.Remove("nutMusicFader")
 	end
 
+	VOLUME = nut.config.get("musicvolume", 0.25)
+
 	self:SetVisible(false)
 
-	nut.menuMusicIsLocal = false
 	timer.Remove("nutMusicFader")
 
 	local source = nut.config.get("music", "")
@@ -30,9 +31,16 @@ function PANEL:Init()
 			end
 		end)
 	else
-		nut.menuMusicIsLocal = true
-		nut.menuMusic = CreateSound(LocalPlayer(), source)
-		nut.menuMusic:PlayEx(VOLUME, 100)
+		sound.PlayFile("sound/"..source, "noplay", function(music, errorID, fault)
+			if (music) then
+				music:SetVolume(VOLUME)
+				nut.menuMusic = music
+				nut.menuMusic:Play()
+			else
+				MsgC(Color(255, 50, 50), errorID.." ")
+				MsgC(color_white, fault.."\n")
+			end
+		end)
 	end
 end
 
