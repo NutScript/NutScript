@@ -4,9 +4,9 @@ PLUGIN.author = "Tov"
 
 if not (sam and sam.command) then return end -- Make sure SAM is installed
 
-for _, commandInfo in pairs(sam.command.get_commands()) do
+for _, commandInfo in ipairs(sam.command.get_commands()) do
     local customSyntax = ""
-    for _, argInfo in pairs(commandInfo.args) do
+    for _, argInfo in ipairs(commandInfo.args) do
         customSyntax = customSyntax == "" and "[" or customSyntax .. " ["
         customSyntax = customSyntax .. (argInfo.default and tostring(type(argInfo.default)) or "string") .. " "
         customSyntax = customSyntax .. argInfo.name .. "]"
@@ -21,5 +21,4 @@ for _, commandInfo in pairs(sam.command.get_commands()) do
             RunConsoleCommand("sam", commandInfo.name, unpack(arguments))
         end
     })
-
 end
