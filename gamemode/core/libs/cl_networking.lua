@@ -39,7 +39,7 @@ end
 -- @typeCommentStart
 -- Returns the networked variable of the entity.
 -- @typeCommentEnd
--- @realm client
+-- @realm shared
 -- @classmod Entity
 -- @string key The key of the networked variable.
 -- @string default The default value to return if the networked variable is not set.
@@ -58,7 +58,7 @@ end
 -- @typeCommentStart
 -- Returns the networked variable of a player.
 -- @typeCommentEnd
--- @realm client
+-- @realm shared
 -- @classmod Player
 -- @string key The key of the networked variable.
 -- @string default The default value to return if the networked variable is not set.
