@@ -149,7 +149,6 @@ function nut.char.cleanUpForPlayer(client)
 		local character = nut.char.loaded[charID]
 		if (not character) then return end
 
-		netstream.Start(nil, "charDel", character:getID())
 		nut.inventory.cleanUpForCharacter(character)
 		nut.char.loaded[charID] = nil
 
@@ -190,7 +189,6 @@ function nut.char.delete(id, client)
 	end
 
 	nut.char.loaded[id] = nil
-	netstream.Start(nil, "charDel", id)
 	nut.db.query("DELETE FROM nut_characters WHERE _id = "..id)
 	nut.db.query(
 		"SELECT _invID FROM nut_inventories WHERE _charID = "..id,

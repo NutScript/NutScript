@@ -177,7 +177,6 @@ if (SERVER) then
 	function CHAR:destroy()
 		local id = self:getID()
 		nut.char.loaded[id] = nil
-		netstream.Start(nil, "charDel", id)
 	end
 end
 
