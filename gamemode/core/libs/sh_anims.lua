@@ -453,6 +453,7 @@ do
 
 		if (self.nutSeqCallback) then
 			self:nutSeqCallback()
+			self.nutSeqCallback = nil
 		end
 	end
 
