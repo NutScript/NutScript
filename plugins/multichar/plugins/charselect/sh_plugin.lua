@@ -13,7 +13,7 @@ nut.config.add(
 )
 nut.config.add(
 	"musicvolume",
-	"0.25",
+	0.25,
 	"The Volume for the music played in the character menu.",
 	nil,
 	{

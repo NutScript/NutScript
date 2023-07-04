@@ -130,8 +130,8 @@ function nut.item.register(uniqueID, baseID, isBaseItem, path, luaGenerated)
 		ITEM.uniqueID = uniqueID
 		ITEM.base = baseID
 		ITEM.isBase = isBaseItem
-		ITEM.category = ITEM.category or "misc"
-		ITEM.functions = ITEM.functions or table.Copy(
+		ITEM.category = "misc"--ITEM.category or "misc"
+		ITEM.functions = table.Copy(--ITEM.functions or table.Copy(
 			baseTable.functions or NUT_ITEM_DEFAULT_FUNCTIONS
 		)
 	end
