@@ -149,7 +149,6 @@ function PANEL:addSlider(text, callback, value, min, max, decimal)
 	self.items[#self.items + 1] = slider
 
 	return slider
-
 end
 
 local color_dark = Color(255, 255, 255, 5)
