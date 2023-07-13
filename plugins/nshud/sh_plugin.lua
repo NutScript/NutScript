@@ -127,6 +127,9 @@ function PLUGIN:DrawEntityInfo(entity, alpha, position)
 		entity.nutDescCache = nil
 	end
 
+	entity.nutNameCache = nil
+	entity.nutDescCache = nil
+
 	local name = hookRun("GetDisplayedName", entity, nil, "hud") or character.getName(character)
 
 	if (name ~= entity.nutNameCache) then

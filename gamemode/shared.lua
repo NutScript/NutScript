@@ -3,7 +3,7 @@ GM.Name = "NutScript 1.2"
 GM.Author = "Chessnut, Black Tea and the NutScript team"
 GM.Website = "http://nutscript.net/"
 
-nut.version = "1.2.2"
+nut.version = "1.2.3"
 
 -- Fix for client:SteamID64() returning nil when in single-player.
 do

@@ -286,7 +286,7 @@ function Inventory:sync(recipients)
     net.WriteString(self.typeID)
     net.WriteTable(self.data)
     local items = {}
-    
+
 	local function writeItem(item)
         items[#items + 1] = {
             i = item:getID(),
@@ -306,7 +306,7 @@ function Inventory:sync(recipients)
     --local currentBytes, currentBits = net.BytesWritten()
     --print("Current net message size: " .. currentBytes .. " bytes (" .. currentBits .. " bits)")
 
-	
+
     local res = net.Send(recipients or self:getRecipients())
 
     for _, item in pairs(self.items) do

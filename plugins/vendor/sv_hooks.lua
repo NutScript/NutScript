@@ -163,7 +163,7 @@ function PLUGIN:VendorTradeAttempt(
 				client:notifyLocalized(err)
 				client.vendorTransaction = nil
 			end)
-		
+
 		nut.log.add(client, "vendorBuy", itemType, vendor:getNetVar("name"))
 	end
 end
