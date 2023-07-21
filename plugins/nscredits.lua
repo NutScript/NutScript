@@ -21,14 +21,25 @@ surface.CreateFont("nutBigCredits", {
     weight = 600
 })
 
+local colorCreator, colorLDev, colorDev = Color(255, 0, 0), Color(138,43,226), Color(34,139,34)
+
 local authorCredits = {
-    {desc = "Creator", steamid = "76561198030127257", color = Color(255, 0, 0)}, -- Chessnut
-    {desc = "Co-Creator", steamid = "76561197999893894", color = Color(255, 0, 0)}, -- Black Tea
-    {desc = "Lead Developer", steamid = "76561198060659964", color = Color(138,43,226)}, -- Zoephix
-    {desc = "Lead Developer", steamid = "76561198070441753", color = Color(138,43,226)}, -- TovarischPootis
-    {desc = "Developer", steamid = "76561198036551982", color = Color(34,139,34)}, -- Seamus
-    {desc = "Developer", steamid = "76561198031437460", color = Color(34,139,34)}, -- Milk
+    {desc = "Creator", steamid = "76561198030127257", color = colorCreator}, -- Chessnut
+    {desc = "Co-Creator", steamid = "76561197999893894", color = colorCreator}, -- Black Tea
+    {desc = "Lead Developer", steamid = "76561198060659964", color = colorLDev}, -- Zoephix
+    {desc = "Lead Developer", steamid = "76561198070441753", color = colorLDev}, -- TovarischPootis
+    {desc = "Developer", steamid = "76561198036551982", color = colorDev}, -- Seamus
+    {desc = "Developer", steamid = "76561198251000796", color = colorDev}, -- Dobytchick
+    {desc = "Developer", steamid = "76561198031437460", color = colorDev}, -- Milk
 }
+
+do
+    for _, v in ipairs(authorCredits) do
+        steamworks.RequestPlayerInfo(v.steamid, function(steamName)
+            v.name = steamName or "Loading..."
+        end)
+    end
+end
 
 local contributors = {desc = "View All Contributors", url = "https://github.com/NutScript/NutScript/graphs/contributors"}
 local discord = {desc = "Join the NutScript Community Discord", url = "https://discord.gg/ySZY8TY"}
@@ -62,15 +73,9 @@ function PANEL:setAvatarImage(id)
     end
 end
 
-function PANEL:setName(name, isID, color)
+function PANEL:setName(name, color)
     if not IsValid(self.name) then return end
-    if isID then
-        steamworks.RequestPlayerInfo(name, function(steamName)
-            self.name:SetText(steamName or "Loading...")
-        end)
-    else
-        self.name:SetText(name)
-    end
+    self.name:SetText(name)
     if color then
         self.name:SetTextColor(color)
     end
@@ -133,7 +138,7 @@ function PANEL:setPerson(data, left)
     local id = left and "creditleft" or "creditright"
     self[id] = self:Add("CreditsNamePanel")
     self[id]:setAvatarImage(data.steamid)
-    self[id]:setName(data.steamid, true, data.color)
+    self[id]:setName(data.name, data.color)
     self[id]:setDesc(data.desc)
     self[id]:Dock(left and LEFT or RIGHT)
     self[id]:InvalidateLayout(true)
