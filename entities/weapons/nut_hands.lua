@@ -538,7 +538,7 @@ function SWEP:pickup(entity, trace)
 
 			self.carryHack:SetModel("models/weapons/w_bugbait.mdl")
 
-			self.carryHack:SetColor(Color(50, 250, 50, 240))
+			--self.carryHack:SetColor(Color(50, 250, 50, 240))
 			self.carryHack:SetNoDraw(true)
 			self.carryHack:DrawShadow(false)
 

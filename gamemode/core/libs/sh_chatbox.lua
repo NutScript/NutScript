@@ -12,6 +12,8 @@ function nut.chat.timestamp(ooc)
 	return nut.config.get("chatShowTime") and (ooc and " " or "") .. "(" .. nut.date.getFormatted("%H:%M") .. ")" .. (ooc and "" or " ") or ""
 end
 
+local color_yellow = Color(242, 230, 160)
+
 -- Registers a new chat type with the information provided.
 function nut.chat.register(chatType, data)
 	if (not data.onCanHear) then
@@ -63,7 +65,7 @@ function nut.chat.register(chatType, data)
 	end
 
 	-- Chat text color.
-	data.color = data.color or Color(242, 230, 160)
+	data.color = data.color or color_yellow
 
 	if (not data.onChatAdd) then
 		data.format = data.format or "%s: \"%s\""
@@ -180,7 +182,6 @@ if (SERVER) then
 					return
 				end
 			end
-
 			netstream.Start(receivers, "cMsg", speaker, chatType, hook.Run("PlayerMessageSend", speaker, chatType, text, anonymous, receivers) or text, anonymous)
 		end
 	end
@@ -281,6 +282,8 @@ do
 			prefix = {"/y", "/yell"}
 		})
 
+		local color_offRed = Color(255, 50, 50)
+
 		-- Out of character.
 		nut.chat.register("ooc", {
 			onCanSay =  function(speaker, text)
@@ -335,7 +338,7 @@ do
 				end
 				icon = Material(hook.Run("GetPlayerIcon", speaker) or icon)
 
-				chat.AddText(icon, nut.chat.timestamp(true), Color(255, 50, 50), " [OOC] ", speaker, color_white, ": " .. text)
+				chat.AddText(icon, nut.chat.timestamp(true), color_offRed, " [OOC] ", speaker, color_white, ": " .. text)
 			end,
 			prefix = {"//", "/ooc"},
 			noSpaceAfter = true,
@@ -366,7 +369,7 @@ do
 				if (nut.config.get("oocLimit", 0) ~= 0) and (#text > nut.config.get("oocLimit", 0)) then
 					text = string.sub(text, 1, nut.config.get("oocLimit", 0)) .. "..."
 				end
-				chat.AddText(nut.chat.timestamp(false), Color(255, 50, 50), "[LOOC] ", nut.config.get("chatColor"), speaker:Name() .. ": " .. text)
+				chat.AddText(nut.chat.timestamp(false), color_offRed, "[LOOC] ", nut.config.get("chatColor"), speaker:Name() .. ": " .. text)
 			end,
 			radius = function()
 				return nut.config.get("chatRange", 280)
@@ -396,13 +399,15 @@ nut.chat.register("pm", {
 	deadCanChat = true
 })
 
+local color_orange = Color(255, 150, 0)
+
 -- Global events.
 nut.chat.register("event", {
 	onCanSay =  function(speaker, text)
 		return speaker:IsAdmin()
 	end,
 	onChatAdd = function(speaker, text)
-		chat.AddText(nut.chat.timestamp(false), Color(255, 150, 0), text)
+		chat.AddText(nut.chat.timestamp(false), color_orange, text)
 	end,
 	prefix = {"/event"}
 })

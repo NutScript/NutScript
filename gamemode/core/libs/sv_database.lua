@@ -1,14 +1,16 @@
 nut.db = nut.db or {}
 nut.db.queryQueue = nut.db.queue or {}
 
+local color_red = Color(255, 0, 0)
+
 local function ThrowQueryFault(query, fault)
-	MsgC(Color(255, 0, 0), "* "..query.."\n")
-	MsgC(Color(255, 0, 0), fault.."\n")
+	MsgC(color_red, "* "..query.."\n")
+	MsgC(color_red, fault.."\n")
 end
 
 local function ThrowConnectionFault(fault)
-	MsgC(Color(255, 0, 0), "NutScript has failed to connect to the database.\n")
-	MsgC(Color(255, 0, 0), fault.."\n")
+	MsgC(color_red, "NutScript has failed to connect to the database.\n")
+	MsgC(color_red, fault.."\n")
 
 	setNetVar("dbError", fault)
 end
@@ -202,10 +204,9 @@ modules.mysqloo = {
 		if (not pcall(require, "mysqloo")) then
 			return setNetVar("dbError", system.IsWindows() and "Server is missing VC++ redistributables! " or "Server is missing binaries for mysqloo! ")
 		end
-
 		if (mysqloo.VERSION ~= "9" or not mysqloo.MINOR_VERSION or tonumber(mysqloo.MINOR_VERSION) < 1) then
-			MsgC(Color(255, 0, 0), "You are using an outdated mysqloo version\n")
-			MsgC(Color(255, 0, 0), "Download the latest mysqloo9 from here\n")
+			MsgC(color_red, "You are using an outdated mysqloo version\n")
+			MsgC(color_red, "Download the latest mysqloo9 from here\n")
 			MsgC(Color(86, 156, 214), "https://github.com/syl0r/MySQLOO/releases")
 			return
 		end
@@ -303,7 +304,7 @@ modules.mysqloo = {
 
 			prepObj:start()
 		else
-			MsgC(Color(255, 0, 0), "INVALID PREPARED STATEMENT : " .. key .. "\n")
+			MsgC(color_red, "INVALID PREPARED STATEMENT : " .. key .. "\n")
 		end
 	end
 }
@@ -335,7 +336,15 @@ function nut.db.connect(callback, reconnect)
 		nut.db.escape = dbModule.escape
 		nut.db.query = dbModule.query
 	else
-		ErrorNoHalt("[NutScript] '"..(nut.db.module or "nil").."' is not a valid data storage method! \n")
+		local errMessage = "[NutScript] '"..(nut.db.module or "nil").."' is not a valid data storage method!\nValid modules are:"
+
+		--loop through all the modules and add them to the error message, separated by a comma
+		for k in pairs(modules) do
+			errMessage = errMessage .. " '" .. k .. "',"
+		end
+
+		--print the error message
+		ErrorNoHalt(string.sub(errMessage, 1, -2) .. "\n")
 	end
 end
 
@@ -460,7 +469,7 @@ function nut.db.wipeTables(callback)
 	local function realCallback()
 		nut.db.query("SET FOREIGN_KEY_CHECKS = 1;", function()
 			MsgC(
-				Color(255, 0, 0),
+				color_red,
 				"[Nutscript] ALL NUTSCRIPT DATA HAS BEEN WIPED\n"
 			)
 			if (isfunction(callback)) then
@@ -501,11 +510,11 @@ concommand.Add("nut_recreatedb", function(client)
 		if (resetCalled < RealTime()) then
 			resetCalled = RealTime() + 3
 
-			MsgC(Color(255, 0, 0), "[Nutscript] TO CONFIRM DATABASE RESET, RUN 'nut_recreatedb' AGAIN in 3 SECONDS.\n")
+			MsgC(color_red, "[Nutscript] TO CONFIRM DATABASE RESET, RUN 'nut_recreatedb' AGAIN in 3 SECONDS.\n")
 		else
 			resetCalled = 0
 
-			MsgC(Color(255, 0, 0), "[Nutscript] DATABASE WIPE IN PROGRESS.\n")
+			MsgC(color_red, "[Nutscript] DATABASE WIPE IN PROGRESS.\n")
 
 			hook.Run("OnWipeTables")
 			nut.db.wipeTables(nut.db.loadTables)
@@ -704,7 +713,7 @@ function GM:SetupDatabase()
 	end
 
 	if (not nut.db.config) then
-		MsgC(Color(255, 0, 0), "Database not configured.\n")
+		MsgC(color_red, "Database not configured.\n")
 
 		for k, v in pairs(defaultConfig) do
 			nut.db[k] = v

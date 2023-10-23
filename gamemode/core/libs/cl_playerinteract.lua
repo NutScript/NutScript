@@ -99,6 +99,8 @@ end
 
 local scrW = ScrW()
 local scrH = ScrH()
+local color_blackTransparent = Color(0,0,0, 150)
+local color_whiteTransparent = Color(255, 255, 255 ,120)
 hook.Add("HUDPaint", "nut.playerInteract", function()
     if (!isInteracting and interfaceScale < 0) then return end
 
@@ -125,10 +127,10 @@ hook.Add("HUDPaint", "nut.playerInteract", function()
 
         nut.util.drawBlurAt(loadingCentreX - (loadingMaxW / 2), loadingCentreY, loadingMaxW, loadingH)
 
-        surface.SetDrawColor(Color(0, 0, 0, 150))
+        surface.SetDrawColor(color_blackTransparent)
         surface.DrawRect(loadingCentreX - (loadingMaxW / 2), loadingCentreY, loadingMaxW, loadingH, 1)
 
-        surface.SetDrawColor(255, 255, 255, 120)
+        surface.SetDrawColor(color_whiteTransparent)
         surface.DrawOutlinedRect(loadingCentreX - (loadingMaxW / 2) + 1, loadingCentreY + 1, loadingMaxW - 2, loadingH - 2)
 
         surface.SetDrawColor(color_white)

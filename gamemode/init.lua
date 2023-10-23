@@ -16,6 +16,9 @@ include("core/sh_util.lua")
 include("core/sv_data.lua")
 include("shared.lua")
 
+local color_green = Color(0, 255, 0)
+local color_red = Color(255, 0, 0)
+
 -- Connect to the database using SQLite, mysqloo, or tmysql4.
 timer.Simple(0, function()
 	hook.Run("SetupDatabase")
@@ -25,8 +28,8 @@ timer.Simple(0, function()
 		nut.db.loadTables()
 		nut.log.loadTables()
 
-		MsgC(Color(0, 255, 0), "NutScript has connected to the database.\n")
-		MsgC(Color(0, 255, 0), "Database Type: "..nut.db.module..".\n")
+		MsgC(color_green, "NutScript has connected to the database.\n")
+		MsgC(color_green, "Database Type: "..nut.db.module..".\n")
 
 		hook.Run("DatabaseConnected")
 	end)
@@ -34,8 +37,8 @@ end)
 
 concommand.Add("nut_setowner", function(client, command, arguments)
 	if (!IsValid(client)) then
-		MsgC(Color(255, 0, 0), "** 'nut_setowner' has been deprecated in NutScript 1.1\n")
-		MsgC(Color(255, 0, 0), "** Instead, please install an admin mod and use that instead.\n")
+		MsgC(color_red, "** 'nut_setowner' has been deprecated in NutScript 1.1\n")
+		MsgC(color_red, "** Instead, please install an admin mod and use that instead.\n")
 	end
 end)
 

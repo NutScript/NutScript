@@ -9,7 +9,7 @@ ICON_INFO.h = ICON_INFO.h or 1
 ICON_INFO.modelAng = ICON_INFO.modelAng or Angle()
 ICON_INFO.modelName = ICON_INFO.modelName or "models/Items/grenadeAmmo.mdl"
 ICON_INFO.outline = ICON_INFO.outline or false
-ICON_INFO.outlineColor = ICON_INFO.outlineColor or Color(255, 255, 255)
+ICON_INFO.outlineColor = ICON_INFO.outlineColor or color_white
 
 local vTxt = "xyz"
 local aTxt = "pyr"
@@ -87,7 +87,7 @@ function PANEL:Init()
 		local exIcon = ikon:getIcon("iconEditor")
 		if (exIcon) then
 			surface.SetMaterial(exIcon)
-			surface.SetDrawColor(color_white)
+			surface.SetDrawColor(255, 255, 255)
 			surface.DrawTexturedRect(0, 0, x, y)
 		end
 	end
@@ -500,7 +500,7 @@ end
 function PANEL:AddText(str)
 	local label = self.list:Add("DLabel")
 	label:SetFont("ChatFont")
-	label:SetTextColor(color_white)
+	label:SetTextColor(nut.config.get("colorText", color_white))
 	label:Dock(TOP)
 	label:DockMargin(5, 5, 5, 0)
 	label:SetContentAlignment(5)

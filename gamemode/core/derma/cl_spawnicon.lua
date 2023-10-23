@@ -28,14 +28,17 @@ local setSequence = function(entity)
 	entity:ResetSequence(4)
 end
 
+local color_grey = Color(155, 155 ,155)
+local color_darkgrey = Color(20, 20, 20)
+
 function PANEL:Init()
 	self:setHidden(false)
 
 	for i = 0, 5 do
 		if (i == 1 or i == 5) then
-			self:SetDirectionalLight(i, Color(155, 155, 155))
+			self:SetDirectionalLight(i, color_grey)
 		else
-			self:SetDirectionalLight(i, Color(255, 255, 255))
+			self:SetDirectionalLight(i, color_white)
 		end
 	end
 
@@ -66,21 +69,21 @@ end
 function PANEL:setHidden(hidden)
 	if (hidden) then
 		self:SetAmbientLight(color_black)
-		self:SetColor(Color(0, 0, 0))
+		self:SetColor(color_black)
 
 		for i = 0, 5 do
 			self:SetDirectionalLight(i, color_black)
 		end
 	else
-		self:SetAmbientLight(Color(20, 20, 20))
+		self:SetAmbientLight(color_darkgrey)
 		self:SetAlpha(255)
-		self:SetColor(Color(255, 255, 255))
+		self:SetColor(color_white)
 
 		for i = 0, 5 do
 			if (i == 1 or i == 5) then
-				self:SetDirectionalLight(i, Color(155, 155, 155))
+				self:SetDirectionalLight(i, color_grey)
 			else
-				self:SetDirectionalLight(i, Color(255, 255, 255))
+				self:SetDirectionalLight(i, color_white)
 			end
 		end
 	end

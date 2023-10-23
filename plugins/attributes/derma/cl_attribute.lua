@@ -1,7 +1,7 @@
 local PANEL = {}
 	local gradient = nut.util.getMaterial("vgui/gradient-u")
 	local gradient2 = nut.util.getMaterial("vgui/gradient-d")
-
+	local color_blackTransparent = Color(0,0,0,60)
 	function PANEL:Init()
 		self:SetTall(20)
 
@@ -83,7 +83,7 @@ local PANEL = {}
 
 		self.label = self.bar:Add("DLabel")
 		self.label:Dock(FILL)
-		self.label:SetExpensiveShadow(1, Color(0, 0, 60))
+		self.label:SetExpensiveShadow(1, color_blackTransparent)
 		self.label:SetContentAlignment(5)
 	end
 

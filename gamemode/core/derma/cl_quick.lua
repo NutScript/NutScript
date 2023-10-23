@@ -1,4 +1,12 @@
 local PANEL = {}
+local color_offWhite = Color(250, 250, 250)
+local color_blackTransparent = Color(0,0,0,175)
+local color_blackTransparent2 = Color(0,0,0,150)
+
+local gradientD = nut.util.getMaterial("vgui/gradient-d")
+local gradientR = nut.util.getMaterial("vgui/gradient-r")
+local gradientL = nut.util.getMaterial("vgui/gradient-l")
+
 function PANEL:Init()
 	if (IsValid(nut.gui.quick)) then
 		nut.gui.quick:Remove()
@@ -19,8 +27,8 @@ function PANEL:Init()
 	self.title:SetText(L"quickSettings")
 	self.title:SetContentAlignment(4)
 	self.title:SetTextInset(44, 0)
-	self.title:SetTextColor(Color(250, 250, 250))
-	self.title:SetExpensiveShadow(1, Color(0, 0, 0, 175))
+	self.title:SetTextColor(nut.config.get("colorText", color_white))
+	self.title:SetExpensiveShadow(1, color_blackTransparent)
 	self.title.Paint = function(this, w, h)
 		surface.SetDrawColor(nut.config.get("color"))
 		surface.DrawRect(0, 0, w, h)
@@ -31,8 +39,8 @@ function PANEL:Init()
 	self.expand:SetText("`")
 	self.expand:SetFont("nutIconsMedium")
 	self.expand:SetPaintBackground(false)
-	self.expand:SetTextColor(color_white)
-	self.expand:SetExpensiveShadow(1, Color(0, 0, 0, 150))
+	self.expand:SetTextColor(nut.config.get("colorText", color_white))
+	self.expand:SetExpensiveShadow(1, color_blackTransparent2)
 	self.expand:SetSize(36, 36)
 	self.expand.DoClick = function(this)
 		if (self.expanded) then
@@ -71,16 +79,54 @@ function PANEL:Init()
 end
 
 local function paintButton(button, w, h)
-	local alpha = 0
+	local r, g, b = nut.config.get("color"):Unpack()
+	local alpha = 100
 
 	if (button.Depressed or button.m_bSelected) then
-		alpha = 5
+		alpha = 255
 	elseif (button.Hovered) then
-		alpha = 2
+		alpha = 200
 	end
 
-	surface.SetDrawColor(255, 255, 255, alpha)
-	surface.DrawRect(0, 0, w, h)
+--[[ 	surface.SetDrawColor(255, 255, 255, alpha)
+	surface.DrawRect(0, 0, w, h) ]]
+    surface.SetDrawColor(r, g, b, alpha)
+
+    surface.SetMaterial(gradientR)
+    surface.DrawTexturedRect(0, 0, w/2, h)
+    surface.SetMaterial(gradientL)
+    surface.DrawTexturedRect(w/2, 0, w/2, h)
+end
+
+local categoryDoClick = function(this)
+	this.expanded = not this.expanded
+	local items = nut.gui.quick.items
+	local index = table.KeyFromValue(items, this)
+	for i = index + 1, #items do
+		if items[i].categoryLabel then
+			break
+		end
+		if not items[i].h then
+			items[i].w, items[i].h = items[i]:GetSize()
+		end
+
+		items[i]:SizeTo(items[i].w, this.expanded and (items[i].h or 36) or 0, 0.15)
+	end
+end
+
+function PANEL:addCategory(text)
+	local label = self:addButton(text, categoryDoClick)
+	label.categoryLabel = true
+	label.expanded = true
+	label:SetText(text)
+	label:SetTall(36)
+	label:Dock(TOP)
+	label:DockMargin(0, 1, 0, 0)
+	label:SetFont("nutMediumFont")
+	label:SetTextColor(nut.config.get("colorText", color_white))
+	label:SetExpensiveShadow(1, color_blackTransparent2)
+	label:SetContentAlignment(5)
+	label.Paint = function() end
 end
 
 function PANEL:addButton(text, callback)
@@ -90,10 +136,10 @@ function PANEL:addButton(text, callback)
 	button:Dock(TOP)
 	button:DockMargin(0, 1, 0, 0)
 	button:SetFont("nutMediumLightFont")
-	button:SetExpensiveShadow(1, Color(0, 0, 0, 150))
+	button:SetExpensiveShadow(1, color_blackTransparent2)
 	button:SetContentAlignment(4)
 	button:SetTextInset(8, 0)
-	button:SetTextColor(color_white)
+	button:SetTextColor(nut.config.get("colorText", color_white))
 	button.Paint = paintButton
 
 	if (callback) then
@@ -133,11 +179,11 @@ function PANEL:addSlider(text, callback, value, min, max, decimal)
 	slider:SetValue(value or 0)
 
 	slider.Label:SetFont("nutMediumLightFont")
-	slider.Label:SetTextColor(color_white)
+	slider.Label:SetTextColor(nut.config.get("colorText", color_white))
 
 	local textEntry = slider:GetTextArea()
 	textEntry:SetFont("nutMediumLightFont")
-	textEntry:SetTextColor(color_white)
+	textEntry:SetTextColor(nut.config.get("colorText", color_white))
 
 	if (callback) then
 		slider.OnValueChanged = function(this, value)
@@ -147,6 +193,8 @@ function PANEL:addSlider(text, callback, value, min, max, decimal)
 	end
 
 	self.items[#self.items + 1] = slider
+
+	slider.Paint = paintButton
 
 	return slider
 end
@@ -185,12 +233,14 @@ function PANEL:setIcon(char)
 end
 
 function PANEL:Paint(w, h)
+	surface.SetDrawColor(0, 0, 0, 200)
+	surface.DrawRect(0, 0, w, h)
 	nut.util.drawBlur(self)
 
 	surface.SetDrawColor(nut.config.get("color"))
 	surface.DrawRect(0, 0, w, 36)
 
-	surface.SetDrawColor(255, 255, 255, 5)
-	surface.DrawRect(0, 0, w, h)
+	--[[ surface.SetDrawColor(255, 255, 255, 5)
+	surface.DrawRect(0, 0, w, h) ]]
 end
 vgui.Register("nutQuick", PANEL, "EditablePanel")
