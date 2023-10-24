@@ -38,6 +38,18 @@ nut.config.add(
 	{category = PLUGIN.name}
 )
 
+nut.config.add(
+	"charMenuAlignment",
+	"center",
+	"Where the character menu is aligned.",
+	nil,
+	{
+		options = {"left", "center", "right"},
+		form = "Combo",
+		category = PLUGIN.name
+	}
+)
+
 if (SERVER) then return end
 
 local function ScreenScale(size)

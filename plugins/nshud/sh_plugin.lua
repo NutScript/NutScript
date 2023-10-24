@@ -22,7 +22,8 @@ local toScreen = FindMetaTable("Vector").ToScreen
 local NUT_CVAR_NSHUD_DESCWIDTH = CreateClientConVar("nut_hud_descwidth", 0.5, true, false)
 
 function PLUGIN:SetupQuickMenu(menu)
-	menu:addSlider("HUD Desc Width Modifier", function(panel, value)
+	menu:addCategory("NSHUD")
+	menu:addSlider("Desc Width Modifier", function(panel, value)
 		NUT_CVAR_NSHUD_DESCWIDTH:SetFloat(value)
 	end, NUT_CVAR_NSHUD_DESCWIDTH:GetFloat(), 0.1, 1, 2)
 	menu:addSpacer()
@@ -126,9 +127,6 @@ function PLUGIN:DrawEntityInfo(entity, alpha, position)
 		entity.nutNameCache = nil
 		entity.nutDescCache = nil
 	end
-
-	entity.nutNameCache = nil
-	entity.nutDescCache = nil
 
 	local name = hookRun("GetDisplayedName", entity, nil, "hud") or character.getName(character)
 

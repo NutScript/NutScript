@@ -48,18 +48,18 @@ function nut.util.includeDir(directory, fromLua, recursive)
 				return
 			end
 
-			for k, v in pairs(files) do
+			for _, v in pairs(files) do
 				nut.util.include(folder .. "/" .. v)
 			end
 
-			for k, v in pairs(folders) do
+			for _, v in pairs(folders) do
 				AddRecursive(folder .. "/" .. v)
 			end
 		end
 		AddRecursive((fromLua and "" or baseDir)..directory)
 	else
 		-- Find all of the files within the directory.
-		for k, v in ipairs(
+		for _, v in ipairs(
 			file.Find((fromLua and "" or baseDir)..directory.."/*.lua", "LUA")
 		) do
 			-- Include the file from the prefix.
@@ -80,7 +80,7 @@ end
 function nut.util.getAdmins(isSuper)
 	local admins = {}
 
-	for k, v in ipairs(player.GetAll()) do
+	for _, v in ipairs(player.GetAll()) do
 		if (isSuper) then
 			if (v:IsSuperAdmin()) then
 				admins[#admins + 1] = v
@@ -113,7 +113,7 @@ function nut.util.findPlayer(identifier, allowPatterns)
 		identifier = string.PatternSafe(identifier)
 	end
 
-	for k, v in ipairs(player.GetAll()) do
+	for _, v in ipairs(player.GetAll()) do
 		if (nut.util.stringMatches(v:Name(), identifier)) then
 			return v
 		end
@@ -138,7 +138,7 @@ end
 function nut.util.getAllChar()
 	local charTable = {}
 
-	for k, v in ipairs(player.GetAll()) do
+	for _, v in ipairs(player.GetAll()) do
 		if (v:getChar()) then
 			table.insert(charTable, v:getChar():getID())
 		end
@@ -233,7 +233,7 @@ do
 				end
 
 				if (self.nutRestrictWeps) then
-					for k, v in ipairs(self.nutRestrictWeps) do
+					for _, v in ipairs(self.nutRestrictWeps) do
 						self:Give(v)
 					end
 

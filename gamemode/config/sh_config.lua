@@ -16,23 +16,52 @@ nut.config.add("maxChars", 5, "The maximum number of characters a player can hav
 	category = "characters"
 })
 
-nut.config.add("color", Color(75, 119, 190), "The main color theme for the framework.", nil, {category = "appearance"})
+nut.config.add("color", Color(75, 119, 190), "The main color theme for the framework.", function()
+	if CLIENT then hook.Run("nutUpdateColors") end
+end, {category = "appearance"})
+
+nut.config.add("colorAutoTheme", "dark", "Whether secondary and background colours generated from the main color should be dark or light themed.\nGenerated colors will be estimates and not guaranteed to look good.\nDisable to enable manual tuning", function()
+	if CLIENT then hook.Run("nutUpdateColors") end
+end, {
+	form = "Combo",
+	category = "appearance",
+	options = {"dark", "light", "disabled"}
+	}
+)
+
+nut.config.add("colorSecondary", Color(55, 87, 140), "The secondary color for the framework, used for accents.", function()
+	if CLIENT then hook.Run("nutUpdateColors") end
+end, {category = "appearance"})
+
+nut.config.add("colorBackground", Color(25, 40, 64), "The background color for the framework, used in derma backgrounds", function()
+	if CLIENT then hook.Run("nutUpdateColors") end
+end, {category = "appearance"})
+
+nut.config.add("colorText", color_white, "The main text color for the framework.", function()
+	if CLIENT then hook.Run("nutUpdateColors") end
+end, {category = "appearance"})
 
 nut.config.add("font", "Arial", "The font used to display titles.", function(oldValue, newValue)
 	if (CLIENT) then
-		hook.Run("LoadNutFonts", newValue, nut.config.get("genericFont"))
+		hook.Run("LoadNutFonts", newValue, nut.config.get("genericFont"), nut.config.get("configFont"))
 	end
 end, {category = "appearance"})
 
 nut.config.add("genericFont", "Segoe UI", "The font used to display generic texts.", function(oldValue, newValue)
 	if (CLIENT) then
-		hook.Run("LoadNutFonts", nut.config.get("font"), newValue)
+		hook.Run("LoadNutFonts", nut.config.get("font"), newValue, nut.config.get("configFont"))
+	end
+end, {category = "appearance"})
+
+nut.config.add("configFont", "Segoe UI", "The font used to display config and admin menu texts.", function(oldValue, newValue)
+	if (CLIENT) then
+		hook.Run("LoadNutFonts", nut.config.get("font"), nut.config.get("genericFont"),  newValue)
 	end
 end, {category = "appearance"})
 
 nut.config.add("fontScale", 1.0, "The scale for the font.", function(oldValue, newValue)
 	if (CLIENT) then
-		hook.Run("LoadNutFonts", nut.config.get("font"), nut.config.get("genericFont"))
+		hook.Run("LoadNutFonts", nut.config.get("font"), nut.config.get("genericFont"), nut.config.get("configFont"))
 	end
 end, {
 	form = "Float",

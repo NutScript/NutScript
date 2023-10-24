@@ -1,11 +1,7 @@
 local PANEL = {}
 
 local WHITE = Color(255, 255, 255, 150)
-local SELECTED = Color(255, 255, 255, 230)
 
-PANEL.WHITE = WHITE
-PANEL.SELECTED = SELECTED
-PANEL.HOVERED = Color(255, 255, 255, 50)
 PANEL.ANIM_SPEED = 0.1
 PANEL.FADE_SPEED = 0.5
 
@@ -38,36 +34,55 @@ function PANEL:createTabs()
 				self:fadeOut()
 			end
 		end, true)
-		return
+
+	else
+
+		-- Otherwise, add a disconnect button.
+		self:addTab("leave", function()
+			vgui.Create("nutCharacterConfirm")
+				:setTitle(L("disconnect"):upper().."?")
+				:setMessage(L("You will disconnect from the server."):upper())
+				:onConfirm(function() LocalPlayer():ConCommand("disconnect") end)
+		end, true)
 	end
 
-	-- Otherwise, add a disconnect button.
-	self:addTab("leave", function()
-		vgui.Create("nutCharacterConfirm")
-			:setTitle(L("disconnect"):upper().."?")
-			:setMessage(L("You will disconnect from the server."):upper())
-			:onConfirm(function() LocalPlayer():ConCommand("disconnect") end)
-	end, true)
+	-- get the width of the tabs summed up
+	local totalWidth = -32
+	for _, v in ipairs(self.tabs:GetChildren()) do
+		totalWidth = totalWidth + v:GetWide()
+	end
+
+	-- set the dock margin of self.tabs to center the tabs
+	if nut.config.get("charMenuAlignment", "center") == "center" then
+		self.tabs:DockMargin(self.tabs:GetWide() * 0.5 - totalWidth * 0.5, 0, 0, 0)
+	end
 end
 
 function PANEL:createTitle()
+	local alignment = nut.config.get("charMenuAlignment", "center")
 	self.title = self:Add("DLabel")
 	self.title:Dock(TOP)
-	self.title:DockMargin(64, 48, 0, 0)
-	self.title:SetContentAlignment(1)
-	self.title:SetTall(96)
+	self.title:DockMargin(alignment == "left" and 64 or 0, 48, alignment == "right" and 64 or 0, 0)
+	self.title:SetContentAlignment(alignment == "left" and 4 or alignment == "center" and 5 or 6)
 	self.title:SetFont("nutCharTitleFont")
 	self.title:SetText(L(SCHEMA and SCHEMA.name or "Unknown"):upper())
-	self.title:SetTextColor(WHITE)
+	self.title:SetTextColor(self.color)
+
+	surface.SetFont("nutCharTitleFont")
+	local _, h = surface.GetTextSize(self.title:GetText())
+	self.title:SetTall(h)
 
 	self.desc = self:Add("DLabel")
 	self.desc:Dock(TOP)
-	self.desc:DockMargin(64, 0, 0, 0)
-	self.desc:SetTall(32)
-	self.desc:SetContentAlignment(7)
+	self.desc:DockMargin(alignment == "left" and 64 or 0, 0, alignment == "right" and 64 or 0, 0)
+	self.desc:SetContentAlignment(alignment == "left" and 7 or alignment == "center" and 8 or 9)
 	self.desc:SetText(L(SCHEMA and SCHEMA.desc or ""):upper())
 	self.desc:SetFont("nutCharDescFont")
-	self.desc:SetTextColor(WHITE)
+	self.desc:SetTextColor(self.color)
+
+	surface.SetFont("nutCharDescFont")
+	_, h = surface.GetTextSize(self.title:GetText())
+	self.desc:SetTall(h)
 end
 
 function PANEL:loadBackground()
@@ -109,7 +124,12 @@ function PANEL:loadBackground()
 	end
 end
 
-local gradient = nut.util.getMaterial("vgui/gradient-u")
+local gradientU = nut.util.getMaterial("vgui/gradient-u")
+local gradientD = nut.util.getMaterial("vgui/gradient-d")
+local gradientR = nut.util.getMaterial("vgui/gradient-r")
+local gradientL = nut.util.getMaterial("vgui/gradient-l")
+
+local sin = math.sin
 
 function PANEL:paintBackground(w, h)
 	if (IsValid(self.background)) then return end
@@ -119,9 +139,22 @@ function PANEL:paintBackground(w, h)
 		surface.DrawRect(0, 0, w, h)
 	end
 
-	surface.SetMaterial(gradient)
-	surface.SetDrawColor(0, 0, 0, 250)
-	surface.DrawTexturedRect(0, 0, w, h * 1.5)
+	if not self.startTime then self.startTime = CurTime() end
+
+	local r, g, b = nut.config.get("color"):Unpack()
+	local curTime = (self.startTime - CurTime())/4
+	local alpha = 200 * ((sin(curTime - 1.8719) + sin(curTime - 1.8719/2))/4 + 0.44)
+
+
+    surface.SetDrawColor(r, g, b, alpha)
+    surface.DrawRect(0,0,w,h)
+
+    surface.SetDrawColor(0, 0, 0, 255)
+    surface.SetMaterial(gradientD)
+    surface.DrawTexturedRect(0,0,w,h)
+
+    surface.SetMaterial(gradientL)
+    surface.DrawTexturedRect(0,0,w,h)
 end
 
 function PANEL:addTab(name, callback, justClick)
@@ -175,6 +208,12 @@ function PANEL:Init()
 	end
 	nut.gui.character = self
 
+	local color = nut.config.get("colorText")
+
+	self.color = ColorAlpha(color, 150)
+	self.colorSelected = color
+	self.colorHovered = ColorAlpha(color, 50)
+
 	self:Dock(FILL)
 	self:MakePopup()
 	self:SetAlpha(0)
@@ -195,6 +234,10 @@ function PANEL:Init()
 
 	self.music = self:Add("nutCharBGMusic")
 	self:loadBackground()
+
+	self:InvalidateParent(true)
+	self:InvalidateChildren(true)
+
 	self:showContent()
 end
 

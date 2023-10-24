@@ -173,7 +173,7 @@ function PANEL:showMessage(message, ...)
 
 	self.message = self:Add("DLabel")
 	self.message:SetFont("nutCharButtonFont")
-	self.message:SetTextColor(nut.gui.character.WHITE)
+	self.message:SetTextColor(nut.gui.character.color)
 	self.message:Dock(FILL)
 	self.message:SetContentAlignment(5)
 	self.message:SetText(message)

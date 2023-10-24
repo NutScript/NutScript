@@ -41,6 +41,8 @@ if (CLIENT) then
 
 	function PLUGIN:SetupQuickMenu(menu)
 		if (LocalPlayer():IsAdmin()) then
+			menu:addCategory(self.name)
+
 			local buttonESP = menu:addCheck(L"toggleESP", function(panel, state)
 				if (state) then
 					RunConsoleCommand("nut_obsesp", "1")

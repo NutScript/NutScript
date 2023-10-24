@@ -212,6 +212,8 @@ local PANEL = {}
 		surface.DrawOutlinedRect(0, 0, w, h)
 	end
 
+	local color_blackTransparent = Color(0,0,0,200)
+
 	function PANEL:addFilterButton(filter)
 		local name = L(filter)
 
@@ -222,8 +224,8 @@ local PANEL = {}
 		tab:DockMargin(0, 0, 3, 0)
 		tab:SetWide(tab:GetWide() + 32)
 		tab:Dock(LEFT)
-		tab:SetTextColor(color_white)
-		tab:SetExpensiveShadow(1, Color(0, 0, 0, 200))
+		tab:SetTextColor(nut.config.get("colorText", color_white))
+		tab:SetExpensiveShadow(1, color_blackTransparent)
 		tab.Paint = PaintFilterButton
 		tab.DoClick = function(this)
 			this.active = !this.active

@@ -76,7 +76,8 @@ function GM:OnReloaded()
 		hook.Run(
 			"LoadNutFonts",
 			nut.config.get("font"),
-			nut.config.get("genericFont")
+			nut.config.get("genericFont"),
+			nut.config.get("configFont")
 		)
 	else
 		-- Auto-reload support for faction pay timers.
@@ -96,6 +97,7 @@ function GM:OnReloaded()
 	end
 
 	nut.faction.formatModelData()
+	hook.Run("nutUpdateColors")
 end
 
 -- Include default NutScript chat commands.

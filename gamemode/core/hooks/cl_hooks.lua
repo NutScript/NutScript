@@ -1,5 +1,6 @@
-function GM:LoadNutFonts(font, genericFont)
-	local oldFont, oldGenericFont = font, genericFont
+function GM:LoadNutFonts(font, genericFont, configFont)
+	local oldFont, oldGenericFont, oldConfigFont = font, genericFont, configFont
+
 	local scale = math.Round(nut.config.get("fontScale", 1), 2)
 	surface.CreateFont("nut3D2DFont", {
 		font = font,
@@ -218,8 +219,33 @@ function GM:LoadNutFonts(font, genericFont)
 		antialias = true
 	})
 
-	hook.Run("LoadFonts", oldFont, oldGenericFont)
+	--config fonts
+	surface.CreateFont("nutConfigFont", {
+		font = configFont,
+		size = 22,
+		weight = 500,
+		extended = true,
+		antialias = true
+	})
+
+	surface.CreateFont("nutMediumConfigFont", {
+		font = configFont,
+		size = 25 * scale,
+		extended = true,
+		weight = 1000
+	})
+
+	surface.CreateFont("nutSmallConfigFont", {
+		font = configFont,
+		size = math.max(ScreenScale(6), 17) * scale,
+		extended = true,
+		weight = 500
+	})
+
+	hook.Run("LoadFonts", oldFont, oldGenericFont, oldConfigFont)
 end
+
+local color_offRed = Color(255, 50, 50)
 
 function GM:CreateLoadingScreen()
 	if (IsValid(nut.gui.loading)) then
@@ -239,7 +265,7 @@ function GM:CreateLoadingScreen()
 	label:SetText(L"loading")
 	label:SetFont("nutNoticeFont")
 	label:SetContentAlignment(5)
-	label:SetTextColor(color_white)
+	label:SetTextColor(nut.config.get("colorText", color_white))
 	label:InvalidateLayout(true)
 	label:SizeToContents()
 
@@ -257,7 +283,7 @@ function GM:CreateLoadingScreen()
 				label:SetText(fault)
 				label:SetContentAlignment(5)
 				label:SizeToContentsY()
-				label:SetTextColor(Color(255, 50, 50))
+				label:SetTextColor(color_offRed)
 			end
 		end
 	end)
@@ -273,7 +299,8 @@ function GM:InitializedConfig()
 	hook.Run(
 		"LoadNutFonts",
 		nut.config.get("font"),
-		nut.config.get("genericFont")
+		nut.config.get("genericFont"),
+		nut.config.get("configFont")
 	)
 
 	if (not nut.config.loaded) then
@@ -282,6 +309,8 @@ function GM:InitializedConfig()
 		end
 		nut.config.loaded = true
 	end
+
+	hook.Run("nutUpdateColors")
 end
 
 function GM:CharacterListLoaded()
@@ -476,6 +505,8 @@ end
 
 function GM:SetupQuickMenu(menu)
 	-- Performance
+	menu:addCategory("Performance")
+
 	menu:addCheck(L"cheapBlur", function(panel, state)
 		if (state) then
 			RunConsoleCommand("nut_cheapblur", "1")
@@ -485,6 +516,7 @@ function GM:SetupQuickMenu(menu)
 	end, NUT_CVAR_CHEAP:GetBool())
 
 	-- Language settings
+	menu:addCategory("Language Settings")
 	menu:addSpacer()
 
 	local current
@@ -532,7 +564,8 @@ function GM:ScreenResolutionChanged(oldW, oldH)
 	hook.Run(
 		"LoadNutFonts",
 		nut.config.get("font"),
-		nut.config.get("genericFont")
+		nut.config.get("genericFont"),
+		nut.config.get("configFont")
 	)
 end
 

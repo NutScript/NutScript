@@ -1,7 +1,8 @@
 local PANEL = {}
 
 function PANEL:Init()
-	self:Dock(LEFT)
+	local alignment = nut.config.get("charMenuAlignment", "center")
+	self:Dock(alignment == "right" and RIGHT or LEFT)
 	self:DockMargin(0, 0, 32, 0)
 	self:SetContentAlignment(4)
 end
@@ -23,7 +24,7 @@ function PANEL:setSelected(isSelected)
 	local menu = nut.gui.character
 	if (isSelected and IsValid(menu)) then
 		if (IsValid(menu.lastTab)) then
-			menu.lastTab:SetTextColor(nut.gui.character.WHITE)
+			menu.lastTab:SetTextColor(nut.gui.character.color)
 			menu.lastTab.isSelected = false
 		end
 		menu.lastTab = self
@@ -31,8 +32,8 @@ function PANEL:setSelected(isSelected)
 
 	self:SetTextColor(
 		isSelected
-		and nut.gui.character.SELECTED
-		or nut.gui.character.WHITE
+		and nut.gui.character.colorSelected
+		or nut.gui.character.color
 	)
 	self.isSelected = isSelected
 	if (isfunction(self.callback)) then
@@ -40,14 +41,28 @@ function PANEL:setSelected(isSelected)
 	end
 end
 
+local gradientR = nut.util.getMaterial("vgui/gradient-r")
+local gradientL = nut.util.getMaterial("vgui/gradient-l")
+
 function PANEL:Paint(w, h)
 	if (self.isSelected or self:IsHovered()) then
-		surface.SetDrawColor(
+		local r, g, b = nut.config.get("color"):Unpack()
+--[[ 		surface.SetDrawColor(
 			self.isSelected
 			and nut.gui.character.WHITE
 			or nut.gui.character.HOVERED
-		)
-		surface.DrawRect(0, h - 4, w, 4)
+		) ]]
+		if (self.isSelected) then
+			surface.SetDrawColor(r, g, b, 200)
+		else
+			surface.SetDrawColor(r, g, b, 100)
+		end
+		surface.SetMaterial(gradientR)
+		surface.DrawTexturedRect(0, h-4, w/2, 4)
+
+		surface.SetMaterial(gradientL)
+		surface.DrawTexturedRect(w/2, h-4, w/2, 4)
+		--surface.DrawRect(0, h - 4, w, 4)
 	end
 end
 

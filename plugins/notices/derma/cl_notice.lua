@@ -6,7 +6,7 @@ local PANEL = {}
 		self:SetContentAlignment(5)
 		self:SetExpensiveShadow(1, Color(0, 0, 0, 150))
 		self:SetFont("nutNoticeFont")
-		self:SetTextColor(color_white)
+		self:SetTextColor(nut.config.get("colorText", color_white))
 		self:SetDrawOnTop(true)
 	end
 

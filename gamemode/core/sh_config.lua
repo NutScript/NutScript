@@ -4,8 +4,14 @@ nut.config.stored = nut.config.stored or {}
 function nut.config.add(key, value, desc, callback, data, noNetworking, schemaOnly)
 	assert(isstring(key), "expected config key to be string, got " .. type(key))
 	local oldConfig = nut.config.stored[key]
+	local savedValue
+	if (oldConfig) then
+		savedValue = oldConfig.value
+	else
+		savedValue = value
+	end
 
-	nut.config.stored[key] = {data = data, value = oldConfig and oldConfig.value or value, default = value, desc = desc, noNetworking = noNetworking, global = not schemaOnly, callback = callback}
+	nut.config.stored[key] = {data = data, value = savedValue, default = value, desc = desc, noNetworking = noNetworking, global = not schemaOnly, callback = callback}
 end
 
 function nut.config.setDefault(key, value)
@@ -181,111 +187,145 @@ else
 end
 
 if (CLIENT) then
+	local legacyConfigMenu = CreateClientConVar("nut_legacyconfig", "0", true, true)
+
 	hook.Add("CreateMenuButtons", "nutConfig", function(tabs)
 		if (not LocalPlayer():IsSuperAdmin() or hook.Run("CanPlayerUseConfig", LocalPlayer()) == false) then
 			return
 		end
 
 		tabs["config"] = function(panel)
-			local scroll = panel:Add("DScrollPanel")
-			scroll:Dock(FILL)
 
-			hook.Run("CreateConfigPanel", panel)
+			if legacyConfigMenu:GetBool() ~= true then
+				local canvas = panel:Add("DPanel")
+				canvas:Dock(FILL)
+				canvas:SetPaintBackground(false)
 
-			local properties = scroll:Add("DProperties")
-			properties:SetSize(panel:GetSize())
+				canvas:InvalidateLayout(true)
 
-			nut.gui.properties = properties
+				local config = canvas:Add("NutConfigPanel")
+				config:SetSize(panel:GetSize())
+				config:AddElements()
+			else
+				local scroll = panel:Add("DScrollPanel")
+				scroll:Dock(FILL)
 
-			-- We're about to store the categories in this buffer.
-			local buffer = {}
+				hook.Run("CreateConfigPanel", panel)
 
-			for k, v in pairs(nut.config.stored) do
-				-- Get the category name.
-				local index = v.data and v.data.category or "misc"
+				local properties = scroll:Add("DProperties")
+				properties:SetSize(panel:GetSize())
 
-				-- Insert the config into the category list.
-				buffer[index] = buffer[index] or {}
-				buffer[index][k] = v
-			end
+				nut.gui.properties = properties
 
-			-- Loop through the categories in alphabetical order.
-			for category, configs in SortedPairs(buffer) do
-				category = L(category)
+				-- We're about to store the categories in this buffer.
+				local buffer = {}
 
-				-- Ditto, except we're looping through configs.
-				for k, v in SortedPairs(configs) do
-					-- Determine which type of panel to create.
-					local form = v.data and v.data.form
-					local value = nut.config.stored[k].default
+				for k, v in pairs(nut.config.stored) do
+					-- Get the category name.
+					local index = v.data and v.data.category or "misc"
 
-					-- Let's see if the parameter has a form to perform some additional operations.
-					if (form) then
-						if (form == "Int") then
-							-- math.Round can create an error without failing silently as expected if the parameter is invalid.
-							-- So an alternate value is entered directly into the function and not outside of it.
-							value = math.Round(nut.config.get(k) or value)
-						elseif (form == "Float") then
-							value = tonumber(nut.config.get(k)) or value
-						elseif (form == "Boolean") then
-							value = tobool(nut.config.get(k)) or value
-						else
-							value = nut.config.get(k) or value
-						end
-					else
-						local formType = type(value)
+					-- Insert the config into the category list.
+					buffer[index] = buffer[index] or {}
+					buffer[index][k] = v
+				end
 
-						if (formType == "number") then
-							form = "Int"
-							value = tonumber(nut.config.get(k)) or value
-						elseif (formType == "boolean") then
-							form = "Boolean"
-							value = tobool(nut.config.get(k))
-						else
-							form = "Generic"
-							value = nut.config.get(k) or value
-						end
-					end
+				-- Loop through the categories in alphabetical order.
+				for category, configs in SortedPairs(buffer) do
+					category = L(category)
 
-					-- VectorColor currently only exists for DProperties.
-					if (form == "Generic" and istable(value) and value.r and value.g and value.b) then
-						-- Convert the color to a vector.
-						value = Vector(value.r / 255, value.g / 255, value.b / 255)
-						form = "VectorColor"
-					end
+					-- Ditto, except we're looping through configs.
+					for k, v in SortedPairs(configs) do
+						-- Determine which type of panel to create.
+						local form = v.data and v.data.form
+						local value = nut.config.stored[k].default
 
-					local delay = 1
-
-					if (form == "Boolean") then
-						delay = 0
-					end
-
-					-- Add a new row for the config to the properties.
-					local row = properties:CreateRow(category, tostring(k))
-					row:Setup(form, v.data and v.data.data or {})
-					row:SetValue(value)
-					row:SetTooltip(v.desc)
-					row.DataChanged = function(this, newValue)
-						timer.Create("nutCfgSend" .. k, delay, 1, function()
-							if (not IsValid(row)) then
-								return
-							end
-
-							if (form == "VectorColor") then
-								local vector = Vector(newValue)
-
-								newValue = Color(math.floor(vector.x * 255), math.floor(vector.y * 255), math.floor(vector.z * 255))
-							elseif (form == "Int" or form == "Float") then
-								newValue = tonumber(newValue)
-
-								if (form == "Int") then
-									newValue = math.Round(newValue)
-								end
+						-- Let's see if the parameter has a form to perform some additional operations.
+						if (form) then
+							if (form == "Int") then
+								-- math.Round can create an error without failing silently as expected if the parameter is invalid.
+								-- So an alternate value is entered directly into the function and not outside of it.
+								value = math.Round(nut.config.get(k) or value)
+							elseif (form == "Float") then
+								value = tonumber(nut.config.get(k)) or value
 							elseif (form == "Boolean") then
-								newValue = tobool(newValue)
+								value = tobool(nut.config.get(k)) or value
+							else
+								value = nut.config.get(k) or value
 							end
-							netstream.Start("cfgSet", k, newValue)
-						end)
+						else
+							local formType = type(value)
+
+							if (formType == "number") then
+								form = "Int"
+								value = tonumber(nut.config.get(k)) or value
+							elseif (formType == "boolean") then
+								form = "Boolean"
+								value = tobool(nut.config.get(k))
+							else
+								form = "Generic"
+								value = nut.config.get(k) or value
+							end
+						end
+
+						if form == "Combo" then
+							v.data.data = v.data.data or {}
+							v.data.data.text = value
+							v.data.data.values = {}
+							for niceName, optionData in pairs(v.data.options) do
+								niceName = tonumber(niceName) and optionData or niceName
+								v.data.data.values[tonumber(niceName) and optionData or niceName] = optionData
+
+								if optionData == value then
+									v.data.data.text = niceName
+								end
+							end
+						end
+
+						-- VectorColor currently only exists for DProperties.
+						if (form == "Generic" and istable(value) and value.r and value.g and value.b) then
+							-- Convert the color to a vector.
+							value = Vector(value.r / 255, value.g / 255, value.b / 255)
+							form = "VectorColor"
+						end
+
+						local delay = 1
+
+						if (form == "Boolean") or (form == "Combo") then
+							delay = 0
+						end
+
+						-- Add a new row for the config to the properties.
+						local row = properties:CreateRow(category, tostring(k))
+						row:Setup(form, v.data and v.data.data or {})
+						row:SetValue(value)
+						row:SetTooltip(v.desc)
+						row.DataChanged = function(this, newValue)
+							debug.Trace()
+							timer.Create("nutCfgSend" .. k, delay, 1, function()
+								if (not IsValid(row)) then
+									return
+								end
+
+								if (form == "VectorColor") then
+									local vector = Vector(newValue)
+
+									newValue = Color(math.floor(vector.x * 255), math.floor(vector.y * 255), math.floor(vector.z * 255))
+								elseif (form == "Int" or form == "Float") then
+									newValue = tonumber(newValue)
+
+									if (form == "Int") then
+										newValue = math.Round(newValue)
+									end
+								elseif (form == "Boolean") then
+									newValue = tobool(newValue)
+								end
+								netstream.Start("cfgSet", k, newValue)
+							end)
+						end
+
+						if form == "Combo" then
+							row.SetValue = function() end -- without this config gets set twice. idk why - Tov
+						end
 					end
 				end
 			end

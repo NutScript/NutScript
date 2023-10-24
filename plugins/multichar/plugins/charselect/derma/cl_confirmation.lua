@@ -22,25 +22,30 @@ function PANEL:Init()
 	self.title = self.content:Add("DLabel")
 	self.title:SetText(L("Are you sure?"):upper())
 	self.title:SetFont("nutCharButtonFont")
-	self.title:SetTextColor(color_white)
+	self.title:SetTextColor(nut.config.get("colorText", color_white))
 	self.title:SizeToContents()
 	self.title:CenterHorizontal()
 	self.title.y = 64
 
 	self.message = self.content:Add("DLabel")
 	self.message:SetFont("nutCharSubTitleFont")
-	self.message:SetTextColor(color_white)
+	self.message:SetTextColor(nut.config.get("colorText", color_white))
 	self.message:SetSize(ScrW(), 32)
 	self.message:CenterVertical()
 	self.message:SetContentAlignment(5)
 
 	local SPACING = 16
 
+	local confirmText, cancelText = L("yes"):upper(), L("no"):upper()
+	surface.SetFont("nutCharSmallButtonFont")
+	local confirmWidth = surface.GetTextSize(confirmText) + SPACING
+	local cancelWidth = surface.GetTextSize(cancelText) + SPACING
+
 	self.confirm = self.content:Add("DButton")
 	self.confirm:SetFont("nutCharSmallButtonFont")
-	self.confirm:SetText(L("yes"):upper())
+	self.confirm:SetText(confirmText)
 	self.confirm:SetPaintBackground(false)
-	self.confirm:SetSize(64, 32)
+	self.confirm:SetSize(confirmWidth, 32)
 	self.confirm.OnCursorEntered = function() nut.gui.character:hoverSound() end
 	self.confirm.OnCursorEntered = function(cancel)
 		cancel.BaseClass.OnCursorEntered(cancel)
@@ -60,9 +65,9 @@ function PANEL:Init()
 
 	self.cancel = self.content:Add("DButton")
 	self.cancel:SetFont("nutCharSmallButtonFont")
-	self.cancel:SetText(L("no"):upper())
+	self.cancel:SetText(cancelText)
 	self.cancel:SetPaintBackground(false)
-	self.cancel:SetSize(64, 32)
+	self.cancel:SetSize(cancelWidth, 32)
 	self.cancel.OnCursorEntered = function(cancel)
 		cancel.BaseClass.OnCursorEntered(cancel)
 		nut.gui.character:hoverSound()
