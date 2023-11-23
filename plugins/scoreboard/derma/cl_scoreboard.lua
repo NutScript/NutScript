@@ -108,6 +108,9 @@ local PANEL = {}
 
 			self.nextUpdate = CurTime() + 0.1
 		end
+		if input.IsKeyDown(KEY_Z) then
+			self:Init() -- Remake the scoreboard if Z is pressed, allows factions made AFTER player joins to appear by reinitializing.
+		end
 	end
 
 	function PANEL:addPlayer(client, parent)
