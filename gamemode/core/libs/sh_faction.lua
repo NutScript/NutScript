@@ -80,6 +80,31 @@ function nut.faction.getIndex(uniqueID)
 	return nut.faction.teams[uniqueID] and nut.faction.teams[uniqueID].index
 end
 
+function createNutJob(index, name, color, default, models)
+	local FACTION = {}
+	
+	FACTION.index = index
+	FACTION.isDefault = default
+	FACTION.name = name
+	FACTION.desc = ""
+	FACTION.color = color
+	FACTION.models = models or CITIZEN_MODELS
+	FACTION.uniqueID = name
+	
+	for k, v in pairs(FACTION.models) do
+		if (isstring(v)) then
+			util.PrecacheModel(v)
+		elseif (istable(v)) then
+			util.PrecacheModel(v[1])
+		end
+	end
+	nut.faction.indices[FACTION.index] = FACTION
+	nut.faction.teams[name] = FACTION
+	team.SetUp(FACTION.index, FACTION.name, FACTION.color)
+	
+	return FACTION
+end
+
 if (CLIENT) then
 	function nut.faction.hasWhitelist(faction)
 		local data = nut.faction.indices[faction]
