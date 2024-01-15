@@ -55,13 +55,14 @@ if (SERVER) then
 		end
 	end
 else
+	local color_blackTransparent = Color(0,0,0,150)
 	function PLUGIN:CreateCharInfoText(panel, suppress)
 		if (suppress and suppress.attrib) then return end
 		panel.attribName = panel.info:Add("DLabel")
 		panel.attribName:Dock(TOP)
 		panel.attribName:SetFont("nutMediumFont")
-		panel.attribName:SetTextColor(color_white)
-		panel.attribName:SetExpensiveShadow(1, Color(0, 0, 0, 150))
+		panel.attribName:SetTextColor(nut.config.get("colorText", color_white))
+		panel.attribName:SetExpensiveShadow(1, color_blackTransparent)
 		panel.attribName:DockMargin(0, 10, 0, 0)
 		panel.attribName:SetText(L"attribs")
 

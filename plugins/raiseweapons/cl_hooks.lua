@@ -31,7 +31,7 @@ function PLUGIN:CalcViewModelView(weapon, viewModel, oldEyePos, oldEyeAngles, ey
 end
 
 function PLUGIN:SetupQuickMenu(menu)
-	menu:addSpacer()
+	menu:addCategory("Raise Weapons")
 	menu:addCheck(L"altLower", function(panel, state)
 		if (state) then
 			RunConsoleCommand("nut_usealtlower", "1")

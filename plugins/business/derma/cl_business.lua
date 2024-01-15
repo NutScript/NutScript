@@ -6,6 +6,9 @@ function PANEL:Init()
 	self:SetSize(size, size * 1.4)
 end
 
+local color_blackTransparent = Color(0,0,0,200)
+local color_blackTransparent2 = Color(0,0,0,150)
+
 function PANEL:setItem(itemTable)
 	self.itemName = L(itemTable.name):lower()
 
@@ -13,17 +16,17 @@ function PANEL:setItem(itemTable)
 	self.price:Dock(BOTTOM)
 	self.price:SetText(itemTable:getPrice() and nut.currency.get(itemTable:getPrice()) or L"free":upper())
 	self.price:SetContentAlignment(5)
-	self.price:SetTextColor(color_white)
+	self.price:SetTextColor(nut.config.get("colorText", color_white))
 	self.price:SetFont("nutSmallFont")
-	self.price:SetExpensiveShadow(1, Color(0, 0, 0, 200))
+	self.price:SetExpensiveShadow(1, color_blackTransparent)
 
 	self.name = self:Add("DLabel")
 	self.name:Dock(TOP)
 	self.name:SetText(itemTable.getName and itemTable:getName() or L(itemTable.name))
 	self.name:SetContentAlignment(5)
-	self.name:SetTextColor(color_white)
+	self.name:SetTextColor(nut.config.get("colorText", color_white))
 	self.name:SetFont("nutSmallFont")
-	self.name:SetExpensiveShadow(1, Color(0, 0, 0, 200))
+	self.name:SetExpensiveShadow(1, color_blackTransparent)
 	self.name.Paint = function(this, w, h)
 		surface.SetDrawColor(0, 0, 0, 75)
 		surface.DrawRect(0, 0, w, h)
@@ -60,7 +63,7 @@ function PANEL:Init()
 		self.error:SetFont("nutMenuButtonLightFont")
 		self.error:Dock(FILL)
 		self.error:SetText(L"noBusiness")
-		self.error:SetTextColor(color_white)
+		self.error:SetTextColor(nut.config.get("colorText", color_white))
 		self.error:SetExpensiveShadow(1, color_black)
 		self.error:SizeToContents()
 		self.error:SetContentAlignment(5)
@@ -109,11 +112,11 @@ function PANEL:Init()
 
 	self.checkout = self:Add("DButton")
 	self.checkout:Dock(BOTTOM)
-	self.checkout:SetTextColor(color_white)
+	self.checkout:SetTextColor(nut.config.get("colorText", color_white))
 	self.checkout:SetTall(36)
 	self.checkout:SetFont("nutMediumFont")
 	self.checkout:DockMargin(10, 10, 0, 0)
-	self.checkout:SetExpensiveShadow(1, Color(0, 0, 0, 150))
+	self.checkout:SetExpensiveShadow(1, color_blackTransparent2)
 	self.checkout:SetText(L("checkout", 0))
 	self.checkout.DoClick = function()
 		if (!IsValid(nut.gui.checkout) and self:getCartCount() > 0) then
@@ -141,10 +144,10 @@ function PANEL:Init()
 		button:SetTall(36)
 		button:SetText(category)
 		button:Dock(TOP)
-		button:SetTextColor(color_white)
+		button:SetTextColor(nut.config.get("colorText", color_white))
 		button:DockMargin(5, 5, 5, 0)
 		button:SetFont("nutMediumFont")
-		button:SetExpensiveShadow(1, Color(0, 0, 0, 150))
+		button:SetExpensiveShadow(1, color_blackTransparent2)
 		button.Paint = function(this, w, h)
 			surface.SetDrawColor(self.selected == this and nut.config.get("color") or dark)
 			surface.DrawRect(0, 0, w, h)
@@ -156,7 +159,7 @@ function PANEL:Init()
 			if (self.selected ~= this) then
 				self.selected = this
 				self:loadItems(realName)
-				timer.Simple(0.01, function() 
+				timer.Simple(0.01, function()
 					self.scroll:InvalidateLayout()
 				end)
 			end
@@ -255,7 +258,7 @@ PANEL = {}
 		self.buy = self:Add("DButton")
 		self.buy:Dock(BOTTOM)
 		self.buy:SetText(L"purchase")
-		self.buy:SetTextColor(color_white)
+		self.buy:SetTextColor(nut.config.get("colorText", color_white))
 		self.buy.DoClick = function(this)
 			if ((this.nextClick or 0) < CurTime()) then
 				this.nextClick = CurTime() + 0.5
@@ -285,7 +288,7 @@ PANEL = {}
 			self.text = self:Add("DLabel")
 			self.text:Dock(FILL)
 			self.text:SetContentAlignment(5)
-			self.text:SetTextColor(color_white)
+			self.text:SetTextColor(nut.config.get("colorText", color_white))
 			self.text:SetText(L"purchasing")
 			self.text:SetFont("nutMediumFont")
 
@@ -317,14 +320,14 @@ PANEL = {}
 		self.current = self.data:Add("DLabel")
 		self.current:SetFont("nutSmallFont")
 		self.current:SetContentAlignment(6)
-		self.current:SetTextColor(color_white)
+		self.current:SetTextColor(nut.config.get("colorText", color_white))
 		self.current:Dock(TOP)
 		self.current:SetTextInset(4, 0)
 
 		self.total = self.data:Add("DLabel")
 		self.total:SetFont("nutSmallFont")
 		self.total:SetContentAlignment(6)
-		self.total:SetTextColor(color_white)
+		self.total:SetTextColor(nut.config.get("colorText", color_white))
 		self.total:Dock(TOP)
 		self.total:SetTextInset(4, 0)
 
@@ -340,14 +343,14 @@ PANEL = {}
 		self.final = self.data:Add("DLabel")
 		self.final:SetFont("nutSmallFont")
 		self.final:SetContentAlignment(6)
-		self.final:SetTextColor(color_white)
+		self.final:SetTextColor(nut.config.get("colorText", color_white))
 		self.final:Dock(TOP)
 		self.final:SetTextInset(4, 0)
 
 		self.finalGlow = self.final:Add("DLabel")
 		self.finalGlow:Dock(FILL)
 		self.finalGlow:SetFont("nutSmallFont")
-		self.finalGlow:SetTextColor(color_white)
+		self.finalGlow:SetTextColor(nut.config.get("colorText", color_white))
 		self.finalGlow:SetContentAlignment(6)
 		self.finalGlow:SetAlpha(0)
 		self.finalGlow:SetTextInset(4, 0)
@@ -357,6 +360,9 @@ PANEL = {}
 		self.itemData = {}
 		self:onQuantityChanged()
 	end
+
+	local color_offGreen = Color(46, 204, 113)
+	local color_offRed = Color(217, 30, 24)
 
 	function PANEL:onQuantityChanged()
 		local price = 0
@@ -375,7 +381,7 @@ PANEL = {}
 		self.current:SetText(L"currentMoney"..nut.currency.get(money))
 		self.total:SetText("- "..nut.currency.get(price))
 		self.final:SetText(L"moneyLeft"..nut.currency.get(money - price))
-		self.final:SetTextColor((money - price) >= 0 and Color(46, 204, 113) or Color(217, 30, 24))
+		self.final:SetTextColor((money - price) >= 0 and color_offGreen or color_offRed)
 
 		self.preventBuy = (money - price) < 0 or valid == 0
 	end
@@ -402,7 +408,7 @@ PANEL = {}
 				slot.name:SetSize(180, 32)
 				slot.name:SetFont("nutChatFont")
 				slot.name:SetText(L(itemTable.getName and itemTable:getName() or L(itemTable.name)).." ("..(itemTable:getPrice() and nut.currency.get(itemTable:getPrice()) or L"free":upper())..")")
-				slot.name:SetTextColor(color_white)
+				slot.name:SetTextColor(nut.config.get("colorText", color_white))
 
 				slot.quantity = slot:Add("DTextEntry")
 				slot.quantity:SetSize(32, 32)
@@ -440,7 +446,7 @@ PANEL = {}
 	function PANEL:Think()
 		if (!self:HasFocus()) then
 			self:MakePopup()
-		end	
+		end
 	end
 vgui.Register("nutBusinessCheckout", PANEL, "DFrame")
 

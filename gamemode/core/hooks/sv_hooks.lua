@@ -250,7 +250,6 @@ end
 
 function GM:PlayerSay(client, message)
 	local chatType, message, anonymous = nut.chat.parse(client, message, true)
-
 	if (chatType == "ic") and (nut.command.parse(client, message)) then
 		return ""
 	end

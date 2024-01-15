@@ -13,7 +13,7 @@ function PANEL:Init()
 		surface.SetDrawColor(0, 0, 0, 100)
 		surface.DrawRect(0, 0, w, h)
 	end
-	self.faction:SetTextColor(color_white)
+	self.faction:SetTextColor(nut.config.get("colorText", color_white))
 	self.faction.OnSelect = function(faction, index, value, id)
 		self:onFactionSelected(nut.faction.teams[id])
 	end

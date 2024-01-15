@@ -57,7 +57,7 @@ if (SERVER) then
 		self:SetModel(model)
 		self:SetSkin(itemTable.skin or 0)
 		self:SetMaterial(itemTable.material or "")
-		self:SetColor(itemTable.color or Color(255,255,255))
+		self:SetColor(itemTable.color or color_white)
 		self:PhysicsInit(SOLID_VPHYSICS)
 		self:SetSolid(SOLID_VPHYSICS)
 		self:setNetVar("id", itemTable.uniqueID)

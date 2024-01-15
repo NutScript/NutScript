@@ -153,7 +153,13 @@ local buildActionFunc = function(action, actionIndex, itemTable, invID, sub)
 	end
 end
 
+local function nutDermaMenu(parentmenu, parent)
+	if ( not parentmenu ) then CloseDermaMenus() end
 
+	local dmenu = vgui.Create( "nutDMenu", parent )
+
+	return dmenu
+end
 
 function PANEL:openActionMenu()
 	local itemTable = self.itemTable
@@ -161,7 +167,7 @@ function PANEL:openActionMenu()
 	assert(itemTable, "attempt to open action menu for invalid item")
 	itemTable.player = LocalPlayer()
 
-	local menu = DermaMenu()
+	local menu = nutDermaMenu()
 	local override = hook.Run("OnCreateItemInteractionMenu", self, menu, itemTable)
 	if (override) then
 		if (IsValid(menu)) then
@@ -196,7 +202,11 @@ function PANEL:openActionMenu()
 		end
 	end
 
-	menu:Open()
+	menu:Open(self:LocalToScreen(self:GetWide(), 0))
+	-- position menu to be on the right of the icon
+	--[[ local x = self:LocalToScreen(self:GetWide(), 0)
+	menu:SetX(x) ]]
+
 	itemTable.player = nil
 end
 
@@ -295,3 +305,231 @@ hook.Add("CreateMenuButtons", "nutInventory", function(tabs)
 		end)
 	end
 end)
+
+PANEL = {}
+
+function PANEL:Open( x, y, skipanimation, ownerpanel )
+
+	RegisterDermaMenuForClose( self )
+
+	local maunal = x and y
+
+	x = x or gui.MouseX()
+	y = y or gui.MouseY()
+
+	local OwnerHeight = 0
+	local OwnerWidth = 0
+
+	if ( ownerpanel ) then
+		OwnerWidth, OwnerHeight = ownerpanel:GetSize()
+	end
+
+	self:InvalidateLayout( true )
+
+	local w = self:GetWide()
+	local h = self:GetTall()
+
+
+	self:SetSize(0,0 )
+
+	if ( y + h > ScrH() ) then y = ( ( maunal and ScrH() ) or ( y + OwnerHeight ) ) - h end
+	if ( x + w > ScrW() ) then x = ( ( maunal and ScrW() ) or x ) - w end
+	if ( y < 1 ) then y = 1 end
+	if ( x < 1 ) then x = 1 end
+
+	local p = self:GetParent()
+	if ( IsValid( p ) and p:IsModal() ) then
+		-- Can't popup while we are parented to a modal panel
+		-- We will end up behind the modal panel in that case
+
+		x, y = p:ScreenToLocal( x, y )
+
+		-- We have to reclamp the values
+		if ( y + h > p:GetTall() ) then y = p:GetTall() - h end
+		if ( x + w > p:GetWide() ) then x = p:GetWide() - w end
+		if ( y < 1 ) then y = 1 end
+		if ( x < 1 ) then x = 1 end
+
+		self:SetPos( x, y )
+	else
+		self:SetPos( x, y )
+
+		-- Popup!
+		self:MakePopup()
+	end
+
+	-- Make sure it's visible!
+	self:SetVisible( true )
+
+	-- Keep the mouse active while the menu is visible.
+	self:SetKeyboardInputEnabled( false )
+
+end
+
+function PANEL:PerformLayout( w, h )
+
+	w = self:GetMinimumWidth()
+
+	-- Find the widest one
+	for k, pnl in ipairs( self:GetCanvas():GetChildren() ) do
+
+		pnl:InvalidateLayout( true )
+		w = math.max( w, pnl:GetWide() )
+
+	end
+
+	if self.animComplete then self:SetWide( w ) end
+
+	local y = 0 -- for padding
+
+	for k, pnl in ipairs( self:GetCanvas():GetChildren() ) do
+
+		pnl:SetWide( w )
+		pnl:SetPos( 0, y )
+		pnl:InvalidateLayout( true )
+
+		y = y + pnl:GetTall()
+
+	end
+
+	y = math.min( y, self:GetMaxHeight() )
+
+	if self.animComplete then self:SetTall( y ) end
+
+	if not self.animComplete and not self.animStarted then
+		self.animStarted = true
+		self:SetSize(0,0)
+		self:SizeTo(w, 10, 0.1, 0, -1, function()
+			self:SizeTo(w, y, 0.2, 0, 0.9, function()
+				self.animComplete = true
+			end)
+		end)
+	end
+
+	derma.SkinHook( "Layout", "Menu", self )
+	DScrollPanel.PerformLayout( self, w, h )
+
+	if not self.animComplete then
+		self:GetVBar():SetWide(0)
+	end
+end
+
+local gradientL = nut.util.getMaterial("vgui/gradient-l")
+local gradientR = nut.util.getMaterial("vgui/gradient-r")
+local gradientD = nut.util.getMaterial("vgui/gradient-d")
+local testGradient = nut.util.getMaterial("vgui/gradient_down")
+
+--[[ function PANEL:Paint(w, h)
+	local r, g ,b = nut.config.get("color"):Unpack()
+
+	surface.SetDrawColor(r, g, b, 255)
+	surface.DrawRect(0, 0, w, h)
+
+	surface.SetDrawColor(0, 0, 0, 255)
+	surface.SetMaterial(gradientR)
+	surface.DrawTexturedRect(0, 0, w, h)
+	surface.SetMaterial(gradientD)
+	surface.DrawTexturedRect(0, 0, w, h)
+end ]]
+
+function PANEL:AddOption( strText, funcFunction )
+
+	local pnl = vgui.Create( "nutDMenuOption", self )
+	pnl:SetMenu( self )
+	pnl:SetText( strText )
+	if ( funcFunction ) then pnl.DoClick = funcFunction end
+
+	self:AddPanel( pnl )
+
+	return pnl
+
+end
+
+function PANEL:AddSubMenu( strText, funcFunction )
+
+	local pnl = vgui.Create( "nutDMenuOption", self )
+	local SubMenu = pnl:AddSubMenu( strText, funcFunction )
+
+	pnl:SetText( strText )
+	if ( funcFunction ) then pnl.DoClick = funcFunction end
+
+	self:AddPanel( pnl )
+
+	return SubMenu, pnl
+
+end
+
+vgui.Register("nutDMenu", PANEL, "DMenu")
+
+--remake DMenuOption as nutDMenuOption, so we can use nutDMenuOption in nutDMenu. Make the panel bigger
+PANEL = {}
+
+function PANEL:Init()
+
+	self:SetContentAlignment( 4 )
+	self:SetTextInset( 32, 0 ) -- Room for icon on left
+	self:SetContentAlignment(5)
+	self:SetChecked( false )
+	self:SetFont("nutSmallFont")
+end
+
+function PANEL:PerformLayout( w, h )
+
+	self:SizeToContents()
+	self:SetWide( self:GetWide() + 30 )
+
+	local w = math.max( self:GetParent():GetWide(), self:GetWide() )
+
+	surface.SetFont( self:GetFont() )
+	local _, y = surface.GetTextSize( "W" )
+	self:SetSize( w, y + 5)
+
+	if ( IsValid( self.SubMenuArrow ) ) then
+
+		self.SubMenuArrow:SetSize( 15, 15 )
+		self.SubMenuArrow:CenterVertical()
+		self.SubMenuArrow:AlignRight( 4 )
+
+	end
+
+	DButton.PerformLayout( self, w, h )
+
+end
+
+local glow = nut.util.getMaterial("particle/Particle_Glow_04_Additive")
+
+--[[ function PANEL:Paint(w, h)
+	local r, g, b = nut.config.get("color"):Unpack()
+
+	local alpha = 0
+	-- if hovered, alpha is 100, if selected alpha is 255
+	if (self.Hovered) then
+
+		alpha = 200
+
+	elseif (self:GetChecked()) then
+		alpha = 150
+	end
+
+	surface.SetDrawColor(r, g, b, alpha)
+	surface.SetMaterial(gradientR)
+	surface.DrawTexturedRect(0, 0, w/2, h)
+	surface.DrawRect(0, 0, w, h)
+	surface.SetMaterial(glow)
+	surface.DrawTexturedRect(-w*0.25, 0, w*1.5, h*2.5)
+end ]]
+
+function PANEL:AddSubMenu()
+
+	local SubMenu = nutDermaMenu( true, self )
+	SubMenu:SetVisible( false )
+	SubMenu:SetParent( self )
+
+	self:SetSubMenu( SubMenu )
+
+	return SubMenu
+
+end
+
+
+vgui.Register("nutDMenuOption", PANEL, "DMenuOption")

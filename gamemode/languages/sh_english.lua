@@ -1,4 +1,3 @@
-
 NAME = "English"
 
 LANGUAGE = {
@@ -36,6 +35,7 @@ LANGUAGE = {
 	cloud_no_plugin = "The plugin provided is not valid.",
 	inv = "Inventory",
 	plugins = "Plugins",
+	togglePlugins = "Toggle plugins",
 	author = "Author",
 	version = "Version",
 	characters = "Characters",
@@ -258,10 +258,14 @@ LANGUAGE = {
 	panelRemoved = "You have removed %s 3D panels.",
 	panelAdded = "You have added a 3D panel.",
 	itemOnGround = "Your item has been placed on the ground.",
-	forbiddenActionStorage = "You can't do this action with storaged item.",
-	cantDropBagHasEquipped = "You can't drop bag that has equipped item.",
+	forbiddenActionStorage = "You can't do this action with a storaged item.",
+	cantDropBagHasEquipped = "You can't drop a bag that has equipped item.",
 
 	-- 2021 patch
 	lookToUseAt = "You need to be looking at someone to use '@'",
 	mustProvideString = "You must provide a string for the variable",
+
+	-- 2023 patch
+
+	togglePluginsDesc = "Selected Plugins will be disabled.\nThe map must be restarted after making changes!",
 }

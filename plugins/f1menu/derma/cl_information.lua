@@ -1,4 +1,5 @@
 local PANEL = {}
+local color_blackTransparent = Color(0,0,0,150)
 	function PANEL:Init()
 		if (IsValid(nut.gui.info)) then
 			nut.gui.info:Remove()
@@ -34,8 +35,8 @@ local PANEL = {}
 				self.name:SetFont("nutHugeFont")
 				self.name:SetTall(60)
 				self.name:Dock(TOP)
-				self.name:SetTextColor(color_white)
-				self.name:SetExpensiveShadow(1, Color(0, 0, 0, 150))
+				self.name:SetTextColor(nut.config.get("colorText", color_white))
+				self.name:SetExpensiveShadow(1, color_blackTransparent)
 			end
 
 			if (!suppress or !suppress.desc) then
@@ -50,16 +51,16 @@ local PANEL = {}
 				self.time:SetFont("nutMediumFont")
 				self.time:SetTall(28)
 				self.time:Dock(TOP)
-				self.time:SetTextColor(color_white)
-				self.time:SetExpensiveShadow(1, Color(0, 0, 0, 150))
+				self.time:SetTextColor(nut.config.get("colorText", color_white))
+				self.time:SetExpensiveShadow(1, color_blackTransparent)
 			end
 
 			if (!suppress or !suppress.money) then
 				self.money = self.info:Add("DLabel")
 				self.money:Dock(TOP)
 				self.money:SetFont("nutMediumFont")
-				self.money:SetTextColor(color_white)
-				self.money:SetExpensiveShadow(1, Color(0, 0, 0, 150))
+				self.money:SetTextColor(nut.config.get("colorText", color_white))
+				self.money:SetExpensiveShadow(1, color_blackTransparent)
 				self.money:DockMargin(0, 10, 0, 0)
 			end
 
@@ -67,8 +68,8 @@ local PANEL = {}
 				self.faction = self.info:Add("DLabel")
 				self.faction:Dock(TOP)
 				self.faction:SetFont("nutMediumFont")
-				self.faction:SetTextColor(color_white)
-				self.faction:SetExpensiveShadow(1, Color(0, 0, 0, 150))
+				self.faction:SetTextColor(nut.config.get("colorText", color_white))
+				self.faction:SetExpensiveShadow(1, color_blackTransparent)
 				self.faction:DockMargin(0, 10, 0, 0)
 			end
 
@@ -79,8 +80,8 @@ local PANEL = {}
 					self.class = self.info:Add("DLabel")
 					self.class:Dock(TOP)
 					self.class:SetFont("nutMediumFont")
-					self.class:SetTextColor(color_white)
-					self.class:SetExpensiveShadow(1, Color(0, 0, 0, 150))
+					self.class:SetTextColor(nut.config.get("colorText", color_white))
+					self.class:SetExpensiveShadow(1, color_blackTransparent)
 					self.class:DockMargin(0, 10, 0, 0)
 				end
 			end

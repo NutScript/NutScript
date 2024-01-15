@@ -72,6 +72,7 @@ if (CLIENT) then
 
 	function PLUGIN:SetupQuickMenu(menu)
 		if (isAllowed()) then
+			menu:addCategory("Thirdperson")
 			local button = menu:addCheck(L"thirdpersonToggle", function(panel, state)
 				if (state) then
 					RunConsoleCommand("nut_tp_enabled", "1")

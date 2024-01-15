@@ -1,6 +1,7 @@
 local PANEL = {}
 
 local STRIP_HEIGHT = 4
+local WIDTH = 240
 
 function PANEL:isCursorWithinBounds()
 	local x, y = self:LocalCursorPos()
@@ -17,7 +18,6 @@ function PANEL:confirmDelete()
 end
 
 function PANEL:Init()
-	local WIDTH = 240
 
 	self:SetWide(WIDTH)
 	self:SetPaintBackground(false)
@@ -37,12 +37,12 @@ function PANEL:Init()
 	self.name:DockMargin(0, 16, 0, 0)
 	self.name:SetContentAlignment(5)
 	self.name:SetFont("nutCharSmallButtonFont")
-	self.name:SetTextColor(nut.gui.character.WHITE)
+	self.name:SetTextColor(nut.gui.character.color)
 	self.name:SizeToContentsY()
 
 	self.model = self:Add("nutModelPanel")
 	self.model:Dock(FILL)
-	self.model:SetFOV(37)
+	self.model:SetFOV(30)
 	self.model.PaintOver = function(model, w, h)
 		if (self.banned) then
 			local centerX, centerY = w * 0.5, h * 0.5 - 24
@@ -136,10 +136,14 @@ function PANEL:onHoverChanged(isHovered)
 	self.faction:AlphaTo(isHovered and 250 or 100, ANIM_SPEED)
 end
 
+local gradientU = nut.util.getMaterial("vgui/gradient-u")
+
 function PANEL:Paint(w, h)
-	nut.util.drawBlur(self)
-	surface.SetDrawColor(0, 0, 0, 50)
-	surface.DrawRect(0, STRIP_HEIGHT, w, h)
+	--nut.util.drawBlur(self)
+	local secondaryR, secondaryG, secondaryB = nut.config.get("colorBackground"):Unpack()
+	surface.SetDrawColor(secondaryR, secondaryG, secondaryB, 200)
+	surface.SetMaterial(gradientU)
+	surface.DrawTexturedRect(0, STRIP_HEIGHT, w, h)
 
 	if (not self:isCursorWithinBounds() and self.isHovered) then
 		self:onHoverChanged(false)

@@ -1,4 +1,6 @@
 local PANEL = {}
+local color_darkGrey = Color(25, 25, 25)
+
 	function PANEL:Init()
 		self:SetSize(280, 240)
 		self:SetTitle(L"doorSettings")
@@ -7,8 +9,8 @@ local PANEL = {}
 
 		self.access = self:Add("DListView")
 		self.access:Dock(FILL)
-		self.access:AddColumn(L"name").Header:SetTextColor(Color(25, 25, 25))
-		self.access:AddColumn(L"access").Header:SetTextColor(Color(25, 25, 25))
+		self.access:AddColumn(L"name").Header:SetTextColor(color_darkGrey)
+		self.access:AddColumn(L"access").Header:SetTextColor(color_darkGrey)
 		self.access.OnClickLine = function(this, line, selected)
 			if (IsValid(line.player)) then
 				local menu = DermaMenu()
@@ -51,7 +53,7 @@ local PANEL = {}
 			self.sell = self:Add("DButton")
 			self.sell:Dock(BOTTOM)
 			self.sell:SetText(L"sell")
-			self.sell:SetTextColor(color_white)
+			self.sell:SetTextColor(nut.config.get("colorText", color_white))
 			self.sell:DockMargin(0, 5, 0, 0)
 			self.sell.DoClick = function(this)
 				self:Remove()

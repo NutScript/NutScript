@@ -1,9 +1,10 @@
 
 local PANEL = {}
+local color_darkBlue = Color(0,0,60)
     function PANEL:Init()
         self:SetTall(64)
-        
-        local function assignClick(panel)   
+
+        local function assignClick(panel)
             panel.OnMousePressed = function()
                 self.pressing = -1
                 self:onClick()
@@ -40,26 +41,26 @@ local PANEL = {}
             end
             */
         end
-        assignClick(self.icon) 
+        assignClick(self.icon)
 
         self.limit = self:Add("DLabel")
         self.limit:Dock(RIGHT)
         self.limit:SetMouseInputEnabled(true)
         self.limit:SetCursor("hand")
-        self.limit:SetExpensiveShadow(1, Color(0, 0, 60))
+        self.limit:SetExpensiveShadow(1, color_darkBlue)
         self.limit:SetContentAlignment(5)
         self.limit:SetFont("nutMediumFont")
         self.limit:SetWide(64)
-        assignClick(self.limit) 
+        assignClick(self.limit)
 
         self.label = self:Add("DLabel")
         self.label:Dock(FILL)
         self.label:SetMouseInputEnabled(true)
         self.label:SetCursor("hand")
-        self.label:SetExpensiveShadow(1, Color(0, 0, 60))
+        self.label:SetExpensiveShadow(1, color_darkBlue)
         self.label:SetContentAlignment(5)
         self.label:SetFont("nutMediumFont")
-        assignClick(self.label) 
+        assignClick(self.label)
     end
 
     function PANEL:onClick()
@@ -95,8 +96,8 @@ local PANEL = {}
             self.icon:SetModel(model)
         end
 
-        self.label:SetText(L(data.name))   
-        self.data = data 
+        self.label:SetText(L(data.name))
+        self.data = data
         self.class = data.index
 
         self:setNumber(#nut.class.getPlayers(data.index))
@@ -121,7 +122,7 @@ PANEL = {}
 
     function PANEL:loadClasses()
         self.list:Clear()
-        
+
         for k, v in ipairs(nut.class.list) do
             local no, why = nut.class.canBe(LocalPlayer(), k)
             local itsFull = ("class is full" == why)

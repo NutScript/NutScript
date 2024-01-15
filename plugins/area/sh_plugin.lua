@@ -12,7 +12,8 @@ nut.config.add("areaFontSize", 26, "The size of the font of Area Display.",
 			hook.Run(
 				"LoadNutFonts",
 				nut.config.get("font"),
-				nut.config.get("genericFont")
+				nut.config.get("genericFont"),
+				nut.config.get("configFont")
 			)
 		end
 	end,
@@ -343,6 +344,8 @@ else
 			end
 		end
 
+		local textR, textG, textB = nut.config.get("colorText", color_white):Unpack()
+
 		-- draw recursive
 		for i = 1, math.min(maxDisplay, strEnd) do
 			-- character scale/color lerp
@@ -361,7 +364,7 @@ else
 				math.Round(h / 3 - (sy or 0) * scale / 2),
 				Vector(Format("%.2f", flipTable[i][1]), Format("%.2f", scale), 1),
 				nil,
-				Color(255, 255, 255,
+				Color(textR, textG, textB,
 				(dieTrigger and dieTimer < RealTime()) and dieAlpha or flipTable[i][2])
 			)
 

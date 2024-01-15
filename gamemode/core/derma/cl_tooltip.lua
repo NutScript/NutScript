@@ -15,11 +15,21 @@ hook.Add("TooltipInitialize", "nutItemTooltip", function(self, panel)
 	end
 end)
 
+local gradientL = nut.util.getMaterial("vgui/gradient-l")
+local gradientR = nut.util.getMaterial("vgui/gradient-r")
+
 hook.Add("TooltipPaint", "nutItemTooltip", function(self, w, h)
 	if (self.isItemTooltip) then
 		nut.util.drawBlur(self, 2, 2)
-		surface.SetDrawColor(0, 0, 0, 230)
-		surface.DrawRect(0, 0, w, h)
+		--[[ surface.SetDrawColor(0, 0, 0, 230)
+		surface.DrawRect(0, 0, w, h) ]]
+
+		local r, g, b = nut.config.get("color"):Unpack()
+		surface.SetDrawColor(r, g, b, 255)
+		surface.SetMaterial(gradientR)
+		surface.DrawTexturedRect(0, 0, w/2, h)
+		surface.SetMaterial(gradientL)
+		surface.DrawTexturedRect(w/2, 0, w/2, h)
 
 		if (self.markupObject) then
 			self.markupObject:draw(PADDING_HALF, PADDING_HALF + 2)

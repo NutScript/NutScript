@@ -12,6 +12,7 @@ local PANEL = {}
 		self.list:Dock(FILL)
 	end
 
+	local color_blackTransparent = Color(0,0,0,150)
 
 	function PANEL:setItems(entity, items)
 		self.entity = entity
@@ -38,7 +39,7 @@ local PANEL = {}
 				item.quantity:SetTextInset(0, 0)
 				item.quantity:SetText(v)
 				item.quantity:SetFont("DermaDefaultBold")
-				item.quantity:SetExpensiveShadow(1, Color(0, 0, 0, 150))
+				item.quantity:SetExpensiveShadow(1, color_blackTransparent)
 
 				item.name = item:Add("DLabel")
 				item.name:SetPos(38, 0)
@@ -46,7 +47,7 @@ local PANEL = {}
 				item.name:SetFont("nutSmallFont")
 				item.name:SetText(L(itemTable.name))
 				item.name:SetContentAlignment(4)
-				item.name:SetTextColor(color_white)
+				item.name:SetTextColor(nut.config.get("colorText", color_white))
 
 				item.take = item:Add("DButton")
 				item.take:Dock(RIGHT)

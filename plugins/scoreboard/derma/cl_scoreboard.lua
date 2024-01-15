@@ -21,7 +21,7 @@ local PANEL = {}
 		self.title:SetText(GetHostName())
 		self.title:SetFont("nutBigFont")
 		self.title:SetContentAlignment(5)
-		self.title:SetTextColor(color_white)
+		self.title:SetTextColor(nut.config.get("colorText", color_white))
 		self.title:SetExpensiveShadow(1, color_black)
 		self.title:Dock(TOP)
 		self.title:SizeToContentsY()
@@ -67,7 +67,7 @@ local PANEL = {}
 			header:SetText(L(v.name))
 			header:SetTextInset(3, 0)
 			header:SetFont("nutMediumFont")
-			header:SetTextColor(color_white)
+			header:SetTextColor(nut.config.get("colorText", color_white))
 			header:SetExpensiveShadow(1, color_black)
 			header:SetTall(28)
 			header.Paint = function(this, w, h)
@@ -166,7 +166,7 @@ local PANEL = {}
 		slot.name:DockMargin(65, 0, 48, 0)
 		slot.name:SetTall(18)
 		slot.name:SetFont("nutGenericFont")
-		slot.name:SetTextColor(color_white)
+		slot.name:SetTextColor(nut.config.get("colorText", color_white))
 		slot.name:SetExpensiveShadow(1, color_black)
 
 		slot.ping = slot:Add("DLabel")
@@ -180,7 +180,7 @@ local PANEL = {}
 		end
 		slot.ping:SetFont("nutGenericFont")
 		slot.ping:SetContentAlignment(6)
-		slot.ping:SetTextColor(color_white)
+		slot.ping:SetTextColor(nut.config.get("colorText", color_white))
 		slot.ping:SetTextInset(16, 0)
 		slot.ping:SetExpensiveShadow(1, color_black)
 
@@ -189,7 +189,7 @@ local PANEL = {}
 		slot.desc:DockMargin(65, 0, 48, 0)
 		slot.desc:SetWrap(true)
 		slot.desc:SetContentAlignment(7)
-		slot.desc:SetTextColor(color_white)
+		slot.desc:SetTextColor(nut.config.get("colorText", color_white))
 		slot.desc:SetExpensiveShadow(1, Color(0, 0, 0, 100))
 		slot.desc:SetFont("nutSmallFont")
 

@@ -88,10 +88,10 @@ if (SERVER) then
 	net.Receive("nutPluginList", function(_, client)
 		if (not client:IsSuperAdmin()) then return end
 		local plugins = PLUGIN:getPluginList()
-		local disabled, plugin
+		local disabled
 		net.Start("nutPluginList")
 			net.WriteUInt(#plugins, 32)
-			for k, plugin in ipairs(plugins) do
+			for _, plugin in ipairs(plugins) do
 				if (PLUGIN.overwrite[plugin] ~= nil) then
 					disabled = PLUGIN.overwrite[plugin]
 				else
@@ -105,7 +105,7 @@ if (SERVER) then
 else
 	function PLUGIN:createPluginPanel(parent, plugins)
 		local frame = vgui.Create("DFrame")
-		frame:SetTitle(L"Plugins")
+		frame:SetTitle(L"togglePlugins")
 		frame:SetSize(256, 512)
 		frame:MakePopup()
 		frame:Center()
@@ -119,10 +119,14 @@ else
 		nut.gui.pluginConfig = frame
 
 		local info = frame:Add("DLabel")
-		info:SetText("The map must be restarted after making changes!")
+		local text = L"togglePluginsDesc"
+		info:SetText(text)
 		info:Dock(TOP)
 		info:DockMargin(0, 0, 0, 4)
 		info:SetContentAlignment(5)
+		surface.SetFont(info:GetFont())
+		local _, h = surface.GetTextSize(text)
+		info:SetTall(h)
 
 		local scroll = frame:Add("DScrollPanel")
 		scroll:Dock(FILL)
@@ -163,11 +167,11 @@ else
 
 	function PLUGIN:CreateConfigPanel(parent)
 		local button = parent:Add("DButton")
-		button:SetText(L"Plugins")
+		button:SetText(L"togglePlugins")
 		button:Dock(TOP)
 		button:DockMargin(0, 0, 0, 8)
 		button:SetSkin("Default")
-		button.DoClick = function(button)
+		button.DoClick = function()
 			self:createPluginPanel(parent)
 		end
 	end
@@ -175,7 +179,7 @@ else
 	net.Receive("nutPluginList", function()
 		local length = net.ReadUInt(32)
 		local plugins = {}
-		for i = 1, length do
+		for _ = 1, length do
 			plugins[net.ReadString()] = net.ReadBit() == 1
 		end
 		hook.Run("RetrievedPluginList", plugins)
