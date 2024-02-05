@@ -13,11 +13,9 @@ nut.command.add("asay", {
         return client:IsAdmin() or sam.config.get_updated("Reports", true).value
     end,
     onRun = function(client, arguments)
-        print("asay", client, client:Nick())
         local text = table.concat(arguments, " ")
 
         if (text:find("%S")) then
-            print("asay", client, client:Nick(), client:IsAdmin())
             if client:IsAdmin() then
                 nut.chat.send(client, "asay", text)
             else
@@ -60,7 +58,6 @@ nut.chat.register("asay", {
 hook.Remove("PlayerSay", "SAM.Chat.Asay")
 
 function PLUGIN:PlayerSay(client, text)
-    print("PlayerSay nut", client, text)
     if text:sub(1, 1) == "@" then
         nut.command.run(client, "asay", {text:sub(2)})
         return ""
