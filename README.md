@@ -13,7 +13,7 @@ NutScript 1.2 is actively worked on by community developers, and will see numero
 the default 1.2-stable branch will always be the stable release. If you wish to test new releases before they are integrated into the stable branch, you can opt for 1.2-wip. Be aware that 1.2-wip may have bugs and issues.
 
 ## Documentation
-Check out the NutScript wiki at https://nutscript.miraheze.org/wiki/Main_Page
+Check out the NutScript wiki at https://nutscript.github.io/NutScript-Wiki/
 
 ## Got more questions?
 NutScript's official Discord server: https://discord.gg/QUbmYuD
