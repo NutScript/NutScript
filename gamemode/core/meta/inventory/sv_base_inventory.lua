@@ -324,6 +324,6 @@ function Inventory:destroy()
 	end
 	nut.inventory.instances[self:getID()] = nil
 	net.Start("nutInventoryDelete")
-		net.WriteType(id)
+		net.WriteType(self:getID())
 	net.Broadcast()
 end
