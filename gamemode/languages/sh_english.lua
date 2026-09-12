@@ -266,8 +266,9 @@ LANGUAGE = {
 	mustProvideString = "You must provide a string for the variable",
 
 	-- 2023 patch
-
 	togglePluginsDesc = "Selected Plugins will be disabled.\nThe map must be restarted after making changes!",
-
 	invertWepSelectScroll = "Invert direction of weapon selection scroll",
+
+	-- 2026 patch
+	resetInv = "You have cleared %s's inventory.",
 }

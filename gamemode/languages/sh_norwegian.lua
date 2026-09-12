@@ -266,4 +266,7 @@ LANGUAGE = {
 
     -- 2023-patch
     togglePluginsDesc = "Valgte plugins vil bli deaktivert.\nKartet må startes på nytt etter å ha gjort endringer!",
+
+    -- 2026 patch
+	resetInv = "Du har tømt %s lager.",
 }
