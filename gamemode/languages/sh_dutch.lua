@@ -264,4 +264,7 @@ LANGUAGE = {
 	mustProvideString = "Je moet een tekenreeks voor de variabele opgeven",
 	-- 2023 patch
 	togglePluginsDesc = "Geselecteerde plugins worden uitgeschakeld.\nDe kaart moet worden herstart na het maken van wijzigingen!",
+
+	-- 2026 patch
+	resetInv = "Je hebt de inventaris van %s leeggehaald.",
 }

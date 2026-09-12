@@ -264,4 +264,7 @@ LANGUAGE = {
 	mustProvideString = "Vous devez fournir une chaîne de caractères pour la variable",
 	-- 2023 patch
 	togglePluginsDesc = "Les plugins sélectionnés seront désactivés.\nLa carte doit être redémarrée après avoir apporté des modifications !",
+
+	--2026 patch
+	resetInv = "Vous avez vidé l'inventaire de %s.",
 }

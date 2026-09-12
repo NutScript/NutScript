@@ -266,4 +266,7 @@ LANGUAGE = {
     mustProvideString = "Musisz podać ciąg znaków dla zmiennej",
     -- 2023-patch
     togglePluginsDesc = "Wybrane wtyczki zostaną wyłączone.\nMapa musi zostać ponownie uruchomiona po wprowadzeniu zmian!",
+
+    -- 2026 patch
+	resetInv = "Opróżniłeś ekwipunek %s.",
 }

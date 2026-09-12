@@ -263,4 +263,7 @@ LANGUAGE = {
     mustProvideString = "Debes proporcionar una cadena para la variable.",
     -- Parche de 2023
     togglePluginsDesc = "Los complementos seleccionados se desactivarán.\nEl mapa debe reiniciarse después de realizar cambios.",
+
+    -- 2026 patch
+	resetInv = "Has vaciado el inventario de %s.",
 }

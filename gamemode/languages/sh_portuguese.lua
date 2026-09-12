@@ -263,5 +263,7 @@ LANGUAGE = {
     mustProvideString = "Você deve fornecer uma string para a variável",
     -- 2023-patch
     togglePluginsDesc = "Os Plugins selecionados serão desativados.\nO mapa deve ser reiniciado após fazer as alterações!",
-}
 
+    -- 2026 patch
+	resetInv = "Limpa-se o inventário de %s.",
+}
