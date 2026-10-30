@@ -119,7 +119,10 @@ function Promise:_handle(value)
             elseif (value.state == FULFILLED) then
                 self:_handle(value.value)
             else
-                self:reject(value.reason)
+                -- The state was already copied above, so self:reject() would
+                -- do nothing here. Store the reason and run the handlers.
+                self.reason = value.reason
+                self:_handle(value.reason)
             end
             return
         elseif (isfunction(value.next)) then
